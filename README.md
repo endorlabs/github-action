@@ -12,7 +12,7 @@ The following pre-requisites are required for the Endor Labs GitHub action to su
   - An Endor Labs API key and secret
   - A GCP service account with workload identity federation enabled associated with the runner
 - The Endor Labs namespace to authenticate against
-- Access to the Endor Labs API at https://api.endorlabs.com
+- Access to the Endor Labs API
 
 Here is an example of using Endor Labs as a scan step in a job with these pre-requisites:
 
@@ -29,7 +29,7 @@ Here is an example of using Endor Labs as a scan step in a job with these pre-re
 
 1. Setup authentication to Endor Labs
    1. If you are using an API Key and Secret add these as repository secrets
-   2. If you are using GCP workload identity federation ensure you are using a self-hosted runner in GCP with your service account setup for workload identity federation.
+   2. You may also use a GCP service account setup for [keyless authentication from GitHub actions](https://cloud.google.com/blog/products/identity-security/enabling-keyless-authentication-from-github-actions).
 2. Checkout your code
 3. Install your build toolchain
 4. Build your code
@@ -44,9 +44,10 @@ jobs:
   scan:
     runs-on: ubuntu-latest
     steps:
-      - name: Scan with Endor Labs
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      - name: Setup Java
+        uses: actions/setup-java@v3
         with:
           distribution: 'microsoft'
           java-version: '17'
@@ -67,7 +68,7 @@ The following input parameters are supported configurations for the Endor Labs G
 |---------------------------------------|------------------------------------|
 |  `api_key`                            |  Set to your Endor Labs API key ID |
 |  `api_secret`                         |  Set to your Endor Labs API key secret |
-| `gcp_service_account`                 |  Set to the GCP service account used for workload identity federation. This may not be used in conjunction with your API key   |
+| `gcp_service_account`                 |  Set to the GCP service account used for keyless authentication. This may not be used in conjunction with your API key   |
 | `namespace`                           | Set to your Endor Labs namespace (Required) |
 | `endorctl_version`                    | Set to a specified version of endorctl to pin this specific version for use. If this is not used, then the latest version of endorctl will be downloaded for use |
 | `endorctl_checksum`                   | Set to the checksum associated with a pinned version of endorctl. |
