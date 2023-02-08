@@ -31,11 +31,6 @@ inputs:
   endorctl_checksum:
     description: "Set to a checksum to validate the version of endorctl downloaded"
     required: false
-  # Use this input parameter to define if you want to show a scan progress bar
-  # In some environments this can fill up your log
-  show_progress:
-    description: "Set to true to show the progress bar for scans"
-    default: "false"
   log_verbose:
     description: "Set to true to use verbose logging"
     default: "false"

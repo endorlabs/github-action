@@ -85,6 +85,7 @@ async function run() {
   };
 
   try {
+    const SHOW_PROGRESS = false;
     const API = core.getInput("api");
     const API_KEY = core.getInput("api_key");
     const API_SECRET = core.getInput("api_secret");
@@ -94,7 +95,6 @@ async function run() {
     const NAMESPACE = core.getInput("namespace");
     const ENDORCTL_VERSION = core.getInput("endorctl_version");
     const ENDORCTL_CHECKSUM = core.getInput("endorctl_checksum");
-    const SHOW_PROGRESS = core.getBooleanInput("show_progress");
     const LOG_VERBOSE = core.getBooleanInput("log_verbose");
     const LOG_LEVEL = core.getInput("log_level");
     const SCAN_SUMMARY_OUTPUT_TYPE = core.getInput("scan_summary_output_type");
