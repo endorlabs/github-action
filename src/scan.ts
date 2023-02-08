@@ -142,7 +142,7 @@ async function run() {
       options.push(`--gcp-service-account=${GCP_CREDENTIALS_SERVICE_ACCOUNT}`);
 
     if (CI_RUN_TAGS) {
-      options.push(CI_RUN_TAGS);
+      options.push(`--ci-run-tags=${CI_RUN_TAGS}`);
     }
     if (ADDITIONAL_ARGS) {
       options.push(ADDITIONAL_ARGS);
