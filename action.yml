@@ -46,6 +46,14 @@ inputs:
   scan_summary_output_type:
     description: "Set the desired output summary to table, json, or yaml"
     default: "json"
+  # Use this input parameter to enable ci run
+  ci_run:
+    description: "Set to true to enable ci run"
+    default: "true"
+  # Use this input parameter to provide ci run tags
+  ci_run_tags:
+    description: "Set the tags for ci run"
+    required: false
   # Custom arguments to the endorctl binary. See the documentation for command flags.
   additional_args:
     description: "Use this to add your own custom arguments to endorctl"

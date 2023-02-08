@@ -98,6 +98,8 @@ async function run() {
     const LOG_VERBOSE = core.getBooleanInput("log_verbose");
     const LOG_LEVEL = core.getInput("log_level");
     const SCAN_SUMMARY_OUTPUT_TYPE = core.getInput("scan_summary_output_type");
+    const CI_RUN = core.getBooleanInput("ci_run");
+    const CI_RUN_TAGS = core.getInput("ci_run_tags");
     const ADDITIONAL_ARGS = core.getInput("additional_args");
 
     core.info(`Endor Namespace: ${NAMESPACE}`);
@@ -130,6 +132,7 @@ async function run() {
       `--verbose=${LOG_VERBOSE}`,
       `--output-type=${SCAN_SUMMARY_OUTPUT_TYPE}`,
       `--log-level=${LOG_LEVEL}`,
+      `--ci-run=${CI_RUN}`,
     ];
 
     if (API) options.push(`--api=${API}`);
@@ -138,6 +141,9 @@ async function run() {
     if (GCP_CREDENTIALS_SERVICE_ACCOUNT)
       options.push(`--gcp-service-account=${GCP_CREDENTIALS_SERVICE_ACCOUNT}`);
 
+    if (CI_RUN_TAGS) {
+      options.push(CI_RUN_TAGS);
+    }
     if (ADDITIONAL_ARGS) {
       options.push(ADDITIONAL_ARGS);
     }
