@@ -1,0 +1,35 @@
+{
+  "name": "typescript-actions",
+  "version": "0.0.1",
+  "private": true,
+  "description": "TypeScript action",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint src/**/*.ts",
+    "package": "ncc build src/scan.ts --source-map --license licenses.txt",
+    "all": "npm run build && npm run format && npm run lint && npm run package && npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ankurv3rma/ts-action-test.git"
+  },
+  "dependencies": {
+    "@actions/core": "^1.10.0",
+    "@actions/exec": "^1.1.1",
+    "@actions/github": "^5.1.1",
+    "@actions/http-client": "^2.0.1",
+    "@actions/io": "^1.1.2",
+    "@actions/tool-cache": "^2.0.1",
+    "@octokit/webhooks-definitions": "^3.67.3"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.0",
+    "@typescript-eslint/parser": "^4.33.0",
+    "@vercel/ncc": "^0.36.0",
+    "eslint": "^8.32.0",
+    "eslint-plugin-github": "^4.6.0",
+    "js-yaml": "^4.1.0",
+    "prettier": "2.5.1",
+    "typescript": "^4.9.4"
+  }
+}

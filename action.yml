@@ -1,0 +1,54 @@
+name: "Endor Labs Scan"
+description: "Endor Labs repository scan"
+author: "Endor Labs"
+inputs:
+  # Use this input parameter to define the base api path
+  api:
+    description: "Set to the Endor Labs API to use"
+    required: false
+    default: "https://api.endorlabs.com"
+  # Use this input parameter to define your api key
+  api_key:
+    description: "Set to an Endor Labs API key for authentication"
+    required: false
+  # Use this input parameter to define your api secret
+  api_secret:
+    description: "Set to an Endor Labs API secret for authentication"
+    required: false
+  # Use this input parameter to define your gcp service account
+  gcp_service_account:
+    description: "The GCP service account used for workload identity federation"
+    required: false
+  # Use this input parameter to define your Endor Labs tenant namespace
+  namespace:
+    description: "Set to your Endor Labs namespace"
+    required: true
+  # Use this input parameter to provide a default endorctl version
+  # If this is not the latest version, it will be replace by the latest
+  endorctl_version:
+    description: "Set to a specified version version of endorctl to pin"
+    required: false
+  endorctl_checksum:
+    description: "Set to a checksum to validate the version of endorctl downloaded"
+    required: false
+  # Use this input parameter to define if you want to show a scan progress bar
+  # In some environments this can fill up your log
+  show_progress:
+    description: "Set to true to show the progress bar for scans"
+    default: "false"
+  log_verbose:
+    description: "Set to true to use verbose logging"
+    default: "false"
+  # Set log level to debug for error troubleshooting
+  log_level:
+    description: "Set the endorctl log level"
+    default: "info"
+  scan_summary_output_type:
+    description: "Set the desired output summary to table, json, or yaml"
+    default: "json"
+  # Custom arguments to the endorctl binary. See the documentation for command flags.
+  additional_args:
+    description: "Use this to add your own custom arguments to endorctl"
+runs:
+  using: "node16"
+  main: "dist/index.js"
