@@ -48,11 +48,11 @@ inputs:
     default: "json"
   # Use this input parameter to enable ci run
   ci_run:
-    description: "Set to true to enable ci run"
+    description: "Set to false to track this scan in Endor Labs as a release"
     default: "true"
-  # Use this input parameter to provide ci run tags
+  # Use this input parameter to provide searchable tags for your CI runs
   ci_run_tags:
-    description: "Set the tags for ci run"
+    description: "Set searchable tags for your CI runs"
     required: false
   # Custom arguments to the endorctl binary. See the documentation for command flags.
   additional_args:
