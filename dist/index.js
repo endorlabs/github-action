@@ -13541,12 +13541,13 @@ const setupEndorctl = ({ version, checksum, api }) => __awaiter(void 0, void 0, 
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         let scanResult = "";
+        let scanError = "";
         const scanOptions = Object.assign({ listeners: {
                 stdout: (data) => {
                     scanResult += data.toString();
                 },
                 stderr: (data) => {
-                    scanResult += data.toString();
+                    scanError += data.toString();
                 },
             } }, execOptionSilent);
         try {
@@ -13604,8 +13605,8 @@ function run() {
             core.info(`Scan Result:`);
             core.info(scanResult);
         }
-        catch (error) {
-            core.setFailed(error.message);
+        catch (_a) {
+            core.setFailed(`\nScan Failed\n\n${scanError}`);
         }
     });
 }

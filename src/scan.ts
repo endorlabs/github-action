@@ -71,6 +71,7 @@ const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
 
 async function run() {
   let scanResult = "";
+  let scanError = "";
 
   const scanOptions: exec.ExecOptions = {
     listeners: {
@@ -78,7 +79,7 @@ async function run() {
         scanResult += data.toString();
       },
       stderr: (data: Buffer) => {
-        scanResult += data.toString();
+        scanError += data.toString();
       },
     },
     ...execOptionSilent,
@@ -156,8 +157,8 @@ async function run() {
 
     core.info(`Scan Result:`);
     core.info(scanResult);
-  } catch (error: any) {
-    core.setFailed(error.message);
+  } catch {
+    core.setFailed(`\nScan Failed\n\n${scanError}`);
   }
 }
 
