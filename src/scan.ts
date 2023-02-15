@@ -82,7 +82,6 @@ async function run() {
         scanError += data.toString();
       },
     },
-    ...execOptionSilent,
   };
 
   try {
@@ -149,14 +148,10 @@ async function run() {
       options.push(ADDITIONAL_ARGS);
     }
 
-    await exec.exec(
-      `endorctl scan --path=. ${options.join(" ")}`,
-      [],
-      scanOptions
-    );
+    await exec.exec(`endorctl`, ["scan", "--path=.", ...options], scanOptions);
 
-    core.info(`Scan Result:`);
-    core.info(scanResult);
+    core.info("Scan completed successfully!");
+    core.setOutput("result", scanResult);
   } catch {
     core.setFailed(`\nScan Failed\n\n${scanError}`);
   }
