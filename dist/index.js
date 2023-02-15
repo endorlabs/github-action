@@ -13542,14 +13542,16 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         let scanResult = "";
         let scanError = "";
-        const scanOptions = Object.assign({ listeners: {
+        const scanOptions = {
+            listeners: {
                 stdout: (data) => {
                     scanResult += data.toString();
                 },
                 stderr: (data) => {
                     scanError += data.toString();
                 },
-            } }, execOptionSilent);
+            },
+        };
         try {
             const SHOW_PROGRESS = false;
             const API = core.getInput("api");
@@ -13601,9 +13603,9 @@ function run() {
             if (ADDITIONAL_ARGS) {
                 options.push(ADDITIONAL_ARGS);
             }
-            yield exec.exec(`endorctl scan --path=. ${options.join(" ")}`, [], scanOptions);
-            core.info(`Scan Result:`);
-            core.info(scanResult);
+            yield exec.exec(`endorctl`, ["scan", "--path=.", ...options], scanOptions);
+            core.info("Scan completed successfully!");
+            core.setOutput("result", scanResult);
         }
         catch (_a) {
             core.setFailed(`\nScan Failed\n\n${scanError}`);
