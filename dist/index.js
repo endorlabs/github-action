@@ -13549,6 +13549,7 @@ const setupEndorctl = ({ version, checksum, api }) => __awaiter(void 0, void 0, 
         if (platform.error) {
             throw new Error(platform.error);
         }
+        const isWindows = platform.os === constants_1.EndorctlAvailableOS.Windows;
         let endorctlVersion = version;
         let endorctlChecksum = checksum;
         if (!version) {
@@ -13560,7 +13561,7 @@ const setupEndorctl = ({ version, checksum, api }) => __awaiter(void 0, void 0, 
             endorctlChecksum = (0, utils_1.getEndorctlChecksum)(obj.ClientChecksums, platform.os, platform.arch);
         }
         core.info(`Downloading endorctl version ${endorctlVersion}`);
-        let url = `https://storage.googleapis.com/endorlabs/${endorctlVersion}/binaries/endorctl_${endorctlVersion}_${platform.os}_${platform.arch}`;
+        let url = `https://storage.googleapis.com/endorlabs/${endorctlVersion}/binaries/endorctl_${endorctlVersion}_${platform.os}_${platform.arch}${isWindows ? ".exe" : ""}`;
         if (platform.os === constants_1.EndorctlAvailableOS.Windows)
             url = `${url}.exe`;
         let downloadPath = null;
@@ -13574,7 +13575,7 @@ const setupEndorctl = ({ version, checksum, api }) => __awaiter(void 0, void 0, 
         }
         yield exec.exec("chmod", ["+x", downloadPath], execOptionSilent);
         const binPath = ".";
-        const endorctlPath = path.join(binPath, "endorctl");
+        const endorctlPath = path.join(binPath, `endorctl${isWindows ? ".exe" : ""}`);
         yield io.mv(downloadPath, endorctlPath);
         core.addPath(binPath);
         core.info(`Endorctl downloaded and added to the path`);

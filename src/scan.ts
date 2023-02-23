@@ -27,6 +27,8 @@ const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
       throw new Error(platform.error);
     }
 
+    const isWindows = platform.os === EndorctlAvailableOS.Windows;
+
     let endorctlVersion = version;
     let endorctlChecksum = checksum;
     if (!version) {
@@ -45,7 +47,9 @@ const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
     }
 
     core.info(`Downloading endorctl version ${endorctlVersion}`);
-    let url = `https://storage.googleapis.com/endorlabs/${endorctlVersion}/binaries/endorctl_${endorctlVersion}_${platform.os}_${platform.arch}`;
+    let url = `https://storage.googleapis.com/endorlabs/${endorctlVersion}/binaries/endorctl_${endorctlVersion}_${
+      platform.os
+    }_${platform.arch}${isWindows ? ".exe" : ""}`;
     if (platform.os === EndorctlAvailableOS.Windows) url = `${url}.exe`;
     let downloadPath: string | null = null;
 
@@ -61,7 +65,10 @@ const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
 
     await exec.exec("chmod", ["+x", downloadPath], execOptionSilent);
     const binPath = ".";
-    const endorctlPath = path.join(binPath, "endorctl");
+    const endorctlPath = path.join(
+      binPath,
+      `endorctl${isWindows ? ".exe" : ""}`
+    );
     await io.mv(downloadPath, endorctlPath);
     core.addPath(binPath);
 
