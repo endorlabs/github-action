@@ -76,6 +76,6 @@ The following input parameters are supported configurations for the Endor Labs G
 | `log_verbose`                         | Set to true to enable verbose logging mode |
 | `log_level`                           | Set to debug to enable debug logging or error to enable error logging only. Defaults to info |
 | `scan_summary_output_type`            | Set the desired output summary to table, json, or yaml |
-| `ci_run`                              | Set to false to track this scan in Endor Labs as a monitored version within Endor Labs |
+| `ci_run`                              | Set to false to track this scan as a monitored version within Endor Labs |
 | `ci_run_tags`                         | Set searchable tags to search and query your CI run scans |
 | `additional_args`                     | Use additional this input to add custom arguments to your endorctl command |
