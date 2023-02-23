@@ -5,31 +5,30 @@ import * as httpm from "@actions/http-client";
 import * as io from "@actions/io";
 import * as tc from "@actions/tool-cache";
 import * as path from "path";
-import * as crypto from "crypto";
-import * as fs from "fs";
-
-interface SetupProps {
-  version: string;
-  checksum: string;
-  api: string;
-}
+import { EndorctlAvailableOS } from "./constants";
+import { SetupProps, VersionResponse } from "./types";
+import {
+  createHashFromFile,
+  getEndorctlChecksum,
+  getPlatformInfo,
+} from "./utils";
 
 const execOptionSilent = {
   silent: true,
 };
 
-const createHashFromFile = (filePath: string) =>
-  new Promise((resolve) => {
-    const hash = crypto.createHash("sha256");
-    fs.createReadStream(filePath)
-      .on("data", (data) => hash.update(data))
-      .on("end", () => resolve(hash.digest("hex")));
-  });
-
 const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
   const _http: httpm.HttpClient = new httpm.HttpClient("endor-http-client");
 
   try {
+    const platform = getPlatformInfo();
+
+    if (platform.error) {
+      throw new Error(platform.error);
+    }
+
+    const isWindows = platform.os === EndorctlAvailableOS.Windows;
+
     let endorctlVersion = version;
     let endorctlChecksum = checksum;
     if (!version) {
@@ -38,13 +37,19 @@ const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
         `${api}/meta/version`
       );
       const body: string = await res.readBody();
-      const obj = JSON.parse(body);
+      const obj: VersionResponse = JSON.parse(body);
       endorctlVersion = obj?.Service?.Version;
-      endorctlChecksum = obj?.ClientChecksums?.ARCH_TYPE_LINUX_AMD64;
+      endorctlChecksum = getEndorctlChecksum(
+        obj.ClientChecksums,
+        platform.os,
+        platform.arch
+      );
     }
 
     core.info(`Downloading endorctl version ${endorctlVersion}`);
-    let url = `https://storage.googleapis.com/endorlabs/${endorctlVersion}/binaries/endorctl_${endorctlVersion}_linux_amd64`;
+    let url = `https://storage.googleapis.com/endorlabs/${endorctlVersion}/binaries/endorctl_${endorctlVersion}_${
+      platform.os
+    }_${platform.arch}${isWindows ? ".exe" : ""}`;
     let downloadPath: string | null = null;
 
     downloadPath = await tc.downloadTool(url);
@@ -59,7 +64,10 @@ const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
 
     await exec.exec("chmod", ["+x", downloadPath], execOptionSilent);
     const binPath = ".";
-    const endorctlPath = path.join(binPath, "endorctl");
+    const endorctlPath = path.join(
+      binPath,
+      `endorctl${isWindows ? ".exe" : ""}`
+    );
     await io.mv(downloadPath, endorctlPath);
     core.addPath(binPath);
 

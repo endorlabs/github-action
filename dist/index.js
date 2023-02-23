@@ -13446,6 +13446,51 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
+/***/ 9042:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.RUNNER_TO_ENDORCTL_ARCH = exports.RUNNER_TO_ENDORCTL_OS = exports.EndorctlAvailableArch = exports.EndorctlAvailableOS = exports.SupportedRunnerArch = exports.SupportedRunnerOS = void 0;
+// Supported runner OS and ARCH; ref: https://docs.github.com/en/actions/hosting-your-own-runners/about-self-hosted-runners
+var SupportedRunnerOS;
+(function (SupportedRunnerOS) {
+    SupportedRunnerOS["Linux"] = "Linux";
+    SupportedRunnerOS["Windows"] = "Windows";
+    SupportedRunnerOS["Macos"] = "macOS";
+})(SupportedRunnerOS = exports.SupportedRunnerOS || (exports.SupportedRunnerOS = {}));
+var SupportedRunnerArch;
+(function (SupportedRunnerArch) {
+    SupportedRunnerArch["Amd64"] = "X64";
+    SupportedRunnerArch["Arm64"] = "ARM64";
+})(SupportedRunnerArch = exports.SupportedRunnerArch || (exports.SupportedRunnerArch = {}));
+// OS and ARCH available with endorctl;
+var EndorctlAvailableOS;
+(function (EndorctlAvailableOS) {
+    EndorctlAvailableOS["Linux"] = "linux";
+    EndorctlAvailableOS["Windows"] = "windows";
+    EndorctlAvailableOS["Macos"] = "macos";
+})(EndorctlAvailableOS = exports.EndorctlAvailableOS || (exports.EndorctlAvailableOS = {}));
+var EndorctlAvailableArch;
+(function (EndorctlAvailableArch) {
+    EndorctlAvailableArch["Amd64"] = "amd64";
+    EndorctlAvailableArch["Arm64"] = "arm64";
+})(EndorctlAvailableArch = exports.EndorctlAvailableArch || (exports.EndorctlAvailableArch = {}));
+// map the runner OS and ARCH values to endorctl binary OS and ARCH values
+exports.RUNNER_TO_ENDORCTL_OS = {
+    [SupportedRunnerOS.Linux]: EndorctlAvailableOS.Linux,
+    [SupportedRunnerOS.Windows]: EndorctlAvailableOS.Windows,
+    [SupportedRunnerOS.Macos]: EndorctlAvailableOS.Macos,
+};
+exports.RUNNER_TO_ENDORCTL_ARCH = {
+    [SupportedRunnerArch.Amd64]: EndorctlAvailableArch.Amd64,
+    [SupportedRunnerArch.Arm64]: EndorctlAvailableArch.Arm64,
+};
+
+
+/***/ }),
+
 /***/ 8981:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -13491,21 +13536,20 @@ const httpm = __importStar(__nccwpck_require__(6255));
 const io = __importStar(__nccwpck_require__(7436));
 const tc = __importStar(__nccwpck_require__(7784));
 const path = __importStar(__nccwpck_require__(1017));
-const crypto = __importStar(__nccwpck_require__(6113));
-const fs = __importStar(__nccwpck_require__(7147));
+const constants_1 = __nccwpck_require__(9042);
+const utils_1 = __nccwpck_require__(1314);
 const execOptionSilent = {
     silent: true,
 };
-const createHashFromFile = (filePath) => new Promise((resolve) => {
-    const hash = crypto.createHash("sha256");
-    fs.createReadStream(filePath)
-        .on("data", (data) => hash.update(data))
-        .on("end", () => resolve(hash.digest("hex")));
-});
 const setupEndorctl = ({ version, checksum, api }) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b;
+    var _a;
     const _http = new httpm.HttpClient("endor-http-client");
     try {
+        const platform = (0, utils_1.getPlatformInfo)();
+        if (platform.error) {
+            throw new Error(platform.error);
+        }
+        const isWindows = platform.os === constants_1.EndorctlAvailableOS.Windows;
         let endorctlVersion = version;
         let endorctlChecksum = checksum;
         if (!version) {
@@ -13514,13 +13558,13 @@ const setupEndorctl = ({ version, checksum, api }) => __awaiter(void 0, void 0, 
             const body = yield res.readBody();
             const obj = JSON.parse(body);
             endorctlVersion = (_a = obj === null || obj === void 0 ? void 0 : obj.Service) === null || _a === void 0 ? void 0 : _a.Version;
-            endorctlChecksum = (_b = obj === null || obj === void 0 ? void 0 : obj.ClientChecksums) === null || _b === void 0 ? void 0 : _b.ARCH_TYPE_LINUX_AMD64;
+            endorctlChecksum = (0, utils_1.getEndorctlChecksum)(obj.ClientChecksums, platform.os, platform.arch);
         }
         core.info(`Downloading endorctl version ${endorctlVersion}`);
-        let url = `https://storage.googleapis.com/endorlabs/${endorctlVersion}/binaries/endorctl_${endorctlVersion}_linux_amd64`;
+        let url = `https://storage.googleapis.com/endorlabs/${endorctlVersion}/binaries/endorctl_${endorctlVersion}_${platform.os}_${platform.arch}${isWindows ? ".exe" : ""}`;
         let downloadPath = null;
         downloadPath = yield tc.downloadTool(url);
-        const hash = yield createHashFromFile(downloadPath);
+        const hash = yield (0, utils_1.createHashFromFile)(downloadPath);
         if (hash !== endorctlChecksum) {
             throw new Error("The checksum of the downloaded binary does not match the expected value!");
         }
@@ -13529,7 +13573,7 @@ const setupEndorctl = ({ version, checksum, api }) => __awaiter(void 0, void 0, 
         }
         yield exec.exec("chmod", ["+x", downloadPath], execOptionSilent);
         const binPath = ".";
-        const endorctlPath = path.join(binPath, "endorctl");
+        const endorctlPath = path.join(binPath, `endorctl${isWindows ? ".exe" : ""}`);
         yield io.mv(downloadPath, endorctlPath);
         core.addPath(binPath);
         core.info(`Endorctl downloaded and added to the path`);
@@ -13613,6 +13657,97 @@ function run() {
     });
 }
 run();
+
+
+/***/ }),
+
+/***/ 1314:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getEndorctlChecksum = exports.getPlatformInfo = exports.createHashFromFile = void 0;
+const crypto = __importStar(__nccwpck_require__(6113));
+const fs = __importStar(__nccwpck_require__(7147));
+const constants_1 = __nccwpck_require__(9042);
+const createHashFromFile = (filePath) => new Promise((resolve) => {
+    const hash = crypto.createHash("sha256");
+    fs.createReadStream(filePath)
+        .on("data", (data) => hash.update(data))
+        .on("end", () => resolve(hash.digest("hex")));
+});
+exports.createHashFromFile = createHashFromFile;
+/**
+ * Returns the OS and Architecture to be used for downloading endorctl binary,
+ * based on the current runner OS and Architecture. Returns the error if runner
+ * OS/Arch combination is not supported
+ */
+const getPlatformInfo = () => {
+    const defaultInfo = {
+        os: undefined,
+        arch: undefined,
+        error: undefined,
+    };
+    const { RUNNER_ARCH, RUNNER_OS } = process.env;
+    const allOsList = Object.values(constants_1.SupportedRunnerOS);
+    const allArchList = Object.values(constants_1.SupportedRunnerArch);
+    const armOsList = [constants_1.SupportedRunnerOS.Macos];
+    if (!RUNNER_OS || !allOsList.includes(RUNNER_OS)) {
+        return Object.assign(Object.assign({}, defaultInfo), { error: "Unsupported OS! This actions requires one of [Linux, macOS, Windows]." });
+    }
+    if (!RUNNER_ARCH || !allArchList.includes(RUNNER_ARCH)) {
+        return Object.assign(Object.assign({}, defaultInfo), { error: "Unsupported Architecture! This actions requires one of [AMD64(X64), ARM64]." });
+    }
+    if (RUNNER_ARCH === constants_1.SupportedRunnerArch.Arm64 &&
+        !armOsList.includes(RUNNER_OS)) {
+        return Object.assign(Object.assign({}, defaultInfo), { error: `Architecture ${RUNNER_ARCH} not supported for ${RUNNER_OS}!` });
+    }
+    return Object.assign(Object.assign({}, defaultInfo), { os: constants_1.RUNNER_TO_ENDORCTL_OS[RUNNER_OS], arch: constants_1.RUNNER_TO_ENDORCTL_ARCH[RUNNER_ARCH] });
+};
+exports.getPlatformInfo = getPlatformInfo;
+/**
+ * Returns the checksum for the given OS and Architecture
+ */
+const getEndorctlChecksum = (clientChecksums, os, arch) => {
+    const platformString = `${os}_${arch}`;
+    switch (platformString) {
+        case `${constants_1.EndorctlAvailableOS.Linux}_${constants_1.EndorctlAvailableArch.Amd64}`:
+            return clientChecksums.ARCH_TYPE_LINUX_AMD64;
+        case `${constants_1.EndorctlAvailableOS.Macos}_${constants_1.EndorctlAvailableArch.Amd64}`:
+            return clientChecksums.ARCH_TYPE_MACOS_AMD64;
+        case `${constants_1.EndorctlAvailableOS.Macos}_${constants_1.EndorctlAvailableArch.Arm64}`:
+            return clientChecksums.ARCH_TYPE_MACOS_ARM64;
+        case `${constants_1.EndorctlAvailableOS.Windows}_${constants_1.EndorctlAvailableArch.Amd64}`:
+            return clientChecksums.ARCH_TYPE_UNSPECIFIED;
+        default:
+            return "";
+    }
+};
+exports.getEndorctlChecksum = getEndorctlChecksum;
 
 
 /***/ }),
