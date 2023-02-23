@@ -5,6 +5,7 @@ import * as httpm from "@actions/http-client";
 import * as io from "@actions/io";
 import * as tc from "@actions/tool-cache";
 import * as path from "path";
+import { EndorctlAvailableOS } from "./constants";
 import { SetupProps, VersionResponse } from "./types";
 import {
   createHashFromFile,
@@ -45,6 +46,7 @@ const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
 
     core.info(`Downloading endorctl version ${endorctlVersion}`);
     let url = `https://storage.googleapis.com/endorlabs/${endorctlVersion}/binaries/endorctl_${endorctlVersion}_${platform.os}_${platform.arch}`;
+    if (platform.os === EndorctlAvailableOS.Windows) url = `${url}.exe`;
     let downloadPath: string | null = null;
 
     downloadPath = await tc.downloadTool(url);

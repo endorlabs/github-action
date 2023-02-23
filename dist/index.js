@@ -13536,6 +13536,7 @@ const httpm = __importStar(__nccwpck_require__(6255));
 const io = __importStar(__nccwpck_require__(7436));
 const tc = __importStar(__nccwpck_require__(7784));
 const path = __importStar(__nccwpck_require__(1017));
+const constants_1 = __nccwpck_require__(9042);
 const utils_1 = __nccwpck_require__(1314);
 const execOptionSilent = {
     silent: true,
@@ -13560,6 +13561,8 @@ const setupEndorctl = ({ version, checksum, api }) => __awaiter(void 0, void 0, 
         }
         core.info(`Downloading endorctl version ${endorctlVersion}`);
         let url = `https://storage.googleapis.com/endorlabs/${endorctlVersion}/binaries/endorctl_${endorctlVersion}_${platform.os}_${platform.arch}`;
+        if (platform.os === constants_1.EndorctlAvailableOS.Windows)
+            url = `${url}.exe`;
         let downloadPath = null;
         downloadPath = yield tc.downloadTool(url);
         const hash = yield (0, utils_1.createHashFromFile)(downloadPath);
