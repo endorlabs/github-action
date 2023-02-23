@@ -50,7 +50,6 @@ const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
     let url = `https://storage.googleapis.com/endorlabs/${endorctlVersion}/binaries/endorctl_${endorctlVersion}_${
       platform.os
     }_${platform.arch}${isWindows ? ".exe" : ""}`;
-    if (platform.os === EndorctlAvailableOS.Windows) url = `${url}.exe`;
     let downloadPath: string | null = null;
 
     downloadPath = await tc.downloadTool(url);

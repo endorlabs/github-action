@@ -13562,8 +13562,6 @@ const setupEndorctl = ({ version, checksum, api }) => __awaiter(void 0, void 0, 
         }
         core.info(`Downloading endorctl version ${endorctlVersion}`);
         let url = `https://storage.googleapis.com/endorlabs/${endorctlVersion}/binaries/endorctl_${endorctlVersion}_${platform.os}_${platform.arch}${isWindows ? ".exe" : ""}`;
-        if (platform.os === constants_1.EndorctlAvailableOS.Windows)
-            url = `${url}.exe`;
         let downloadPath = null;
         downloadPath = yield tc.downloadTool(url);
         const hash = yield (0, utils_1.createHashFromFile)(downloadPath);
