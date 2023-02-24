@@ -1,9 +1,11 @@
+import * as artifact from "@actions/artifact";
 import * as core from "@actions/core";
 import * as exec from "@actions/exec";
 import * as github from "@actions/github";
 import * as httpm from "@actions/http-client";
 import * as io from "@actions/io";
 import * as tc from "@actions/tool-cache";
+
 import * as path from "path";
 import { EndorctlAvailableOS } from "./constants";
 import { SetupProps, VersionResponse } from "./types";
@@ -11,6 +13,7 @@ import {
   createHashFromFile,
   getEndorctlChecksum,
   getPlatformInfo,
+  writeJsonToFile,
 } from "./utils";
 
 const execOptionSilent = {
@@ -77,6 +80,29 @@ const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
   }
 };
 
+const uploadArtifact = async (scanResult: string) => {
+  const artifactClient = artifact.create();
+  const artifactName = "endor-scan";
+
+  const { filePath, uploadPath } = writeJsonToFile(scanResult);
+  const files = [filePath];
+  const rootDirectory = uploadPath;
+  const options = {
+    continueOnError: true,
+  };
+  const uploadResult = await artifactClient.uploadArtifact(
+    artifactName,
+    files,
+    rootDirectory,
+    options
+  );
+  if (uploadResult.failedItems.length > 0) {
+    core.error("Some items failed to export");
+  } else {
+    core.info("Scan result exported to artifact");
+  }
+};
+
 async function run() {
   let scanResult = "";
   let scanError = "";
@@ -109,6 +135,9 @@ async function run() {
     const CI_RUN = core.getBooleanInput("ci_run");
     const CI_RUN_TAGS = core.getInput("ci_run_tags");
     const ADDITIONAL_ARGS = core.getInput("additional_args");
+    const EXPORT_SCAN_RESULT_ARTIFACT = core.getBooleanInput(
+      "export_scan_result_artifact"
+    );
 
     core.info(`Endor Namespace: ${NAMESPACE}`);
 
@@ -159,7 +188,10 @@ async function run() {
     await exec.exec(`endorctl`, ["scan", "--path=.", ...options], scanOptions);
 
     core.info("Scan completed successfully!");
-    core.setOutput("result", scanResult);
+
+    if (EXPORT_SCAN_RESULT_ARTIFACT && SCAN_SUMMARY_OUTPUT_TYPE === "json") {
+      uploadArtifact(scanResult);
+    }
   } catch {
     core.setFailed(`\nScan Failed\n\n${scanError}`);
   }

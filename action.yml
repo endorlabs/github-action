@@ -52,6 +52,10 @@ inputs:
   # Custom arguments to the endorctl binary. See the documentation for command flags.
   additional_args:
     description: "Use this to add your own custom arguments to endorctl"
+  # Use this input parameter to enable/disable the artifact export. Works only with "json" output type. The artifact name will be "endor-scan" and the json output file name will be "result-<RUN_ID>.json"
+  export_scan_result_artifact:
+    description: "Set to false to skip exporting the json scan result as an artifact"
+    default: "true"
 runs:
   using: "node16"
   main: "dist/index.js"
