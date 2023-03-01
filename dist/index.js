@@ -20298,18 +20298,23 @@ const setupEndorctl = ({ version, checksum, api }) => __awaiter(void 0, void 0, 
 const uploadArtifact = (scanResult) => __awaiter(void 0, void 0, void 0, function* () {
     const artifactClient = artifact.create();
     const artifactName = "endor-scan";
-    const { filePath, uploadPath } = (0, utils_1.writeJsonToFile)(scanResult);
-    const files = [filePath];
-    const rootDirectory = uploadPath;
-    const options = {
-        continueOnError: true,
-    };
-    const uploadResult = yield artifactClient.uploadArtifact(artifactName, files, rootDirectory, options);
-    if (uploadResult.failedItems.length > 0) {
-        core.error("Some items failed to export");
+    const { filePath, uploadPath, error } = yield (0, utils_1.writeJsonToFile)(scanResult);
+    if (error) {
+        core.error(error);
     }
     else {
-        core.info("Scan result exported to artifact");
+        const files = [filePath];
+        const rootDirectory = uploadPath;
+        const options = {
+            continueOnError: true,
+        };
+        const uploadResult = yield artifactClient.uploadArtifact(artifactName, files, rootDirectory, options);
+        if (uploadResult.failedItems.length > 0) {
+            core.error("Some items failed to export");
+        }
+        else {
+            core.info("Scan result exported to artifact");
+        }
     }
 });
 function run() {
@@ -20422,10 +20427,20 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.writeJsonToFile = exports.getEndorctlChecksum = exports.getPlatformInfo = exports.createHashFromFile = void 0;
 const crypto = __importStar(__nccwpck_require__(6113));
 const fs = __importStar(__nccwpck_require__(7147));
+const fspromises = __importStar(__nccwpck_require__(3292));
 const path = __importStar(__nccwpck_require__(1017));
 const constants_1 = __nccwpck_require__(9042);
 const createHashFromFile = (filePath) => new Promise((resolve) => {
@@ -20482,20 +20497,19 @@ const getEndorctlChecksum = (clientChecksums, os, arch) => {
     }
 };
 exports.getEndorctlChecksum = getEndorctlChecksum;
-const writeJsonToFile = (jsonString) => {
-    const { GITHUB_RUN_ID, RUNNER_TEMP } = process.env;
-    const fileName = `result-${GITHUB_RUN_ID}.json`;
-    const uploadPath = path.resolve(RUNNER_TEMP !== null && RUNNER_TEMP !== void 0 ? RUNNER_TEMP : __dirname);
-    const filePath = path.resolve(RUNNER_TEMP !== null && RUNNER_TEMP !== void 0 ? RUNNER_TEMP : __dirname, fileName);
-    fs.writeFile(filePath, jsonString, "utf8", function (err) {
-        if (err) {
-            console.log("An error occured while writing JSON Object to File.");
-            return console.log(err);
-        }
-        console.log("JSON file has been saved.");
-    });
-    return { fileName, filePath, uploadPath };
-};
+const writeJsonToFile = (jsonString) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { GITHUB_RUN_ID, RUNNER_TEMP } = process.env;
+        const fileName = `result-${GITHUB_RUN_ID}.json`;
+        const uploadPath = path.resolve(RUNNER_TEMP !== null && RUNNER_TEMP !== void 0 ? RUNNER_TEMP : __dirname);
+        const filePath = path.resolve(RUNNER_TEMP !== null && RUNNER_TEMP !== void 0 ? RUNNER_TEMP : __dirname, fileName);
+        yield fspromises.writeFile(filePath, jsonString, "utf8");
+        return { fileName, filePath, uploadPath };
+    }
+    catch (e) {
+        return { error: e };
+    }
+});
 exports.writeJsonToFile = writeJsonToFile;
 
 
@@ -20546,6 +20560,14 @@ module.exports = require("events");
 
 "use strict";
 module.exports = require("fs");
+
+/***/ }),
+
+/***/ 3292:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("fs/promises");
 
 /***/ }),
 

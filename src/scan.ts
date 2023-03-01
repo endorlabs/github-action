@@ -84,22 +84,26 @@ const uploadArtifact = async (scanResult: string) => {
   const artifactClient = artifact.create();
   const artifactName = "endor-scan";
 
-  const { filePath, uploadPath } = writeJsonToFile(scanResult);
-  const files = [filePath];
-  const rootDirectory = uploadPath;
-  const options = {
-    continueOnError: true,
-  };
-  const uploadResult = await artifactClient.uploadArtifact(
-    artifactName,
-    files,
-    rootDirectory,
-    options
-  );
-  if (uploadResult.failedItems.length > 0) {
-    core.error("Some items failed to export");
+  const { filePath, uploadPath, error } = await writeJsonToFile(scanResult);
+  if (error) {
+    core.error(error);
   } else {
-    core.info("Scan result exported to artifact");
+    const files = [filePath];
+    const rootDirectory = uploadPath;
+    const options = {
+      continueOnError: true,
+    };
+    const uploadResult = await artifactClient.uploadArtifact(
+      artifactName,
+      files,
+      rootDirectory,
+      options
+    );
+    if (uploadResult.failedItems.length > 0) {
+      core.error("Some items failed to export");
+    } else {
+      core.info("Scan result exported to artifact");
+    }
   }
 };
 
