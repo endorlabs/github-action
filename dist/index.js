@@ -13611,6 +13611,7 @@ function run() {
             const CI_RUN = core.getBooleanInput("ci_run");
             const CI_RUN_TAGS = core.getInput("ci_run_tags");
             const ADDITIONAL_ARGS = core.getInput("additional_args");
+            const ADDITION_OPTIONS = ADDITIONAL_ARGS.split(" ");
             core.info(`Endor Namespace: ${NAMESPACE}`);
             if (!NAMESPACE) {
                 core.setFailed("namespace is required and must be passed as an input from the workflow");
@@ -13644,8 +13645,8 @@ function run() {
             if (CI_RUN_TAGS) {
                 options.push(`--ci-run-tags=${CI_RUN_TAGS}`);
             }
-            if (ADDITIONAL_ARGS) {
-                options.push(ADDITIONAL_ARGS);
+            if (ADDITIONAL_ARGS && ADDITION_OPTIONS.length > 0) {
+                options.push(...ADDITION_OPTIONS);
             }
             yield exec.exec(`endorctl`, ["scan", "--path=.", ...options], scanOptions);
             core.info("Scan completed successfully!");
