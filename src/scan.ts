@@ -142,6 +142,7 @@ async function run() {
     const EXPORT_SCAN_RESULT_ARTIFACT = core.getBooleanInput(
       "export_scan_result_artifact"
     );
+    const ADDITION_OPTIONS = ADDITIONAL_ARGS.split(" ");
 
     core.info(`Endor Namespace: ${NAMESPACE}`);
 
@@ -185,8 +186,8 @@ async function run() {
     if (CI_RUN_TAGS) {
       options.push(`--ci-run-tags=${CI_RUN_TAGS}`);
     }
-    if (ADDITIONAL_ARGS) {
-      options.push(ADDITIONAL_ARGS);
+    if (ADDITIONAL_ARGS && ADDITION_OPTIONS.length > 0) {
+      options.push(...ADDITION_OPTIONS);
     }
 
     await exec.exec(`endorctl`, ["scan", "--path=.", ...options], scanOptions);
