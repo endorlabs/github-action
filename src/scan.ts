@@ -112,6 +112,7 @@ async function run() {
     const CI_RUN = core.getBooleanInput("ci_run");
     const CI_RUN_TAGS = core.getInput("ci_run_tags");
     const ADDITIONAL_ARGS = core.getInput("additional_args");
+    const ADDITION_OPTIONS = ADDITIONAL_ARGS.split(" ");
 
     core.info(`Endor Namespace: ${NAMESPACE}`);
 
@@ -163,8 +164,8 @@ async function run() {
     if (CI_RUN_TAGS) {
       options.push(`--ci-run-tags=${CI_RUN_TAGS}`);
     }
-    if (ADDITIONAL_ARGS) {
-      options.push(ADDITIONAL_ARGS);
+    if (ADDITIONAL_ARGS && ADDITION_OPTIONS.length > 0) {
+      options.push(...ADDITION_OPTIONS);
     }
 
     await exec.exec(`endorctl`, ["scan", "--path=.", ...options], scanOptions);
