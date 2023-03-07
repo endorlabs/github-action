@@ -13602,6 +13602,7 @@ function run() {
             const API_KEY = core.getInput("api_key");
             const API_SECRET = core.getInput("api_secret");
             const GCP_CREDENTIALS_SERVICE_ACCOUNT = core.getInput("gcp_service_account");
+            const ENABLE_GITHUB_ACTION_TOKEN = core.getBooleanInput("enable_github_action_token");
             const NAMESPACE = core.getInput("namespace");
             const ENDORCTL_VERSION = core.getInput("endorctl_version");
             const ENDORCTL_CHECKSUM = core.getInput("endorctl_checksum");
@@ -13617,8 +13618,10 @@ function run() {
                 core.setFailed("namespace is required and must be passed as an input from the workflow");
                 return;
             }
-            if (!(API_KEY && API_SECRET) && !GCP_CREDENTIALS_SERVICE_ACCOUNT) {
-                core.setFailed("Authentication info not found. Either a gcp service account or api key and secret combination must be passed as an input from the workflow");
+            if (!ENABLE_GITHUB_ACTION_TOKEN &&
+                !(API_KEY && API_SECRET) &&
+                !GCP_CREDENTIALS_SERVICE_ACCOUNT) {
+                core.setFailed("Authentication info not found. Either set enable_github_action_token: true or provide one of gcp_service_account or api_key and api_secret combination");
                 return;
             }
             yield setupEndorctl({
@@ -13638,10 +13641,15 @@ function run() {
             ];
             if (API)
                 options.push(`--api=${API}`);
-            if (API_KEY && API_SECRET)
+            if (ENABLE_GITHUB_ACTION_TOKEN) {
+                options.push(`--enable-github-action-token=true`);
+            }
+            else if (API_KEY && API_SECRET) {
                 options.push(`--api-key=${API_KEY}`, `--api-secret=${API_SECRET}`);
-            if (GCP_CREDENTIALS_SERVICE_ACCOUNT)
+            }
+            else if (GCP_CREDENTIALS_SERVICE_ACCOUNT) {
                 options.push(`--gcp-service-account=${GCP_CREDENTIALS_SERVICE_ACCOUNT}`);
+            }
             if (CI_RUN_TAGS) {
                 options.push(`--ci-run-tags=${CI_RUN_TAGS}`);
             }
