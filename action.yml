@@ -19,6 +19,12 @@ inputs:
   gcp_service_account:
     description: "The GCP service account used for workload identity federation"
     required: false
+  # Use this input parameter to enable github action token
+  # User must enable `id-token: write` permissions in their github action
+  enable_github_action_token:
+    description: "Enable keyless authentication using github action token"
+    required: false
+    default: "false"
   # Use this input parameter to define your Endor Labs tenant namespace
   namespace:
     description: "Set to your Endor Labs namespace"
