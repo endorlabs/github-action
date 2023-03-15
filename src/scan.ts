@@ -204,9 +204,16 @@ async function run() {
     await exec.exec(`endorctl`, ["scan", "--path=.", ...options], scanOptions);
 
     core.info("Scan completed successfully!");
+    if (!scanResult) {
+      core.info("No vulnerabilities found for given filters.");
+    }
 
-    if (EXPORT_SCAN_RESULT_ARTIFACT && SCAN_SUMMARY_OUTPUT_TYPE === "json") {
-      uploadArtifact(scanResult);
+    if (
+      EXPORT_SCAN_RESULT_ARTIFACT &&
+      SCAN_SUMMARY_OUTPUT_TYPE === "json" &&
+      scanResult
+    ) {
+      await uploadArtifact(scanResult);
     }
   } catch {
     core.setFailed(`\nScan Failed\n\n${scanError}`);

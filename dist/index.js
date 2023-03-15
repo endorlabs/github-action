@@ -20394,8 +20394,13 @@ function run() {
             }
             yield exec.exec(`endorctl`, ["scan", "--path=.", ...options], scanOptions);
             core.info("Scan completed successfully!");
-            if (EXPORT_SCAN_RESULT_ARTIFACT && SCAN_SUMMARY_OUTPUT_TYPE === "json") {
-                uploadArtifact(scanResult);
+            if (!scanResult) {
+                core.info("No vulnerabilities found for given filters.");
+            }
+            if (EXPORT_SCAN_RESULT_ARTIFACT &&
+                SCAN_SUMMARY_OUTPUT_TYPE === "json" &&
+                scanResult) {
+                yield uploadArtifact(scanResult);
             }
         }
         catch (_a) {
