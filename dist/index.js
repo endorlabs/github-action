@@ -13566,7 +13566,7 @@ const setupEndorctl = ({ version, checksum, api }) => __awaiter(void 0, void 0, 
         downloadPath = yield tc.downloadTool(url);
         const hash = yield (0, utils_1.createHashFromFile)(downloadPath);
         if (hash !== endorctlChecksum) {
-            throw new Error("The checksum of the downloaded binary does not match the expected value!");
+            throw new Error(`The checksum ${hash} of the downloaded binary does not match the expected value ${endorctlChecksum}!`);
         }
         else {
             core.info(`Binary checksum: ${endorctlChecksum}`);
