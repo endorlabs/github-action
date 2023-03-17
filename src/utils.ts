@@ -1,5 +1,7 @@
 import * as crypto from "crypto";
 import * as fs from "fs";
+import * as fspromises from "fs/promises";
+import * as path from "path";
 import {
   EndorctlAvailableArch,
   EndorctlAvailableOS,
@@ -83,5 +85,18 @@ export const getEndorctlChecksum = (
       return clientChecksums.ARCH_TYPE_UNSPECIFIED;
     default:
       return "";
+  }
+};
+
+export const writeJsonToFile = async (jsonString: string) => {
+  try {
+    const { GITHUB_RUN_ID, RUNNER_TEMP } = process.env;
+    const fileName = `result-${GITHUB_RUN_ID}.json`;
+    const uploadPath = path.resolve(RUNNER_TEMP ?? __dirname);
+    const filePath = path.resolve(RUNNER_TEMP ?? __dirname, fileName);
+    await fspromises.writeFile(filePath, jsonString, "utf8");
+    return { fileName, filePath, uploadPath };
+  } catch (e) {
+    return { error: e as Error };
   }
 };
