@@ -4,5 +4,8 @@ dist/
 # Ignore build artifacts
 .ts-out/
 
+# Ignore test coverage output
+coverage
+
 # Ignore dependencies
 node_modules/
