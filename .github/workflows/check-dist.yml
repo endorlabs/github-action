@@ -1,0 +1,58 @@
+# Based on workflow: https://github.com/actions/typescript-action/blob/44c6b5a5393e7ec172e7dd1d900071c6b512b846/.github/workflows/check-dist.yml
+# - Modified to use `yarn` instead of `npm`
+#
+# This workflow helps ensure the integrity of the code the action runs, by
+# checking for the expected build output under `dist/` from the current
+# source files.
+
+name: Check dist/
+
+on:
+  pull_request:
+    paths-ignore:
+      - "**.md"
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - "**.md"
+
+jobs:
+  check-dist:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+
+      - name: Setup Yarn
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --ignore-scripts
+
+      - name: Rebuild the dist/ directory
+        run: |
+          yarn run build
+          yarn run package
+
+      - name: Compare the expected and actual dist/ directories
+        run: |
+          if [ "$(git diff --ignore-space-at-eol dist/ | wc -l)" -gt "0" ]; then
+            echo "Detected uncommitted changes after build.  See status below:"
+            git diff
+            exit 1
+          fi
+        id: diff
+
+      # If index.js was different than expected, upload the expected version as an artifact
+      - uses: actions/upload-artifact@v2
+        if: ${{ failure() && steps.diff.conclusion == 'failure' }}
+        with:
+          name: dist
+          path: dist/
