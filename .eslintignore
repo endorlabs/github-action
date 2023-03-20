@@ -1,0 +1,8 @@
+# Don't lint the build output
+dist/
+
+# Ignore build artifacts
+.ts-out/
+
+# Ignore dependencies
+node_modules/

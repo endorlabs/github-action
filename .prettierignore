@@ -1,0 +1,15 @@
+# Don't reformat the build output
+dist/
+
+# Don't reformat the comments in tsconfig files
+tsconfig.json
+tsconfig.*.json
+
+# Ignore build artifacts
+.ts-out/
+
+# Ignore test coverage output
+coverage
+
+# Ignore dependencies
+node_modules/
