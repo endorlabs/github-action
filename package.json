@@ -1,5 +1,5 @@
 {
-  "name": "typescript-actions",
+  "name": "@endorlabs/github-action",
   "version": "0.0.1",
   "private": true,
   "description": "TypeScript action",
@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ankurv3rma/ts-action-test.git"
+    "url": "git+https://github.com/endorlabs/github-action.git"
   },
   "dependencies": {
     "@actions/artifact": "^1.1.1",
