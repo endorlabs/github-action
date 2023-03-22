@@ -78,4 +78,5 @@ The following input parameters are supported configurations for the Endor Labs G
 | `scan_summary_output_type`            | Set the desired output summary to table, json, or yaml |
 | `ci_run`                              | Set to false to track this scan as a monitored version within Endor Labs |
 | `ci_run_tags`                         | Set searchable tags to search and query your CI run scans |
-| `additional_args`                     | Use additional this input to add custom arguments to your endorctl command |
+| `additional_args`                     | Use it to add custom arguments to your endorctl command |
+| `sarif_output_file`                   | Export a summary of the findings to a SARIF file |
