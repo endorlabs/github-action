@@ -20346,6 +20346,7 @@ function run() {
             const SCAN_SUMMARY_OUTPUT_TYPE = core.getInput("scan_summary_output_type");
             const CI_RUN = core.getBooleanInput("ci_run");
             const CI_RUN_TAGS = core.getInput("ci_run_tags");
+            const SARIF_OUTPUT_FILE = core.getInput("sarif_output_file");
             const ADDITIONAL_ARGS = core.getInput("additional_args");
             const EXPORT_SCAN_RESULT_ARTIFACT = core.getBooleanInput("export_scan_result_artifact");
             const ADDITION_OPTIONS = ADDITIONAL_ARGS.split(" ");
@@ -20388,6 +20389,9 @@ function run() {
             }
             if (CI_RUN_TAGS) {
                 options.push(`--ci-run-tags=${CI_RUN_TAGS}`);
+            }
+            if (SARIF_OUTPUT_FILE) {
+                options.push(`--sarif-output-file=${SARIF_OUTPUT_FILE}`);
             }
             if (ADDITIONAL_ARGS && ADDITION_OPTIONS.length > 0) {
                 options.push(...ADDITION_OPTIONS);
