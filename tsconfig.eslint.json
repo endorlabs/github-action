@@ -1,0 +1,20 @@
+{
+  // tsconfig settings for testing and linting
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "noEmit": true,
+    "allowJs": true,
+    "checkJs": true
+  },
+  "include": [
+    // include all source files
+    "src/**/*",
+    // include all test files
+    "__tests__/**/*",
+    // include config files
+    "jest.config.js",
+    ".eslintrc.js",
+  ],
+  "exclude": ["node_modules"],
+}

@@ -1,0 +1,55 @@
+# Based on workflow: https://github.com/actions/reusable-workflows/blob/main/.github/workflows/basic-validation.yml
+# - Modified to use `yarn` instead of `npm`
+#
+# This workflow helps ensure that the code for the action we're going to deploy:
+# 1. Does not have dependencies with critical or high severity vulnerabilities
+# 2. Is well-formatted
+# 3. Is linted
+# 4. Successfully builds
+# 5. Passes unit-tests
+
+name: Basic validation
+
+on:
+  pull_request:
+    paths-ignore:
+      - "**.md"
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - "**.md"
+
+jobs:
+  basic-validation:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+
+      - name: Setup Yarn
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --ignore-scripts
+
+      - name: Audit dependencies
+        run: yarn audit --audit-level=high
+
+      - name: Run prettier
+        run: yarn run format
+
+      - name: Run linter
+        run: yarn run lint
+
+      - name: Build
+        run: yarn run build
+
+      - name: Test
+        run: yarn run test:ci

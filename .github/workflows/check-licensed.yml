@@ -1,0 +1,45 @@
+# Based on workflow: https://github.com/actions/reusable-workflows/blob/main/.github/workflows/licensed.yml
+# - Modified to use `yarn` instead of `npm`
+#
+# This workflow helps to check the statuses of cached dependencies used in
+# action with the help of the Licensed tool (https://github.com/github/licensed).
+
+name: Check Licensed
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  check-licensed:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+
+      - name: Setup Yarn
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --ignore-scripts
+
+      - name: Install licensed tool
+        run: |
+          cd "$RUNNER_TEMP"
+          curl -Lfs -o licensed.tar.gz https://github.com/github/licensed/releases/download/3.9.0/licensed-3.9.0-linux-x64.tar.gz
+          sudo tar -xzf licensed.tar.gz
+          sudo mv licensed /usr/local/bin/licensed
+
+      - name: Check cached dependency records
+        run: licensed status
