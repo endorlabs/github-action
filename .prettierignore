@@ -13,3 +13,6 @@ coverage
 
 # Ignore dependencies
 node_modules/
+
+# Don't format markdown files
+**/*.md

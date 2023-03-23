@@ -24,7 +24,7 @@ inputs:
   enable_github_action_token:
     description: "Enable keyless authentication using github action token"
     required: false
-    default: "false"
+    default: "true"
   # Use this input parameter to define your Endor Labs tenant namespace
   namespace:
     description: "Set to your Endor Labs namespace"
