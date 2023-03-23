@@ -76,7 +76,7 @@ The following input parameters are supported configurations for the Endor Labs G
 | `log_verbose`                         | Set to true to enable verbose logging mode |
 | `log_level`                           | Set to debug to enable debug logging or error to enable error logging only. Defaults to info |
 | `scan_summary_output_type`            | Set the desired output format of the summary to table, json, or yaml. Defaults to table |
-| `sarif_output_file`                   | Export the output summary to a SARIF file |
+| `sarif_file`                          | Export the findings summary to a SARIF file |
 | `ci_run`                              | Set to false to track this scan as a monitored version within Endor Labs |
 | `ci_run_tags`                         | Set searchable tags to search and query your CI run scans |
 | `additional_args`                     | Use it to add custom arguments to your endorctl command |
