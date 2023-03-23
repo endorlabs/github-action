@@ -20346,10 +20346,10 @@ function run() {
             const SCAN_SUMMARY_OUTPUT_TYPE = core.getInput("scan_summary_output_type");
             const CI_RUN = core.getBooleanInput("ci_run");
             const CI_RUN_TAGS = core.getInput("ci_run_tags");
-            const SARIF_OUTPUT_FILE = core.getInput("sarif_output_file");
             const ADDITIONAL_ARGS = core.getInput("additional_args");
             const EXPORT_SCAN_RESULT_ARTIFACT = core.getBooleanInput("export_scan_result_artifact");
             const ADDITION_OPTIONS = ADDITIONAL_ARGS.split(" ");
+            const SARIF_OUTPUT_FILE = core.getInput("sarif_output_file");
             core.info(`Endor Namespace: ${NAMESPACE}`);
             if (!NAMESPACE) {
                 core.setFailed("namespace is required and must be passed as an input from the workflow");
@@ -20390,11 +20390,11 @@ function run() {
             if (CI_RUN_TAGS) {
                 options.push(`--ci-run-tags=${CI_RUN_TAGS}`);
             }
-            if (SARIF_OUTPUT_FILE) {
-                options.push(`--sarif-output-file=${SARIF_OUTPUT_FILE}`);
-            }
             if (ADDITIONAL_ARGS && ADDITION_OPTIONS.length > 0) {
                 options.push(...ADDITION_OPTIONS);
+            }
+            if (SARIF_OUTPUT_FILE) {
+                options.push(`--sarif-output-file=${SARIF_OUTPUT_FILE}`);
             }
             yield exec.exec(`endorctl`, ["scan", "--path=.", ...options], scanOptions);
             core.info("Scan completed successfully!");

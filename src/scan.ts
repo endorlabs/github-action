@@ -146,6 +146,7 @@ async function run() {
       "export_scan_result_artifact"
     );
     const ADDITION_OPTIONS = ADDITIONAL_ARGS.split(" ");
+    const SARIF_OUTPUT_FILE = core.getInput("sarif_output_file");
 
     core.info(`Endor Namespace: ${NAMESPACE}`);
 
@@ -199,6 +200,9 @@ async function run() {
     }
     if (ADDITIONAL_ARGS && ADDITION_OPTIONS.length > 0) {
       options.push(...ADDITION_OPTIONS);
+    }
+    if (SARIF_OUTPUT_FILE) {
+      options.push(`--sarif-output-file=${SARIF_OUTPUT_FILE}`);
     }
 
     await exec.exec(`endorctl`, ["scan", "--path=.", ...options], scanOptions);

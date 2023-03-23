@@ -26,7 +26,8 @@
     "@actions/http-client": "^2.0.1",
     "@actions/io": "^1.1.2",
     "@actions/tool-cache": "^2.0.1",
-    "@octokit/webhooks-definitions": "^3.67.3"
+    "@octokit/webhooks-definitions": "^3.67.3",
+    "tsc": "^2.0.4"
   },
   "devDependencies": {
     "@types/jest": "^29.4.0",
