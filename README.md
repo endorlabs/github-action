@@ -66,16 +66,17 @@ The following input parameters are supported configurations for the Endor Labs G
 
 | Flags                                 |  Description                       |
 |---------------------------------------|------------------------------------|
-|  `api_key`                            |  Set to your Endor Labs API key ID |
-|  `api_secret`                         |  Set to your Endor Labs API key secret |
-| `gcp_service_account`                 |  Set to the GCP service account used for keyless authentication. This may not be used in conjunction with your API key   |
+|  `api_key`                            | Set to your Endor Labs API key ID |
+|  `api_secret`                         | Set to your Endor Labs API key secret |
+| `gcp_service_account`                 | Set to the GCP service account used for keyless authentication. This may not be used in conjunction with your API key   |
 | `namespace`                           | Set to your Endor Labs namespace (Required) |
 | `endorctl_version`                    | Set to a specified version of endorctl to pin this specific version for use. If this is not used, then the latest version of endorctl will be downloaded for use |
 | `endorctl_checksum`                   | Set to the checksum associated with a pinned version of endorctl. |
 | `show_progress`                       | Set to true to show a progress bar for your Endor Labs scan. Defaults to false |
 | `log_verbose`                         | Set to true to enable verbose logging mode |
 | `log_level`                           | Set to debug to enable debug logging or error to enable error logging only. Defaults to info |
-| `scan_summary_output_type`            | Set the desired output summary to table, json, or yaml |
+| `scan_summary_output_type`            | Set the desired output format of the summary to table, json, or yaml. Defaults to table |
+| `sarif_file`                          | Export the findings summary to a SARIF file |
 | `ci_run`                              | Set to false to track this scan as a monitored version within Endor Labs |
 | `ci_run_tags`                         | Set searchable tags to search and query your CI run scans |
-| `additional_args`                     | Use additional this input to add custom arguments to your endorctl command |
+| `additional_args`                     | Use it to add custom arguments to your endorctl command |
