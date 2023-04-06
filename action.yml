@@ -63,8 +63,8 @@ inputs:
     description: "Set to false to skip exporting the json scan result as an artifact"
     default: "true"
   # Use this input parameter to export a summary of the findings to a SARIF file.
-  sarif_output_file:
-    description: "Export a summary of the findinds to a SARIF file"
+  sarif_file:
+    description: "Export a summary of the findings to a SARIF file"
     required: false
 runs:
   using: "node16"
