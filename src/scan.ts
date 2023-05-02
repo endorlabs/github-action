@@ -147,6 +147,7 @@ async function run() {
     );
     const ADDITION_OPTIONS = ADDITIONAL_ARGS.split(" ");
     const SARIF_FILE = core.getInput("sarif_file");
+    const TIME_RUN = core.getBooleanInput("time_run");
 
     core.info(`Endor Namespace: ${NAMESPACE}`);
 
@@ -205,7 +206,11 @@ async function run() {
       options.push(`--sarif-file=${SARIF_FILE}`);
     }
 
-    await exec.exec(`endorctl`, ["scan", "--path=.", ...options], scanOptions);
+    if (TIME_RUN) {
+      await exec.exec(`time`, ["-v", "endorctl", "scan", "--path=.", ...options], scanOptions);
+    } else {
+      await exec.exec(`endorctl`, ["scan", "--path=.", ...options], scanOptions);
+    }
 
     core.info("Scan completed successfully!");
     if (!scanResult) {
