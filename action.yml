@@ -55,6 +55,10 @@ inputs:
   ci_run_tags:
     description: "Set searchable tags for your CI runs"
     required: false
+  # use this input parameter to get RAM and timing data via 'time -v'
+  time_run:
+    description: "Ask for timing and memory data via the 'time -v' command"
+    required: false
   # Custom arguments to the endorctl binary. See the documentation for command flags.
   additional_args:
     description: "Use this to add your own custom arguments to endorctl"
