@@ -213,7 +213,7 @@ async function run() {
       options.unshift("-v", "endorctl")
       // await exec.exec(`time`, ["-v", "endorctl", "scan", "--path=.", ...options], scanOptions);
     }
-    await exec.exec(`endorctl`, options, scanOptions);
+    await exec.exec(scan_command, options, scanOptions);
 
     core.info("Scan completed.");
     if (!scanResult) {

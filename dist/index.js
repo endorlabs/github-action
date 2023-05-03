@@ -20404,7 +20404,7 @@ function run() {
                 options.unshift("-v", "endorctl");
                 // await exec.exec(`time`, ["-v", "endorctl", "scan", "--path=.", ...options], scanOptions);
             }
-            yield exec.exec(`endorctl`, options, scanOptions);
+            yield exec.exec(scan_command, options, scanOptions);
             core.info("Scan completed.");
             if (!scanResult) {
                 core.info("No vulnerabilities found for given filters.");
