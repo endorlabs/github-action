@@ -58,7 +58,8 @@ inputs:
   # Set thsi input false if you don't want RAM and CPU timing data on STDERR
   time_run:
     description: "Ask for timing and memory data via the 'time -v' command"
-    required: true
+    required: false
+    default: "true"
   # Custom arguments to the endorctl binary. See the documentation for command flags.
   additional_args:
     description: "Use this to add your own custom arguments to endorctl"
