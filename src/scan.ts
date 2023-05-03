@@ -141,6 +141,7 @@ async function run() {
     const SCAN_SUMMARY_OUTPUT_TYPE = core.getInput("scan_summary_output_type");
     const CI_RUN = core.getBooleanInput("ci_run");
     const CI_RUN_TAGS = core.getInput("ci_run_tags");
+    const RUN_STATS = core.getInput("run_stats");
     const ADDITIONAL_ARGS = core.getInput("additional_args");
     const EXPORT_SCAN_RESULT_ARTIFACT = core.getBooleanInput(
       "export_scan_result_artifact"
@@ -205,7 +206,14 @@ async function run() {
       options.push(`--sarif-file=${SARIF_FILE}`);
     }
 
-    await exec.exec(`endorctl`, ["scan", "--path=.", ...options], scanOptions);
+    let scan_command = `endorctl`;
+    options.unshift("scan", "--path=."); // Standard options for scanner
+    if (RUN_STATS) {
+      // Wrap scan commmand in `time -v` to get stats
+      options.unshift("-v", scan_command);
+      scan_command = `time`;
+    }
+    await exec.exec(scan_command, options, scanOptions);
 
     core.info("Scan completed successfully!");
     if (!scanResult) {

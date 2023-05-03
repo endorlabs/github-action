@@ -55,6 +55,11 @@ inputs:
   ci_run_tags:
     description: "Set searchable tags for your CI runs"
     required: false
+  # Use this input parameter to control whether `time -v` wraps runs
+  run_stats:
+    description: "Set false to disable CPU/RAM/time scan statistic reporting"
+    default: "true"
+    required: false
   # Custom arguments to the endorctl binary. See the documentation for command flags.
   additional_args:
     description: "Use this to add your own custom arguments to endorctl"
