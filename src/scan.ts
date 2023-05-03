@@ -208,7 +208,7 @@ async function run() {
 
     let scan_command = `endorctl`;
     options.unshift("scan", "--path=."); // Standard options for scanner
-    if (RUN_STATS) {
+    if (RUN_STATS == "true") {
       // Wrap scan commmand in `time -v` to get stats
       options.unshift("-v", scan_command);
       scan_command = `time`;
