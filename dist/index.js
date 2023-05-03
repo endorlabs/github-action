@@ -20319,7 +20319,6 @@ const uploadArtifact = (scanResult) => __awaiter(void 0, void 0, void 0, functio
 });
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
-        core.info("Running branch timed-run");
         let scanResult = "";
         let scanError = "";
         const scanOptions = {
@@ -20398,14 +20397,15 @@ function run() {
             if (SARIF_FILE) {
                 options.push(`--sarif-file=${SARIF_FILE}`);
             }
-            core.info(`time_run: ${TIME_RUN}`);
+            let scan_command = `endorctl`;
+            options.unshift("scan", "--path=.");
             if (TIME_RUN) {
-                yield exec.exec(`time`, ["-v", "endorctl", "scan", "--path=.", ...options], scanOptions);
+                scan_command = `time`;
+                options.unshift("-v", "endorctl");
+                // await exec.exec(`time`, ["-v", "endorctl", "scan", "--path=.", ...options], scanOptions);
             }
-            else {
-                yield exec.exec(`endorctl`, ["scan", "--path=.", ...options], scanOptions);
-            }
-            core.info("Scan completed successfully!");
+            yield exec.exec(`endorctl`, options, scanOptions);
+            core.info("Scan completed.");
             if (!scanResult) {
                 core.info("No vulnerabilities found for given filters.");
             }
