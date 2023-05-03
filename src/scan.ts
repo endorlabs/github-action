@@ -206,6 +206,7 @@ async function run() {
       options.push(`--sarif-file=${SARIF_FILE}`);
     }
 
+    core.info(`time_run: ${TIME_RUN}`)
     if (TIME_RUN) {
       await exec.exec(`time`, ["-v", "endorctl", "scan", "--path=.", ...options], scanOptions);
     } else {
