@@ -206,11 +206,11 @@ async function run() {
       options.push(`--sarif-file=${SARIF_FILE}`);
     }
 
-    let scan_command = `endorctl`
-    options.unshift("scan", "--path=.")
+    let scan_command = `endorctl`;
+    options.unshift("scan", "--path=.");
     if (TIME_RUN) {
-      scan_command = `time`
-      options.unshift("-v", "endorctl")
+      scan_command = `time`;
+      options.unshift("-v", "endorctl");
       // await exec.exec(`time`, ["-v", "endorctl", "scan", "--path=.", ...options], scanOptions);
     }
     await exec.exec(scan_command, options, scanOptions);
