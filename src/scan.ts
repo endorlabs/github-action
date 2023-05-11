@@ -123,6 +123,12 @@ async function run() {
   };
 
   try {
+    const platform = getPlatformInfo();
+
+    if (platform.error) {
+      throw new Error(platform.error);
+    }
+
     const SHOW_PROGRESS = false;
     const API = core.getInput("api");
     const API_KEY = core.getInput("api_key");
@@ -210,8 +216,17 @@ async function run() {
     options.unshift("scan", "--path=."); // Standard options for scanner
     if (RUN_STATS === "true") {
       // Wrap scan commmand in `time -v` to get stats
-      options.unshift("-v", scan_command);
-      scan_command = `time`;
+      if (platform.os === EndorctlAvailableOS.Windows) {
+        core.info("Timing is not supported on Windows runners");
+      } else if (platform.os === EndorctlAvailableOS.Macos) {
+        options.unshift("-l", scan_command);
+        scan_command = `/usr/bin/time`;
+      } else if (platform.os === EndorctlAvailableOS.Linux) {
+        options.unshift("-v", scan_command);
+        scan_command = `time`;
+      } else {
+        core.info("Timing not supported on this OS");
+      }
     }
     await exec.exec(scan_command, options, scanOptions);
 
