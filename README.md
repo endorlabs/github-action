@@ -69,6 +69,7 @@ The following input parameters are supported configurations for the Endor Labs G
 | `sarif_file`                          | Set to a location on your GitHub runner to output the findings in SARIF format |
 | `ci_run`                              | Set to `false` to track this scan as a monitored version within Endor Labs |
 | `ci_run_tags`                         | Set searchable tags to search and query your CI run scans |
+| `run_stats`                           | Set to `false` to disable run statistics via `time -v` (may be required on Windows runners, e.g.) |
 | `enable_github_action_token`          | Set to `false` if you prefer to use another form of authentication over GitHub OIDC |
 | `export_scan_result_artifact`         | Set to `false` to skip exporting the json scan result as an artifact. Defaults to true |
 |  `api_key`                            | Set to your Endor Labs API key ID |

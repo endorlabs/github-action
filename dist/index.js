@@ -20332,6 +20332,10 @@ function run() {
             },
         };
         try {
+            const platform = (0, utils_1.getPlatformInfo)();
+            if (platform.error) {
+                throw new Error(platform.error);
+            }
             const SHOW_PROGRESS = false;
             const API = core.getInput("api");
             const API_KEY = core.getInput("api_key");
@@ -20346,6 +20350,7 @@ function run() {
             const SCAN_SUMMARY_OUTPUT_TYPE = core.getInput("scan_summary_output_type");
             const CI_RUN = core.getBooleanInput("ci_run");
             const CI_RUN_TAGS = core.getInput("ci_run_tags");
+            const RUN_STATS = core.getInput("run_stats");
             const ADDITIONAL_ARGS = core.getInput("additional_args");
             const EXPORT_SCAN_RESULT_ARTIFACT = core.getBooleanInput("export_scan_result_artifact");
             const ADDITION_OPTIONS = ADDITIONAL_ARGS.split(" ");
@@ -20396,7 +20401,26 @@ function run() {
             if (SARIF_FILE) {
                 options.push(`--sarif-file=${SARIF_FILE}`);
             }
-            yield exec.exec(`endorctl`, ["scan", "--path=.", ...options], scanOptions);
+            let scan_command = `endorctl`;
+            options.unshift("scan", "--path=."); // Standard options for scanner
+            if (RUN_STATS === "true") {
+                // Wrap scan commmand in `time -v` to get stats
+                if (platform.os === constants_1.EndorctlAvailableOS.Windows) {
+                    core.info("Timing is not supported on Windows runners");
+                }
+                else if (platform.os === constants_1.EndorctlAvailableOS.Macos) {
+                    options.unshift("-l", scan_command);
+                    scan_command = `/usr/bin/time`;
+                }
+                else if (platform.os === constants_1.EndorctlAvailableOS.Linux) {
+                    options.unshift("-v", scan_command);
+                    scan_command = `time`;
+                }
+                else {
+                    core.info("Timing not supported on this OS");
+                }
+            }
+            yield exec.exec(scan_command, options, scanOptions);
             core.info("Scan completed successfully!");
             if (!scanResult) {
                 core.info("No vulnerabilities found for given filters.");
