@@ -10,7 +10,7 @@ import {
   SupportedRunnerArch,
   SupportedRunnerOS,
 } from "./constants";
-import { ClientChecksumsType, PlatformInfo } from "./types";
+import { ClientChecksumsType, PlatformInfo, VersionResponse } from "./types";
 
 export const createHashFromFile = (filePath: string) =>
   new Promise((resolve) => {
@@ -99,4 +99,26 @@ export const writeJsonToFile = async (jsonString: string) => {
   } catch (e) {
     return { error: e as Error };
   }
+};
+
+/**
+ * Type guard for object/Record
+ */
+export const isObject = (value: unknown): value is Record<string, unknown> => {
+  return "object" === typeof value && null !== value;
+};
+
+/**
+ * Type guard for VersionResponse
+ */
+export const isVersionResponse = (value: unknown): value is VersionResponse => {
+  return (
+    isObject(value) &&
+    // expect: `Service` property exists
+    "Service" in value &&
+    isObject(value.Service) &&
+    // expect: `Service` property exists
+    "ClientChecksums" in value &&
+    isObject(value.ClientChecksums)
+  );
 };

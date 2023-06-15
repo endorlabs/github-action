@@ -14,15 +14,44 @@ import {
   getEndorctlChecksum,
   getPlatformInfo,
   writeJsonToFile,
+  isVersionResponse,
 } from "./utils";
 
 const execOptionSilent = {
   silent: true,
 };
 
-const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
+/**
+ * @throws {Error} when api is unreachable or returns invalid response
+ */
+const fetchLatestEndorctlVersion = async (api: string) => {
   const _http: httpm.HttpClient = new httpm.HttpClient("endor-http-client");
 
+  const res: httpm.HttpClientResponse = await _http
+    .get(`${api}/meta/version`)
+    // eslint-disable-next-line github/no-then
+    .catch((error) => {
+      throw new Error(
+        `Failed to fetch latest version of endorctl from Endor Labs API: ${error.toString()}`
+      );
+    });
+  const body: string = await res.readBody();
+
+  let data: VersionResponse | undefined;
+  try {
+    data = JSON.parse(body);
+  } catch (error) {
+    throw new Error(`Invalid response from Endor Labs API: \`${body}\``);
+  }
+
+  if (!isVersionResponse(data)) {
+    throw new Error(`Invalid response from Endor Labs API: \`${body}\``);
+  }
+
+  return data;
+};
+
+const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
   try {
     const platform = getPlatformInfo();
 
@@ -36,14 +65,11 @@ const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
     let endorctlChecksum = checksum;
     if (!version) {
       core.info(`Endorctl version not provided, using latest version`);
-      const res: httpm.HttpClientResponse = await _http.get(
-        `${api}/meta/version`
-      );
-      const body: string = await res.readBody();
-      const obj: VersionResponse = JSON.parse(body);
-      endorctlVersion = obj?.Service?.Version;
+
+      const data = await fetchLatestEndorctlVersion(api);
+      endorctlVersion = data.Service.Version;
       endorctlChecksum = getEndorctlChecksum(
-        obj.ClientChecksums,
+        data.ClientChecksums,
         platform.os,
         platform.arch
       );

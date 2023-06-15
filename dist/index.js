@@ -20254,9 +20254,31 @@ const utils_1 = __nccwpck_require__(1314);
 const execOptionSilent = {
     silent: true,
 };
-const setupEndorctl = ({ version, checksum, api }) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+/**
+ * @throws {Error} when api is unreachable or returns invalid response
+ */
+const fetchLatestEndorctlVersion = (api) => __awaiter(void 0, void 0, void 0, function* () {
     const _http = new httpm.HttpClient("endor-http-client");
+    const res = yield _http
+        .get(`${api}/meta/version`)
+        // eslint-disable-next-line github/no-then
+        .catch((error) => {
+        throw new Error(`Failed to fetch latest version of endorctl from Endor Labs API: ${error.toString()}`);
+    });
+    const body = yield res.readBody();
+    let data;
+    try {
+        data = JSON.parse(body);
+    }
+    catch (error) {
+        throw new Error(`Invalid response from Endor Labs API: \`${body}\``);
+    }
+    if (!(0, utils_1.isVersionResponse)(data)) {
+        throw new Error(`Invalid response from Endor Labs API: \`${body}\``);
+    }
+    return data;
+});
+const setupEndorctl = ({ version, checksum, api }) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const platform = (0, utils_1.getPlatformInfo)();
         if (platform.error) {
@@ -20267,11 +20289,9 @@ const setupEndorctl = ({ version, checksum, api }) => __awaiter(void 0, void 0, 
         let endorctlChecksum = checksum;
         if (!version) {
             core.info(`Endorctl version not provided, using latest version`);
-            const res = yield _http.get(`${api}/meta/version`);
-            const body = yield res.readBody();
-            const obj = JSON.parse(body);
-            endorctlVersion = (_a = obj === null || obj === void 0 ? void 0 : obj.Service) === null || _a === void 0 ? void 0 : _a.Version;
-            endorctlChecksum = (0, utils_1.getEndorctlChecksum)(obj.ClientChecksums, platform.os, platform.arch);
+            const data = yield fetchLatestEndorctlVersion(api);
+            endorctlVersion = data.Service.Version;
+            endorctlChecksum = (0, utils_1.getEndorctlChecksum)(data.ClientChecksums, platform.os, platform.arch);
         }
         core.info(`Downloading endorctl version ${endorctlVersion}`);
         const url = `https://storage.googleapis.com/endorlabs/${endorctlVersion}/binaries/endorctl_${endorctlVersion}_${platform.os}_${platform.arch}${isWindows ? ".exe" : ""}`;
@@ -20479,7 +20499,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.writeJsonToFile = exports.getEndorctlChecksum = exports.getPlatformInfo = exports.createHashFromFile = void 0;
+exports.isVersionResponse = exports.isObject = exports.writeJsonToFile = exports.getEndorctlChecksum = exports.getPlatformInfo = exports.createHashFromFile = void 0;
 const crypto = __importStar(__nccwpck_require__(6113));
 const fs = __importStar(__nccwpck_require__(7147));
 const fspromises = __importStar(__nccwpck_require__(3292));
@@ -20553,6 +20573,26 @@ const writeJsonToFile = (jsonString) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.writeJsonToFile = writeJsonToFile;
+/**
+ * Type guard for object/Record
+ */
+const isObject = (value) => {
+    return "object" === typeof value && null !== value;
+};
+exports.isObject = isObject;
+/**
+ * Type guard for VersionResponse
+ */
+const isVersionResponse = (value) => {
+    return ((0, exports.isObject)(value) &&
+        // expect: `Service` property exists
+        "Service" in value &&
+        (0, exports.isObject)(value.Service) &&
+        // expect: `Service` property exists
+        "ClientChecksums" in value &&
+        (0, exports.isObject)(value.ClientChecksums));
+};
+exports.isVersionResponse = isVersionResponse;
 
 
 /***/ }),
