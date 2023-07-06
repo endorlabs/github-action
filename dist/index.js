@@ -20553,7 +20553,7 @@ const getEndorctlChecksum = (clientChecksums, os, arch) => {
         case `${constants_1.EndorctlAvailableOS.Macos}_${constants_1.EndorctlAvailableArch.Arm64}`:
             return clientChecksums.ARCH_TYPE_MACOS_ARM64;
         case `${constants_1.EndorctlAvailableOS.Windows}_${constants_1.EndorctlAvailableArch.Amd64}`:
-            return clientChecksums.ARCH_TYPE_UNSPECIFIED;
+            return clientChecksums.ARCH_TYPE_WINDOWS_AMD64;
         default:
             return "";
     }

@@ -82,7 +82,7 @@ export const getEndorctlChecksum = (
     case `${EndorctlAvailableOS.Macos}_${EndorctlAvailableArch.Arm64}`:
       return clientChecksums.ARCH_TYPE_MACOS_ARM64;
     case `${EndorctlAvailableOS.Windows}_${EndorctlAvailableArch.Amd64}`:
-      return clientChecksums.ARCH_TYPE_UNSPECIFIED;
+      return clientChecksums.ARCH_TYPE_WINDOWS_AMD64;
     default:
       return "";
   }

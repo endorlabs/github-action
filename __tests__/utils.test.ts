@@ -41,7 +41,7 @@ describe("utils", () => {
       ["linux", "amd64", "ARCH_TYPE_LINUX_AMD64"],
       ["macos", "amd64", "ARCH_TYPE_MACOS_AMD64"],
       ["macos", "arm64", "ARCH_TYPE_MACOS_ARM64"],
-      ["windows", "amd64", "ARCH_TYPE_UNSPECIFIED"],
+      ["windows", "amd64", "ARCH_TYPE_WINDOWS_AMD64"],
     ])("getEndorctlChecksum for %s is %o", (os, arch, expected) => {
       const result = getEndorctlChecksum(fakeChecksums, os as any, arch as any);
       expect(result).toEqual(expected);
