@@ -135,15 +135,11 @@ const uploadArtifact = async (scanResult: string) => {
 
 async function run() {
   let scanResult = "";
-  let scanError = "";
 
   const scanOptions: exec.ExecOptions = {
     listeners: {
       stdout: (data: Buffer) => {
         scanResult += data.toString();
-      },
-      stderr: (data: Buffer) => {
-        scanError += data.toString();
       },
     },
   };
@@ -269,7 +265,7 @@ async function run() {
       await uploadArtifact(scanResult);
     }
   } catch {
-    core.setFailed(`\nScan Failed\n\n${scanError}`);
+    core.setFailed("Endorctl Scan Failed");
   }
 }
 

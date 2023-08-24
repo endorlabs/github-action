@@ -21999,14 +21999,10 @@ const uploadArtifact = (scanResult) => __awaiter(void 0, void 0, void 0, functio
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         let scanResult = "";
-        let scanError = "";
         const scanOptions = {
             listeners: {
                 stdout: (data) => {
                     scanResult += data.toString();
-                },
-                stderr: (data) => {
-                    scanError += data.toString();
                 },
             },
         };
@@ -22111,7 +22107,7 @@ function run() {
             }
         }
         catch (_a) {
-            core.setFailed(`\nScan Failed\n\n${scanError}`);
+            core.setFailed("Endorctl Scan Failed");
         }
     });
 }
