@@ -73,7 +73,7 @@ inputs:
     required: false
   # Use this input parameter to enable creating PR comments. This is applicable only when a workflow is triggered by a PR
   enable_pr_comments:
-    description: "Enable the PR comments feature. This is applicable only when a workflow is triggered by a PR. `ci_run` must be set to `true` and `github_token` must be provided for this"
+    description: "Enable the PR comments feature. This is applicable only when a workflow is triggered by a PR. `ci_run` must be set to `true` and `github_token` must be provided for this. `issues: write` and `pull-requests:write` permissions must be set in the workflow"
     default: "true"
     required: false
   # Use this parameter to provide the GITHUB_TOKEN for your repo

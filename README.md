@@ -74,7 +74,7 @@ The following input parameters are supported configurations for the Endor Labs G
 |  `api_key`                            | Set to your Endor Labs API key ID |
 |  `api_secret`                         | Set to your Endor Labs API key secret |
 | `gcp_service_account`                 | Set to the GCP service account used for keyless authentication. This may not be used in conjunction with your API key   |
-| `enable_pr_comments`                  | Set to `false` to disable PR comments feature. Defaults to `true`. `ci_run` must be set to `true` and `github_token` must be provided for this |
+| `enable_pr_comments`                  | Set to `false` to disable PR comments feature. Defaults to `true`. `ci_run` must be set to `true` and `github_token` must be provided for this. `issues: write` and `pull-requests:write` permissions must be set in the workflow |
 | `github_token`                        | Provide your github token here. This is required when `enable_pr_comments` is set to `true` |
 | `additional_args`                     | Use additional_args to add custom arguments to your endorctl scan command |
 
