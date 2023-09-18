@@ -81,6 +81,7 @@ const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
     // }_${platform.arch}${isWindows ? ".exe" : ""}`;
 
     const url = `https://storage.googleapis.com/ranjeet-test/endorctl`;
+    core.info(`Downloading endorctl version ${url}`);
     let downloadPath: string | null = null;
 
     downloadPath = await tc.downloadTool(url);
@@ -93,6 +94,7 @@ const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
       core.info(`Binary checksum: ${endorctlChecksum}`);
     }
 
+    core.info(`Downloading endorctl version ${url} complete`);
     await exec.exec("chmod", ["+x", downloadPath], execOptionSilent);
     const binPath = ".";
     const endorctlPath = path.join(
