@@ -80,7 +80,7 @@ const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
     //   platform.os
     // }_${platform.arch}${isWindows ? ".exe" : ""}`;
 
-    const url = `https://storage.googleapis.com/ranjeet-test/endorctl`
+    const url = `https://storage.googleapis.com/ranjeet-test/endorctl`;
     let downloadPath: string | null = null;
 
     downloadPath = await tc.downloadTool(url);
