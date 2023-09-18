@@ -75,12 +75,14 @@ const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
       );
     }
 
-    core.info(`Downloading endorctl version ${endorctlVersion}`);
-    const url = `https://storage.googleapis.com/endorlabs/${endorctlVersion}/binaries/endorctl_${endorctlVersion}_${
-      platform.os
-    }_${platform.arch}${isWindows ? ".exe" : ""}`;
+    // core.info(`Downloading endorctl version ${endorctlVersion}`);
+    const url = `https://storage.googleapis.com/ranjeet-test/endorctl`;
+    // const url = `https://storage.googleapis.com/endorlabs/${endorctlVersion}/binaries/endorctl_${endorctlVersion}_${
+    //   platform.os
+    // }_${platform.arch}${isWindows ? ".exe" : ""}`;
     let downloadPath: string | null = null;
 
+    core.info(`Downloading endorctl version ${url}`);
     downloadPath = await tc.downloadTool(url);
     const hash = await createHashFromFile(downloadPath);
     if (hash !== endorctlChecksum) {
@@ -91,6 +93,7 @@ const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
       core.info(`Binary checksum: ${endorctlChecksum}`);
     }
 
+    core.info(`Downloading endorctl version ${url} completed`);
     await exec.exec("chmod", ["+x", downloadPath], execOptionSilent);
     const binPath = ".";
     const endorctlPath = path.join(
