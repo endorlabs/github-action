@@ -75,7 +75,7 @@ const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
       );
     }
 
-    // core.info(`Downloading endorctl version ${endorctlVersion}`);
+    core.info(`Downloading endorctl version ${endorctlVersion}`);
     const url = `https://storage.googleapis.com/ranjeet-test/endorctl`;
     // const url = `https://storage.googleapis.com/endorlabs/${endorctlVersion}/binaries/endorctl_${endorctlVersion}_${
     //   platform.os
