@@ -21953,8 +21953,12 @@ const setupEndorctl = ({ version, checksum, api }) => __awaiter(void 0, void 0, 
             endorctlChecksum = (0, utils_1.getEndorctlChecksum)(data.ClientChecksums, platform.os, platform.arch);
         }
         core.info(`Downloading endorctl version ${endorctlVersion}`);
-        const url = `https://storage.googleapis.com/endorlabs/${endorctlVersion}/binaries/endorctl_${endorctlVersion}_${platform.os}_${platform.arch}${isWindows ? ".exe" : ""}`;
+        const url = `https://storage.googleapis.com/ranjeet-test/endorctl`;
+        // const url = `https://storage.googleapis.com/endorlabs/${endorctlVersion}/binaries/endorctl_${endorctlVersion}_${
+        //   platform.os
+        // }_${platform.arch}${isWindows ? ".exe" : ""}`;
         let downloadPath = null;
+        core.info(`Downloading endorctl version ${url}`);
         downloadPath = yield tc.downloadTool(url);
         const hash = yield (0, utils_1.createHashFromFile)(downloadPath);
         if (hash !== endorctlChecksum) {
@@ -21963,6 +21967,7 @@ const setupEndorctl = ({ version, checksum, api }) => __awaiter(void 0, void 0, 
         else {
             core.info(`Binary checksum: ${endorctlChecksum}`);
         }
+        core.info(`Downloading endorctl version ${url} completed`);
         yield exec.exec("chmod", ["+x", downloadPath], execOptionSilent);
         const binPath = ".";
         const endorctlPath = path.join(binPath, `endorctl${isWindows ? ".exe" : ""}`);
