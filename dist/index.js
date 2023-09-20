@@ -21997,6 +21997,7 @@ const uploadArtifact = (scanResult) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 function run() {
+    var _a;
     return __awaiter(this, void 0, void 0, function* () {
         let scanResult = "";
         const scanOptions = {
@@ -22030,6 +22031,9 @@ function run() {
             const EXPORT_SCAN_RESULT_ARTIFACT = core.getBooleanInput("export_scan_result_artifact");
             const ADDITION_OPTIONS = ADDITIONAL_ARGS.split(" ");
             const SARIF_FILE = core.getInput("sarif_file");
+            const ENABLE_PR_COMMENTS = core.getBooleanInput("enable_pr_comments");
+            const GITHUB_TOKEN = core.getInput("github_token");
+            const GITHUB_PR_ID = (_a = github.context.payload.pull_request) === null || _a === void 0 ? void 0 : _a.number;
             core.info(`Endor Namespace: ${NAMESPACE}`);
             if (!NAMESPACE) {
                 core.setFailed("namespace is required and must be passed as an input from the workflow");
@@ -22066,6 +22070,17 @@ function run() {
             }
             else if (GCP_CREDENTIALS_SERVICE_ACCOUNT) {
                 options.push(`--gcp-service-account=${GCP_CREDENTIALS_SERVICE_ACCOUNT}`);
+            }
+            if (ENABLE_PR_COMMENTS && GITHUB_PR_ID) {
+                if (!CI_RUN) {
+                    core.error("ci_run option must be enabled for PR comments. Either enable CI Run or disable PR comments");
+                }
+                else if (!GITHUB_TOKEN) {
+                    core.error("GITHUB_TOKEN is required for PR comments");
+                }
+                else {
+                    options.push(`--enable-pr-comments=true`, `--github-pr-id=${GITHUB_PR_ID}`, `--github-token=${GITHUB_TOKEN}`);
+                }
             }
             if (CI_RUN_TAGS) {
                 options.push(`--ci-run-tags=${CI_RUN_TAGS}`);
@@ -22106,7 +22121,7 @@ function run() {
                 yield uploadArtifact(scanResult);
             }
         }
-        catch (_a) {
+        catch (_b) {
             core.setFailed("Endorctl Scan Failed");
         }
     });

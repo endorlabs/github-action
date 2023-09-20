@@ -176,6 +176,9 @@ async function run() {
     );
     const ADDITION_OPTIONS = ADDITIONAL_ARGS.split(" ");
     const SARIF_FILE = core.getInput("sarif_file");
+    const ENABLE_PR_COMMENTS = core.getBooleanInput("enable_pr_comments");
+    const GITHUB_TOKEN = core.getInput("github_token");
+    const GITHUB_PR_ID = github.context.payload.pull_request?.number;
 
     core.info(`Endor Namespace: ${NAMESPACE}`);
 
@@ -222,6 +225,22 @@ async function run() {
       options.push(`--api-key=${API_KEY}`, `--api-secret=${API_SECRET}`);
     } else if (GCP_CREDENTIALS_SERVICE_ACCOUNT) {
       options.push(`--gcp-service-account=${GCP_CREDENTIALS_SERVICE_ACCOUNT}`);
+    }
+
+    if (ENABLE_PR_COMMENTS && GITHUB_PR_ID) {
+      if (!CI_RUN) {
+        core.error(
+          "ci_run option must be enabled for PR comments. Either enable CI Run or disable PR comments"
+        );
+      } else if (!GITHUB_TOKEN) {
+        core.error("GITHUB_TOKEN is required for PR comments");
+      } else {
+        options.push(
+          `--enable-pr-comments=true`,
+          `--github-pr-id=${GITHUB_PR_ID}`,
+          `--github-token=${GITHUB_TOKEN}`
+        );
+      }
     }
 
     if (CI_RUN_TAGS) {

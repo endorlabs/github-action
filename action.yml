@@ -71,6 +71,15 @@ inputs:
   sarif_file:
     description: "Export a summary of the findings to a SARIF file"
     required: false
+  # Use this input parameter to enable creating PR comments. This is applicable only when a workflow is triggered by a PR
+  enable_pr_comments:
+    description: "Enable the PR comments feature. This is applicable only when a workflow is triggered by a PR. `ci_run` must be set to `true` and `github_token` must be provided for this. `issues: write` and `pull-requests:write` permissions must be set in the workflow"
+    default: "true"
+    required: false
+  # Use this parameter to provide the GITHUB_TOKEN for your repo
+  github_token:
+    description: "Provide your github token here. This is required if `enable_pr_comments` when set to `true`"
+    required: false
 runs:
   using: "node16"
   main: "dist/index.js"
