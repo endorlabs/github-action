@@ -22057,11 +22057,11 @@ function run() {
             core.info(`Scanning repository ${repoName}`);
             const options = [
                 `--namespace=${NAMESPACE}`,
-                `--show-progress=${SHOW_PROGRESS}`, // deprecated
+                `--show-progress=${SHOW_PROGRESS}`,
                 `--verbose=${LOG_VERBOSE}`,
                 `--output-type=${SCAN_SUMMARY_OUTPUT_TYPE}`,
                 `--log-level=${LOG_LEVEL}`,
-                `--ci-run=${CI_RUN}`, // deprecated
+                `--ci-run=${CI_RUN}`,
                 `--pr=${SCAN_PR}`,
             ];
             if (API)
@@ -22077,7 +22077,7 @@ function run() {
             }
             if (ENABLE_PR_COMMENTS && GITHUB_PR_ID) {
                 if (!CI_RUN && !SCAN_PR) {
-                    core.error( "The `pr` option must be enabled for PR comments. Either set `pr: \"true\"` or disable PR comments");
+                    core.error("The `pr` option must be enabled for PR comments. Either set `pr: "true"` or disable PR comments");
                 }
                 else if (!GITHUB_TOKEN) {
                     core.error("GITHUB_TOKEN is required for PR comments");
@@ -22088,7 +22088,7 @@ function run() {
             }
             if (SCAN_PR_BASELINE) {
                 if (!CI_RUN && !SCAN_PR) {
-                    core.error("The `pr` option must also be enabled if `pr_baseline` is set. Either set `pr: \"true\"` or remove the PR baseline");
+                    core.error("The `pr` option must also be enabled if `pr_baseline` is set. Either set `pr: "true"` or remove the PR baseline");
                 }
                 else {
                     options.push(`--pr-baseline=${SCAN_PR_BASELINE}`);
