@@ -21953,7 +21953,7 @@ const setupEndorctl = ({ version, checksum, api }) => __awaiter(void 0, void 0, 
             endorctlChecksum = (0, utils_1.getEndorctlChecksum)(data.ClientChecksums, platform.os, platform.arch);
         }
         core.info(`Downloading endorctl version ${endorctlVersion}`);
-        const url = `https://storage.googleapis.com/endorlabs/${endorctlVersion}/binaries/endorctl_${endorctlVersion}_${platform.os}_${platform.arch}${isWindows ? ".exe" : ""}`;
+        const url = `${api}/download/endorlabs/${endorctlVersion}/binaries/endorctl_${endorctlVersion}_${platform.os}_${platform.arch}${isWindows ? ".exe" : ""}`;
         let downloadPath = null;
         downloadPath = yield tc.downloadTool(url);
         const hash = yield (0, utils_1.createHashFromFile)(downloadPath);
