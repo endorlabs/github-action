@@ -22087,7 +22087,6 @@ function run() {
                 }
             }
             if (SCAN_PR_BASELINE) {
-                options.push(`--pr-baseline=${SCAN_PR_BASELINE}`);
                 if (!CI_RUN && !SCAN_PR) {
                     core.error('The `pr` option must also be enabled if `pr_baseline` is set. Either set `pr: "true"` or remove the PR baseline');
                 }
