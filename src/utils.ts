@@ -71,7 +71,7 @@ export const getPlatformInfo = () => {
 export const getEndorctlChecksum = (
   clientChecksums: ClientChecksumsType,
   os?: EndorctlAvailableOS,
-  arch?: EndorctlAvailableArch
+  arch?: EndorctlAvailableArch,
 ) => {
   const platformString = `${os}_${arch}`;
   switch (platformString) {

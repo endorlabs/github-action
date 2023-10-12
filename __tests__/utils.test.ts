@@ -34,7 +34,7 @@ describe("utils", () => {
   describe("getEndorctlChecksum", () => {
     const fakeChecksums = new Proxy<ClientChecksumsType>(
       {} as ClientChecksumsType,
-      { get: (_, property) => property }
+      { get: (_, property) => property },
     );
 
     it.each<[os: string, arch: string, expected: string]>([
@@ -49,7 +49,7 @@ describe("utils", () => {
 
     it.skip("Throws for unexpected os + arch", () => {
       expect(() =>
-        getEndorctlChecksum(fakeChecksums, "foo" as any, "bar" as any)
+        getEndorctlChecksum(fakeChecksums, "foo" as any, "bar" as any),
       ).toThrow();
     });
   });
@@ -70,7 +70,7 @@ describe("utils", () => {
       [
         os: string,
         arch: string,
-        expected: { os: string; arch: string } | { error: true }
+        expected: { os: string; arch: string } | { error: true },
       ]
     >([
       ["Linux", "ARM64", { error: true }],
@@ -96,7 +96,7 @@ describe("utils", () => {
         });
       } else {
         expect(result).toEqual(
-          expect.objectContaining({ ...expected, error: undefined })
+          expect.objectContaining({ ...expected, error: undefined }),
         );
       }
     });
