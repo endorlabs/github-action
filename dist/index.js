@@ -22077,7 +22077,7 @@ function run() {
             }
             if (ENABLE_PR_COMMENTS && GITHUB_PR_ID) {
                 if (!CI_RUN && !SCAN_PR) {
-                    core.error("The `pr` option must be enabled for PR comments. Either set `pr: "true"` or disable PR comments");
+                    core.error('The `pr` option must be enabled for PR comments. Either set `pr: "true"` or disable PR comments');
                 }
                 else if (!GITHUB_TOKEN) {
                     core.error("GITHUB_TOKEN is required for PR comments");
@@ -22088,7 +22088,7 @@ function run() {
             }
             if (SCAN_PR_BASELINE) {
                 if (!CI_RUN && !SCAN_PR) {
-                    core.error("The `pr` option must also be enabled if `pr_baseline` is set. Either set `pr: "true"` or remove the PR baseline");
+                    core.error('The `pr` option must also be enabled if `pr_baseline` is set. Either set `pr: "true"` or remove the PR baseline');
                 }
                 else {
                     options.push(`--pr-baseline=${SCAN_PR_BASELINE}`);
