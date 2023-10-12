@@ -151,7 +151,7 @@ async function run() {
       throw new Error(platform.error);
     }
 
-    const SHOW_PROGRESS = false;
+    const SHOW_PROGRESS = false; // deprecated
     const API = core.getInput("api");
     const API_KEY = core.getInput("api_key");
     const API_SECRET = core.getInput("api_secret");
@@ -213,11 +213,11 @@ async function run() {
 
     const options = [
       `--namespace=${NAMESPACE}`,
-      `--show-progress=${SHOW_PROGRESS}`, // deprecated
+      `--show-progress=${SHOW_PROGRESS}`,
       `--verbose=${LOG_VERBOSE}`,
       `--output-type=${SCAN_SUMMARY_OUTPUT_TYPE}`,
       `--log-level=${LOG_LEVEL}`,
-      `--ci-run=${CI_RUN}`, // Deprecated
+      `--ci-run=${CI_RUN}`,
       `--pr=${SCAN_PR}`,
     ];
 

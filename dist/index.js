@@ -22012,7 +22012,7 @@ function run() {
             if (platform.error) {
                 throw new Error(platform.error);
             }
-            const SHOW_PROGRESS = false;
+            const SHOW_PROGRESS = false; // deprecated
             const API = core.getInput("api");
             const API_KEY = core.getInput("api_key");
             const API_SECRET = core.getInput("api_secret");
