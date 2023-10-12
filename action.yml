@@ -57,7 +57,7 @@ inputs:
     default: "true"
   # Set the baseline branch to enable action policies to only flag new findings
   pr_baseline:
-    description: "Set the baseline branch to enable action policies to only act on new findings. Example: `pr_baseline: "main"`"
+    description: "Set the baseline branch to enable action policies to only act on new findings. Example: `pr_baseline: \"main\"`"
     required: false
   # Deprecated
   ci_run_tags:
