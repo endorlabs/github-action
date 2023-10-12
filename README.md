@@ -66,8 +66,9 @@ The following input parameters are supported configurations for the Endor Labs G
 | `log_level`                           | Set to `debug` to enable debug logging or `error` to enable error logging only. Defaults to info |
 | `scan_summary_output_type`            | Set the desired output format of the summary to `table`, `json`, or `yaml`. Defaults to `table` |
 | `sarif_file`                          | Set to a location on your GitHub runner to output the findings in SARIF format |
-| `ci_run`                              | Set to `false` to track this scan as a monitored version within Endor Labs |
-| `ci_run_tags`                         | Set searchable tags to search and query your CI run scans |
+| `pr`                                  | Set to `false` to track this scan as a monitored version within Endor Labs, as opposed to a point in time policy and finding test for a PR |
+| `pr_baseline`                         | Set to the git reference that you are merging to, such as your default branch. Enables endorctl to compare findings so developers are only alerted to issues un the current changeset. Example: `pr_baseline: "main"` |
+| `tags`                                | Specify a list of user-defined tags to add to this scan. Tags can be used to search and filter scans later |
 | `run_stats`                           | Set to `false` to disable run statistics via `time -v` (may be required on Windows runners, e.g.) |
 | `enable_github_action_token`          | Set to `false` if you prefer to use another form of authentication over GitHub OIDC |
 | `export_scan_result_artifact`         | Set to `false` to skip exporting the json scan result as an artifact. Defaults to true |

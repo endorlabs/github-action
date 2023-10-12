@@ -47,13 +47,25 @@ inputs:
   scan_summary_output_type:
     description: "Set the desired output summary to table, json, or yaml"
     default: "json"
-  # Use this input parameter to enable ci run
+  # Deprecated
   ci_run:
-    description: "Set to false to track this scan in Endor Labs as a release"
+    description: "Deprecated, please use `pr` instead"
     default: "true"
-  # Use this input parameter to provide searchable tags for your CI runs
+  # Use this input parameter for PRs
+  pr:
+    description: "Set to false to track this scan in Endor Labs as a release, as opposed to a point in time policy and finding test for a PR"
+    default: "true"
+  # Set the baseline branch to enable action policies to only flag new findings
+  pr_baseline:
+    description: "Set the baseline branch to enable action policies to only act on new findings. Example: `pr_baseline: "main"`"
+    required: false
+  # Deprecated
   ci_run_tags:
-    description: "Set searchable tags for your CI runs"
+    description: "Deprecated, please use `tags` instead"
+    required: false
+  # Use this input parameter to provide searchable tags for your scans
+  tags:
+    description: "Specify a list of user-defined tags to add to this scan. Tags can be used to search and filter scans later"
     required: false
   # Use this input parameter to control whether `time -v` wraps runs
   run_stats:

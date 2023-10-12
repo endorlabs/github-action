@@ -167,8 +167,11 @@ async function run() {
     const LOG_VERBOSE = core.getBooleanInput("log_verbose");
     const LOG_LEVEL = core.getInput("log_level");
     const SCAN_SUMMARY_OUTPUT_TYPE = core.getInput("scan_summary_output_type");
-    const CI_RUN = core.getBooleanInput("ci_run");
-    const CI_RUN_TAGS = core.getInput("ci_run_tags");
+    const CI_RUN = core.getBooleanInput("ci_run"); // deprecated
+    const CI_RUN_TAGS = core.getInput("ci_run_tags"); // deprecated
+    const SCAN_PR = core.getBooleanInput("pr");
+    const SCAN_PR_BASELINE = core.getInput("pr_baseline");
+    const SCAN_TAGS = core.getInput("tags");
     const RUN_STATS = core.getInput("run_stats");
     const ADDITIONAL_ARGS = core.getInput("additional_args");
     const EXPORT_SCAN_RESULT_ARTIFACT = core.getBooleanInput(
@@ -210,11 +213,12 @@ async function run() {
 
     const options = [
       `--namespace=${NAMESPACE}`,
-      `--show-progress=${SHOW_PROGRESS}`,
+      `--show-progress=${SHOW_PROGRESS}`, // deprecated
       `--verbose=${LOG_VERBOSE}`,
       `--output-type=${SCAN_SUMMARY_OUTPUT_TYPE}`,
       `--log-level=${LOG_LEVEL}`,
-      `--ci-run=${CI_RUN}`,
+      `--ci-run=${CI_RUN}`, // Deprecated
+      `--pr=${SCAN_PR}`,
     ];
 
     if (API) options.push(`--api=${API}`);
@@ -228,9 +232,9 @@ async function run() {
     }
 
     if (ENABLE_PR_COMMENTS && GITHUB_PR_ID) {
-      if (!CI_RUN) {
+      if (!CI_RUN && !SCAN_PR) {
         core.error(
-          "ci_run option must be enabled for PR comments. Either enable CI Run or disable PR comments"
+          "The `pr` option must be enabled for PR comments. Either set `pr: \"true\"` or disable PR comments"
         );
       } else if (!GITHUB_TOKEN) {
         core.error("GITHUB_TOKEN is required for PR comments");
@@ -243,8 +247,23 @@ async function run() {
       }
     }
 
+    if (SCAN_PR_BASELINE) {
+      options.push(`--pr-baseline=${SCAN_PR_BASELINE}`);
+      if (!CI_RUN && !SCAN_PR) {
+        core.error(
+          "The `pr` option must also be enabled if `pr_baseline` is set. Either set `pr: \"true\"` or remove the PR baseline"
+        );
+      } else {
+        options.push(`--pr-baseline=${SCAN_PR_BASELINE}`);
+      }
+    }
+
+    // Deprecated
     if (CI_RUN_TAGS) {
       options.push(`--ci-run-tags=${CI_RUN_TAGS}`);
+    }
+    if (SCAN_TAGS) {
+      options.push(`--tags=${SCAN_TAGS}`);
     }
     if (ADDITIONAL_ARGS && ADDITION_OPTIONS.length > 0) {
       options.push(...ADDITION_OPTIONS);
