@@ -32,7 +32,7 @@ const fetchLatestEndorctlVersion = async (api: string) => {
     // eslint-disable-next-line github/no-then
     .catch((error) => {
       throw new Error(
-        `Failed to fetch latest version of endorctl from Endor Labs API: ${error.toString()}`,
+        `Failed to fetch latest version of endorctl from Endor Labs API: ${error.toString()}`
       );
     });
   const body: string = await res.readBody();
@@ -71,7 +71,7 @@ const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
       endorctlChecksum = getEndorctlChecksum(
         data.ClientChecksums,
         platform.os,
-        platform.arch,
+        platform.arch
       );
     }
 
@@ -85,7 +85,7 @@ const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
     const hash = await createHashFromFile(downloadPath);
     if (hash !== endorctlChecksum) {
       throw new Error(
-        "The checksum of the downloaded binary does not match the expected value!",
+        "The checksum of the downloaded binary does not match the expected value!"
       );
     } else {
       core.info(`Binary checksum: ${endorctlChecksum}`);
@@ -95,7 +95,7 @@ const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
     const binPath = ".";
     const endorctlPath = path.join(
       binPath,
-      `endorctl${isWindows ? ".exe" : ""}`,
+      `endorctl${isWindows ? ".exe" : ""}`
     );
     await io.mv(downloadPath, endorctlPath);
     core.addPath(binPath);
@@ -123,7 +123,7 @@ const uploadArtifact = async (scanResult: string) => {
       artifactName,
       files,
       rootDirectory,
-      options,
+      options
     );
     if (uploadResult.failedItems.length > 0) {
       core.error("Some items failed to export");
@@ -156,10 +156,10 @@ async function run() {
     const API_KEY = core.getInput("api_key");
     const API_SECRET = core.getInput("api_secret");
     const GCP_CREDENTIALS_SERVICE_ACCOUNT = core.getInput(
-      "gcp_service_account",
+      "gcp_service_account"
     );
     const ENABLE_GITHUB_ACTION_TOKEN = core.getBooleanInput(
-      "enable_github_action_token",
+      "enable_github_action_token"
     );
     const NAMESPACE = core.getInput("namespace");
     const ENDORCTL_VERSION = core.getInput("endorctl_version");
@@ -175,7 +175,7 @@ async function run() {
     const RUN_STATS = core.getInput("run_stats");
     const ADDITIONAL_ARGS = core.getInput("additional_args");
     const EXPORT_SCAN_RESULT_ARTIFACT = core.getBooleanInput(
-      "export_scan_result_artifact",
+      "export_scan_result_artifact"
     );
     const ADDITION_OPTIONS = ADDITIONAL_ARGS.split(" ");
     const SARIF_FILE = core.getInput("sarif_file");
@@ -187,7 +187,7 @@ async function run() {
 
     if (!NAMESPACE) {
       core.setFailed(
-        "namespace is required and must be passed as an input from the workflow",
+        "namespace is required and must be passed as an input from the workflow"
       );
       return;
     }
@@ -197,7 +197,7 @@ async function run() {
       !GCP_CREDENTIALS_SERVICE_ACCOUNT
     ) {
       core.setFailed(
-        "Authentication info not found. Either set enable_github_action_token: true or provide one of gcp_service_account or api_key and api_secret combination",
+        "Authentication info not found. Either set enable_github_action_token: true or provide one of gcp_service_account or api_key and api_secret combination"
       );
       return;
     }
@@ -234,7 +234,7 @@ async function run() {
     if (ENABLE_PR_COMMENTS && GITHUB_PR_ID) {
       if (!CI_RUN && !SCAN_PR) {
         core.error(
-          'The `pr` option must be enabled for PR comments. Either set `pr: "true"` or disable PR comments',
+          'The `pr` option must be enabled for PR comments. Either set `pr: "true"` or disable PR comments'
         );
       } else if (!GITHUB_TOKEN) {
         core.error("GITHUB_TOKEN is required for PR comments");
@@ -242,7 +242,7 @@ async function run() {
         options.push(
           `--enable-pr-comments=true`,
           `--github-pr-id=${GITHUB_PR_ID}`,
-          `--github-token=${GITHUB_TOKEN}`,
+          `--github-token=${GITHUB_TOKEN}`
         );
       }
     }
@@ -251,7 +251,7 @@ async function run() {
       options.push(`--pr-baseline=${SCAN_PR_BASELINE}`);
       if (!CI_RUN && !SCAN_PR) {
         core.error(
-          'The `pr` option must also be enabled if `pr_baseline` is set. Either set `pr: "true"` or remove the PR baseline',
+          'The `pr` option must also be enabled if `pr_baseline` is set. Either set `pr: "true"` or remove the PR baseline'
         );
       } else {
         options.push(`--pr-baseline=${SCAN_PR_BASELINE}`);
