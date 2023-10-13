@@ -48,7 +48,7 @@ jobs:
       - name: Compile Package
         run: mvn clean install
       - name: Scan with Endor Labs
-        uses: endorlabs/github-action@main
+        uses: endorlabs/github-action@v1.1.0
         with:
           namespace: "example"
 ```
@@ -91,7 +91,7 @@ Below is an example configuration using an Endor Labs API key:
 
 ```yaml
       - name: Scan with Endor Labs
-        uses: endorlabs/github-action@main
+        uses: endorlabs/github-action@v1.1.0
         with:
           namespace: "example"
           api_key: ${{ secrets.ENDOR_API_CREDENTIALS_KEY }}
@@ -103,7 +103,7 @@ Below is an example configuration using a GCP service account for keyless authen
 
 ```yaml
       - name: Scan with Endor Labs
-        uses: endorlabs/github-action@main
+        uses: endorlabs/github-action@v1.1.0
         with:
           namespace: "example"
           gcp_service_account: "<Insert_Your_Service_Account>@<Insert_Your_Project>.iam.gserviceaccount.com"
@@ -137,7 +137,7 @@ jobs:
           java-version: '17'
       - name: Endor Labs Scan Pull Request
         if: github.event_name == 'pull_request'
-        uses: endorlabs/github-action@main
+        uses: endorlabs/github-action@v1.1.0
         with:
           namespace: "example"
           scan_dependencies: "true"
@@ -147,7 +147,7 @@ jobs:
           pr_baseline: "main"
       - name: Endor Labs Scan Push to main
         if: github.event_name == 'push'
-        uses: endorlabs/github-action@main
+        uses: endorlabs/github-action@v1.1.0
         with:
           namespace: "example"
           scan_dependencies: "true"
