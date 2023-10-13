@@ -22028,6 +22028,10 @@ function run() {
             const SCAN_PR = core.getBooleanInput("pr");
             const SCAN_PR_BASELINE = core.getInput("pr_baseline");
             const SCAN_TAGS = core.getInput("tags");
+            const SCAN_DEPENDENCIES = core.getInput("scan_dependencies");
+            const SCAN_SECRETS = core.getInput("scan_secrets");
+            const SCAN_GIT_LOGS = core.getInput("scan_git_logs");
+            const PRE_COMMIT_CHECKS = core.getInput("pre_commit_checks");
             const RUN_STATS = core.getInput("run_stats");
             const ADDITIONAL_ARGS = core.getInput("additional_args");
             const EXPORT_SCAN_RESULT_ARTIFACT = core.getBooleanInput("export_scan_result_artifact");
@@ -22062,6 +22066,31 @@ function run() {
             ];
             if (API)
                 options.push(`--api=${API}`);
+            if (!SCAN_DEPENDENCIES && !SCAN_SECRETS) {
+                core.error("At least one of `scan_dependencies` or `scan_secrets` must be enabled");
+            }
+            if (SCAN_DEPENDENCIES) {
+                options.push(`--dependencies=true`);
+            }
+            if (SCAN_SECRETS) {
+                options.push(`--secrets=true`);
+            }
+            if (SCAN_GIT_LOGS) {
+                if (!SCAN_SECRETS) {
+                    core.error("Please also enable `scan_secrets` to scan Git logs for secrets");
+                }
+                else {
+                    options.push(`--git-logs=true`);
+                }
+            }
+            if (PRE_COMMIT_CHECKS) {
+                if (!SCAN_SECRETS) {
+                    core.error("Please also enable `scan_secrets` to perform Git pre-commit checks");
+                }
+                else {
+                    options.push(`--pre-commit-checks=true`);
+                }
+            }
             if (ENABLE_GITHUB_ACTION_TOKEN) {
                 options.push(`--enable-github-action-token=true`);
             }
@@ -22079,7 +22108,7 @@ function run() {
                     core.error("The `ci-run` option has been renamed to `pr` and must be enabled for PR comments. Remove the `ci-run` configuration or disable PR comments");
                 }
                 else if (!GITHUB_TOKEN) {
-                    core.error("GITHUB_TOKEN is required for PR comments");
+                    core.error("`github_token` is required the enable PR comments");
                 }
                 else {
                     options.push(`--enable-pr-comments=true`, `--github-pr-id=${GITHUB_PR_ID}`, `--github-token=${GITHUB_TOKEN}`);

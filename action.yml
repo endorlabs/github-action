@@ -40,6 +40,9 @@ inputs:
   scan_summary_output_type:
     description: "Set the desired output format to one of: `table`, `json`, `yaml`, or `summary` (default `json`)"
     default: "json"
+  scan_dependencies:
+    description: "Scan git commits and generate findings for all dependencies (default `true`)"
+    default: "true"
   # Deprecated
   ci_run:
     description: "Deprecated, please use `pr` instead"
@@ -78,6 +81,16 @@ inputs:
   # Use this parameter to provide the GITHUB_TOKEN for your repo
   github_token:
     description: "Provide your github token here. This is required if `enable_pr_comments` when set to `true`"
+  # Secrets
+  scan_secrets:
+    description: "Scan source code repository and generate findings for secrets. See also `scan_git_logs` and `pre_commit_checks` (default `false`)"
+    default: "false"
+  scan_git_logs:
+    description: "Perform a more complete and detailed scan of secrets in the repository history. Must be used together with `scan_secrets` (default `false`)"
+    default: "false"
+  pre_commit_checks:
+    description: "Perform Git pre-commit checks on the changeset about to be committed. Must be used together with `scan_secrets` (default `false`)"
+    default: "false"
 runs:
   using: "node16"
   main: "dist/index.js"
