@@ -273,7 +273,7 @@ async function run() {
           "The `ci-run` option has been renamed to `pr` and must be enabled for PR comments. Remove the `ci-run` configuration or disable PR comments"
         );
       } else if (!GITHUB_TOKEN) {
-        core.error("`github_token` is required the enable PR comments");
+        core.error("`github_token` is required to enable PR comments");
       } else {
         options.push(
           `--enable-pr-comments=true`,
