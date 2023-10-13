@@ -174,7 +174,6 @@ async function run() {
     const SCAN_DEPENDENCIES = core.getInput("scan_dependencies");
     const SCAN_SECRETS = core.getInput("scan_secrets");
     const SCAN_GIT_LOGS = core.getInput("scan_git_logs");
-    const PRE_COMMIT_CHECKS = core.getInput("pre_commit_checks");
     const RUN_STATS = core.getInput("run_stats");
     const ADDITIONAL_ARGS = core.getInput("additional_args");
     const EXPORT_SCAN_RESULT_ARTIFACT = core.getBooleanInput(
@@ -242,16 +241,6 @@ async function run() {
         );
       } else {
         options.push(`--git-logs=true`);
-      }
-    }
-
-    if (PRE_COMMIT_CHECKS) {
-      if (!SCAN_SECRETS) {
-        core.error(
-          "Please also enable `scan_secrets` to perform Git pre-commit checks"
-        );
-      } else {
-        options.push(`--pre-commit-checks=true`);
       }
     }
 

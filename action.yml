@@ -83,13 +83,10 @@ inputs:
     description: "Set the token used to authenticate with GitHub. Required if `enable_pr_comments` is set to `true`"
   # Secrets
   scan_secrets:
-    description: "Scan source code repository and generate findings for secrets. See also `scan_git_logs` and `pre_commit_checks` (default `false`)"
+    description: "Scan source code repository and generate findings for secrets. See also `scan_git_logs` (default `false`)"
     default: "false"
   scan_git_logs:
     description: "Perform a more complete and detailed scan of secrets in the repository history. Must be used together with `scan_secrets` (default `false`)"
-    default: "false"
-  pre_commit_checks:
-    description: "Perform Git pre-commit checks on the changeset about to be committed. Must be used together with `scan_secrets` (default `false`)"
     default: "false"
 runs:
   using: "node16"
