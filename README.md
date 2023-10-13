@@ -48,7 +48,7 @@ jobs:
       - name: Compile Package
         run: mvn clean install
       - name: Scan with Endor Labs
-        uses: endorlabs/github-action@main
+        uses: endorlabs/github-action@v1.1.0
         with:
           namespace: "example"
 ```
@@ -63,12 +63,12 @@ The following input parameters are supported for the Endor Labs GitHub action:
 | `api_key` | Set the API key used to authenticate with Endor Labs. |
 | `api_secret` | Set the secret corresponding to the API key used to authenticate with Endor Labs. |
 | `enable_github_action_token` | Set to `false` if you prefer to use another form of authentication over GitHub action OIDC tokens. (Default: `true`) |
-| `enable_pr_comments` | Set to `true` to publish new findings as review comments. Must be set with `pr` and `github_token`. Additionally, the `issues: write` and `pull-requests: write` permissions must be set in the workflow. (Default: `false`) |
+| `enable_pr_comments` | Set to `true` to publish new findings as review comments. Must be set together with `pr` and `github_token`. Additionally, the `issues: write` and `pull-requests: write` permissions must be set in the workflow. (Default: `false`) |
 | `endorctl_checksum` | Set to the checksum associated with a pinned version of endorctl. |
 | `endorctl_version` | Set to a version of endorctl to pin this specific version for use. Defaults to the latest version. |
 | `export_scan_result_artifact` | Set to `false` to disable the json scan result artifact export. (Default: `true`) |
 | `gcp_service_account` | Set the target service account for GCP based authentication. GCP authentication is only enabled if this flag is set. Cannot be used with `api_key`. |
-| `github_token` | Set the GitHub token used to authenticate with GitHub. Must be provided if `enable_pr_comments` is set to `true` |
+| `github_token` | Set the token used to authenticate with GitHub. Must be provided if `enable_pr_comments` is set to `true` |
 | `log_level` | Set the log level. (Default: `info`) |
 | `log_verbose` | Set to `true` to enable verbose logging. (Default: `false`) |
 | `namespace` | Set to the namespace of the project that you are working with. (Required) |
@@ -76,6 +76,9 @@ The following input parameters are supported for the Endor Labs GitHub action:
 | `pr` | Set to `false` to track this scan as a monitored version within Endor Labs, as opposed to a point in time policy and finding test for a PR. (Default: `true`) |
 | `run_stats` | Set to `false` to disable reporting of CPU/RAM/time scan statistics via `time -v` (may be required on Windows runners). (Default: `true`) |
 | `sarif_file` | Set to a location on your GitHub runner to output the findings in SARIF format. |
+| `scan_dependencies` | Scan git commits and generate findings for all dependencies. (Default: `true`) |
+| `scan_git_logs` | Perform a more complete and detailed scan of secrets in the repository history. Must be used together with `scan_secrets`. (Default: `false`) |
+| `scan_secrets` | Scan source code repository and generate findings for secrets. See also `scan_git_logs`. (Default: `false`) |
 | `scan_summary_output_type` | Set the desired output format to `table`, `json`, `yaml`, or `summary`. (Default: `json`) |
 | `tags` | Specify a list of user-defined tags to add to this scan. Tags can be used to search and filter scans later. |
 
@@ -87,7 +90,7 @@ Below is an example configuration using an Endor Labs API key:
 
 ```yaml
       - name: Scan with Endor Labs
-        uses: endorlabs/github-action@main
+        uses: endorlabs/github-action@v1.1.0
         with:
           namespace: "example"
           api_key: ${{ secrets.ENDOR_API_CREDENTIALS_KEY }}
@@ -99,7 +102,7 @@ Below is an example configuration using a GCP service account for keyless authen
 
 ```yaml
       - name: Scan with Endor Labs
-        uses: endorlabs/github-action@main
+        uses: endorlabs/github-action@v1.1.0
         with:
           namespace: "example"
           gcp_service_account: "<Insert_Your_Service_Account>@<Insert_Your_Project>.iam.gserviceaccount.com"
@@ -133,17 +136,21 @@ jobs:
           java-version: '17'
       - name: Endor Labs Scan Pull Request
         if: github.event_name == 'pull_request'
-        uses: endorlabs/github-action@main
+        uses: endorlabs/github-action@v1.1.0
         with:
           namespace: "example"
-          scan_summary_output_type: "json"
+          scan_dependencies: "true"
+          scan_secrets: "true"
+          scan_summary_output_type: "table"
           pr: "true"
           pr_baseline: "main"
       - name: Endor Labs Scan Push to main
-        if: github.event_name == 'push'
-        uses: endorlabs/github-action@main
+        if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
+        uses: endorlabs/github-action@v1.1.0
         with:
           namespace: "example"
+          scan_dependencies: "true"
+          scan_secrets: "true"
           scan_summary_output_type: "table"
           pr: "false"
 ```
