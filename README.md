@@ -140,6 +140,8 @@ jobs:
         uses: endorlabs/github-action@main
         with:
           namespace: "example"
+          scan_dependencies: "true"
+          scan_secrets: "true"
           scan_summary_output_type: "json"
           pr: "true"
           pr_baseline: "main"
@@ -148,6 +150,8 @@ jobs:
         uses: endorlabs/github-action@main
         with:
           namespace: "example"
-          scan_summary_output_type: "table"
+          scan_dependencies: "true"
+          scan_secrets: "true"
+          scan_summary_output_type: "json"
           pr: "false"
 ```
