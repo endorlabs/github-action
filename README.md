@@ -145,7 +145,7 @@ jobs:
           pr: "true"
           pr_baseline: "main"
       - name: Endor Labs Scan Push to main
-        if: github.event_name == 'push'
+        if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
         uses: endorlabs/github-action@v1.1.0
         with:
           namespace: "example"
