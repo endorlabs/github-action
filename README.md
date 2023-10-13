@@ -63,12 +63,12 @@ The following input parameters are supported for the Endor Labs GitHub action:
 | `api_key` | Set the API key used to authenticate with Endor Labs. |
 | `api_secret` | Set the secret corresponding to the API key used to authenticate with Endor Labs. |
 | `enable_github_action_token` | Set to `false` if you prefer to use another form of authentication over GitHub action OIDC tokens. (Default: `true`) |
-| `enable_pr_comments` | Set to `true` to publish new findings as review comments. Must be set with `pr` and `github_token`. Additionally, the `issues: write` and `pull-requests: write` permissions must be set in the workflow. (Default: `false`) |
+| `enable_pr_comments` | Set to `true` to publish new findings as review comments. Must be set together with `pr` and `github_token`. Additionally, the `issues: write` and `pull-requests: write` permissions must be set in the workflow. (Default: `false`) |
 | `endorctl_checksum` | Set to the checksum associated with a pinned version of endorctl. |
 | `endorctl_version` | Set to a version of endorctl to pin this specific version for use. Defaults to the latest version. |
 | `export_scan_result_artifact` | Set to `false` to disable the json scan result artifact export. (Default: `true`) |
 | `gcp_service_account` | Set the target service account for GCP based authentication. GCP authentication is only enabled if this flag is set. Cannot be used with `api_key`. |
-| `github_token` | Set the GitHub token used to authenticate with GitHub. Must be provided if `enable_pr_comments` is set to `true` |
+| `github_token` | Set the token used to authenticate with GitHub. Must be provided if `enable_pr_comments` is set to `true` |
 | `log_level` | Set the log level. (Default: `info`) |
 | `log_verbose` | Set to `true` to enable verbose logging. (Default: `false`) |
 | `namespace` | Set to the namespace of the project that you are working with. (Required) |

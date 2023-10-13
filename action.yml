@@ -76,11 +76,11 @@ inputs:
     description: "Set to a location on your GitHub runner to output the findings in SARIF format"
   # Use this input parameter to enable creating PR comments. This is applicable only when a workflow is triggered by a PR
   enable_pr_comments:
-    description: "Set to `true` to publish new findings as review comments. Must be set with `pr` and `github_token`. Additionally, `issues:write` and `pull-requests:write` permissions must be set in the workflow (default `false`)"
+    description: "Set to `true` to publish new findings as review comments. Must be set together with `pr` and `github_token`. Additionally, the `issues:write` and `pull-requests:write` permissions must be set in the workflow (default `false`)"
     default: "false"
   # Use this parameter to provide the GITHUB_TOKEN for your repo
   github_token:
-    description: "Provide your github token here. This is required if `enable_pr_comments` when set to `true`"
+    description: "Set the token used to authenticate with GitHub. Required if `enable_pr_comments` is set to `true`"
   # Secrets
   scan_secrets:
     description: "Scan source code repository and generate findings for secrets. See also `scan_git_logs` and `pre_commit_checks` (default `false`)"
