@@ -5,47 +5,40 @@ inputs:
   # Use this input parameter to define the base api path
   api:
     description: "Set to the Endor Labs API to use"
-    required: false
     default: "https://api.endorlabs.com"
   # Use this input parameter to define your api key
   api_key:
-    description: "Set to an Endor Labs API key for authentication"
-    required: false
+    description: "Set the API key used to authenticate with Endor Labs"
   # Use this input parameter to define your api secret
   api_secret:
-    description: "Set to an Endor Labs API secret for authentication"
-    required: false
+    description: "Set the secret corresponding to the API key used to authenticate with Endor Labs"
   # Use this input parameter to define your gcp service account
   gcp_service_account:
-    description: "The GCP service account used for workload identity federation"
-    required: false
+    description: "Set the target service account for GCP based authentication. GCP authentication is only enabled if this flag is set. Cannot be used with `api_key`"
   # Use this input parameter to enable github action token
   # User must enable `id-token: write` permissions in their github action
   enable_github_action_token:
-    description: "Enable keyless authentication using github action token"
-    required: false
+    description: "Set to `false` if you prefer to use another form of authentication over GitHub action OIDC tokens (default `true`)"
     default: "true"
   # Use this input parameter to define your Endor Labs tenant namespace
   namespace:
-    description: "Set to your Endor Labs namespace"
+    description: "Set to the namespace of the project that you are working with (required)"
     required: true
   # Use this input parameter to provide a default endorctl version
   # If this is not the latest version, it will be replace by the latest
   endorctl_version:
-    description: "Set to a specified version version of endorctl to pin"
-    required: false
+    description: "Set to a version of endorctl to pin this specific version for use. Defaults to the latest version"
   endorctl_checksum:
-    description: "Set to a checksum to validate the version of endorctl downloaded"
-    required: false
+    description: "Set to the checksum associated with a pinned version of endorctl"
   log_verbose:
-    description: "Set to true to use verbose logging"
+    description: "Set to `true` to enable verbose logging (default `false`)"
     default: "false"
   # Set log level to debug for error troubleshooting
   log_level:
-    description: "Set the endorctl log level"
+    description: "Set the endorctl log level (default `info`)"
     default: "info"
   scan_summary_output_type:
-    description: "Set the desired output summary to table, json, or yaml"
+    description: "Set the desired output format to one of: `table`, `json`, `yaml`, or `summary` (default `json`)"
     default: "json"
   # Deprecated
   ci_run:
@@ -53,45 +46,38 @@ inputs:
     default: "true"
   # Use this input parameter for PRs
   pr:
-    description: "Set to false to track this scan in Endor Labs as a release, as opposed to a point in time policy and finding test for a PR"
+    description: "Set to `false` to track this scan in Endor Labs as a release, as opposed to a point in time policy and finding test for a PR (default `true`)"
     default: "true"
   # Set the baseline branch to enable action policies to only flag new findings
   pr_baseline:
     description: "Set the baseline branch to enable action policies to only act on new findings. Example: `pr_baseline: \"main\"`"
-    required: false
   # Deprecated
   ci_run_tags:
     description: "Deprecated, please use `tags` instead"
-    required: false
   # Use this input parameter to provide searchable tags for your scans
   tags:
     description: "Specify a list of user-defined tags to add to this scan. Tags can be used to search and filter scans later"
-    required: false
   # Use this input parameter to control whether `time -v` wraps runs
   run_stats:
-    description: "Set false to disable CPU/RAM/time scan statistic reporting"
+    description: "Set to `false` to disable reporting of CPU/RAM/time scan statistics via `time -v` (default `true`)"
     default: "true"
-    required: false
   # Custom arguments to the endorctl binary. See the documentation for command flags.
   additional_args:
-    description: "Use this to add your own custom arguments to endorctl"
+    description: "Use this to add custom arguments to the endorctl command"
   # Use this input parameter to enable/disable the artifact export. Works only with "json" output type. The artifact name will be "endor-scan" and the json output file name will be "result-<RUN_ID>.json"
   export_scan_result_artifact:
-    description: "Set to false to skip exporting the json scan result as an artifact"
+    description: "Set to `false` to disable the json scan result artifact export (default `true`)"
     default: "true"
   # Use this input parameter to export a summary of the findings to a SARIF file.
   sarif_file:
-    description: "Export a summary of the findings to a SARIF file"
-    required: false
+    description: "Set to a location on your GitHub runner to output the findings in SARIF format"
   # Use this input parameter to enable creating PR comments. This is applicable only when a workflow is triggered by a PR
   enable_pr_comments:
-    description: "Enable the PR comments feature. This is applicable only when a workflow is triggered by a PR. `ci_run` must be set to `true` and `github_token` must be provided for this. `issues: write` and `pull-requests:write` permissions must be set in the workflow"
-    default: "true"
-    required: false
+    description: "Set to `true` to publish new findings as review comments. Must be set with `pr` and `github_token`. Additionally, `issues:write` and `pull-requests:write` permissions must be set in the workflow (default `false`)"
+    default: "false"
   # Use this parameter to provide the GITHUB_TOKEN for your repo
   github_token:
     description: "Provide your github token here. This is required if `enable_pr_comments` when set to `true`"
-    required: false
 runs:
   using: "node16"
   main: "dist/index.js"

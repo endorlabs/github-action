@@ -151,7 +151,6 @@ async function run() {
       throw new Error(platform.error);
     }
 
-    const SHOW_PROGRESS = false; // deprecated
     const API = core.getInput("api");
     const API_KEY = core.getInput("api_key");
     const API_SECRET = core.getInput("api_secret");
@@ -213,12 +212,9 @@ async function run() {
 
     const options = [
       `--namespace=${NAMESPACE}`,
-      `--show-progress=${SHOW_PROGRESS}`,
       `--verbose=${LOG_VERBOSE}`,
       `--output-type=${SCAN_SUMMARY_OUTPUT_TYPE}`,
       `--log-level=${LOG_LEVEL}`,
-      `--ci-run=${CI_RUN}`,
-      `--pr=${SCAN_PR}`,
     ];
 
     if (API) options.push(`--api=${API}`);
@@ -247,6 +243,10 @@ async function run() {
       }
     }
 
+    if (CI_RUN && SCAN_PR) {
+      // Both are enabled by default so only set this flag if neither option has been disabled
+      options.push(`--pr=true`);
+    }
     if (SCAN_PR_BASELINE) {
       if (!CI_RUN && !SCAN_PR) {
         core.error(
