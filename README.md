@@ -72,8 +72,8 @@ The following input parameters are supported for the Endor Labs GitHub action:
 | `log_level` | Set the log level. (Default: `info`) |
 | `log_verbose` | Set to `true` to enable verbose logging. (Default: `false`) |
 | `namespace` | Set to the namespace of the project that you are working with. (Required) |
-| `pr_baseline` | Set to the git reference that you are merging to, such as the default branch. Enables endorctl to compare findings so developers are only alerted to issues un the current changeset. Example: `pr_baseline: "main"` |
 | `pr` | Set to `false` to track this scan as a monitored version within Endor Labs, as opposed to a point in time policy and finding test for a PR. (Default: `true`) |
+| `pr_baseline` | Set to the git reference that you are merging to, such as the default branch. Enables endorctl to compare findings so developers are only alerted to issues un the current changeset. Example: `pr_baseline: "main"` |
 | `run_stats` | Set to `false` to disable reporting of CPU/RAM/time scan statistics via `time -v` (may be required on Windows runners). (Default: `true`) |
 | `sarif_file` | Set to a location on your GitHub runner to output the findings in SARIF format. |
 | `scan_dependencies` | Scan git commits and generate findings for all dependencies. (Default: `true`) |
