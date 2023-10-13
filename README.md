@@ -141,7 +141,7 @@ jobs:
           namespace: "example"
           scan_dependencies: "true"
           scan_secrets: "true"
-          scan_summary_output_type: "json"
+          scan_summary_output_type: "table"
           pr: "true"
           pr_baseline: "main"
       - name: Endor Labs Scan Push to main
@@ -151,6 +151,6 @@ jobs:
           namespace: "example"
           scan_dependencies: "true"
           scan_secrets: "true"
-          scan_summary_output_type: "json"
+          scan_summary_output_type: "table"
           pr: "false"
 ```
