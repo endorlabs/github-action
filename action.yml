@@ -2,84 +2,127 @@ name: "Endor Labs Scan"
 description: "Endor Labs repository scan"
 author: "Endor Labs"
 inputs:
-  # Use this input parameter to define the base api path
-  api:
-    description: "Set to the Endor Labs API to use"
-    required: false
-    default: "https://api.endorlabs.com"
-  # Use this input parameter to define your api key
-  api_key:
-    description: "Set to an Endor Labs API key for authentication"
-    required: false
-  # Use this input parameter to define your api secret
-  api_secret:
-    description: "Set to an Endor Labs API secret for authentication"
-    required: false
-  # Use this input parameter to define your gcp service account
-  gcp_service_account:
-    description: "The GCP service account used for workload identity federation"
-    required: false
-  # Use this input parameter to enable github action token
-  # User must enable `id-token: write` permissions in their github action
-  enable_github_action_token:
-    description: "Enable keyless authentication using github action token"
-    required: false
-    default: "true"
-  # Use this input parameter to define your Endor Labs tenant namespace
-  namespace:
-    description: "Set to your Endor Labs namespace"
-    required: true
-  # Use this input parameter to provide a default endorctl version
-  # If this is not the latest version, it will be replace by the latest
-  endorctl_version:
-    description: "Set to a specified version version of endorctl to pin"
-    required: false
-  endorctl_checksum:
-    description: "Set to a checksum to validate the version of endorctl downloaded"
-    required: false
-  log_verbose:
-    description: "Set to true to use verbose logging"
-    default: "false"
-  # Set log level to debug for error troubleshooting
-  log_level:
-    description: "Set the endorctl log level"
-    default: "info"
-  scan_summary_output_type:
-    description: "Set the desired output summary to table, json, or yaml"
-    default: "json"
-  # Use this input parameter to enable ci run
-  ci_run:
-    description: "Set to false to track this scan in Endor Labs as a release"
-    default: "true"
-  # Use this input parameter to provide searchable tags for your CI runs
-  ci_run_tags:
-    description: "Set searchable tags for your CI runs"
-    required: false
-  # Use this input parameter to control whether `time -v` wraps runs
-  run_stats:
-    description: "Set false to disable CPU/RAM/time scan statistic reporting"
-    default: "true"
-    required: false
-  # Custom arguments to the endorctl binary. See the documentation for command flags.
+  # Custom arguments to the endorctl binary. See the endorctl documentation for command flags.
   additional_args:
-    description: "Use this to add your own custom arguments to endorctl"
-  # Use this input parameter to enable/disable the artifact export. Works only with "json" output type. The artifact name will be "endor-scan" and the json output file name will be "result-<RUN_ID>.json"
-  export_scan_result_artifact:
-    description: "Set to false to skip exporting the json scan result as an artifact"
+    description: >-
+      "Use this to add custom arguments to the endorctl command."
+  # Use this to define the base api path.
+  api:
+    description: >-
+      "Set to the Endor Labs API to use."
+    default: "https://api.endorlabs.com"
+  # Use this to define your api key.
+  api_key:
+    description: >-
+      "Set the API key used to authenticate with Endor Labs".
+  # Use this to define your api secret.
+  api_secret:
+    description: >-
+      "Set the secret corresponding to the API key used to authenticate with Endor Labs."
+  # Deprecated
+  ci_run:
+    deprecationMessage: >-
+      The `ci_run` option has been deprecated, please use `pr` instead."
     default: "true"
-  # Use this input parameter to export a summary of the findings to a SARIF file.
-  sarif_file:
-    description: "Export a summary of the findings to a SARIF file"
-    required: false
-  # Use this input parameter to enable creating PR comments. This is applicable only when a workflow is triggered by a PR
+  # Deprecated
+  ci_run_tags:
+    deprecationMessage: >-
+      The `ci_run_tags` option has been deprecated, please use `tags` instead."
+  # User must enable `id-token: write` permissions in their github action.
+  enable_github_action_token:
+    description: >-
+      "Set to `false` if you prefer to use another form of authentication over GitHub action OIDC tokens."
+    default: "true"
+  # Use this to enable PR comments from endorctl. This is only applicable when a workflow is triggered by a PR.
   enable_pr_comments:
-    description: "Enable the PR comments feature. This is applicable only when a workflow is triggered by a PR. `ci_run` must be set to `true` and `github_token` must be provided for this. `issues: write` and `pull-requests:write` permissions must be set in the workflow"
+    description: >-
+      "Set to `true` to publish new findings as review comments. Must be used together with `pr` and `github_token`. 
+      Additionally, the `issues: write` and `pull-requests: write` permissions must be set in the workflow."
+    default: "false"
+  # Use this to set the endorctl checksum.
+  endorctl_checksum:
+    description: >-
+      "Set to the checksum associated with a pinned version of endorctl."
+  # Use this to pin the endorctl version.
+  endorctl_version:
+    description: >-
+      "Set to a version of endorctl to pin this specific version for use. Defaults to the latest version."
+  # Use this to enable/disable the artifact export. Works only with "json" output type. 
+  # The artifact name will be "endor-scan" and the json output file name will be "result-<RUN_ID>.json"
+  export_scan_result_artifact:
+    description: >-
+      "Set to `false` to disable the json scan result artifact export."
     default: "true"
-    required: false
-  # Use this parameter to provide the GITHUB_TOKEN for your repo
+  # Use this to define your gcp service account.
+  gcp_service_account:
+    description: >-
+      "Set the target service account for GCP based authentication. GCP authentication is only enabled if this flag is set. 
+      Cannot be used with `api_key`."
+  # Use this to provide the github token for your repo.
   github_token:
-    description: "Provide your github token here. This is required if `enable_pr_comments` when set to `true`"
-    required: false
+    description: >-
+      "Set the token used to authenticate with GitHub. Required if `enable_pr_comments` is set to `true`."
+  # Use this for endorctl troubleshooting.
+  log_level:
+    description: >-
+      "Set the endorctl log level, see also `log_verbose`."
+    default: "info"
+  # Use this for endorctl troubleshooting.
+  log_verbose:
+    description: >-
+      "Set to `true` to enable verbose logging."
+    default: "false"
+  # Use this to define your Endor Labs tenant namespace.
+  namespace:
+    description: >-
+      "Set to the namespace of the project that you are working with."
+    required: true
+  # Use this for PRs.
+  pr:
+    description: >-
+      "Set to `false` to track this scan in Endor Labs as a release, as opposed to
+      a point in time policy and finding test for a PR."
+    default: "true"
+  # Set the baseline branch to enable action policies to only flag new findings for PRs.
+  # Note that the findings are still created, but they will not block the commit unless they are new.
+  pr_baseline:
+    description: >-
+      'Set the baseline branch to enable action policies to only act on new findings. 
+      Must be used together with `pr` Example: `pr_baseline: "main"`.'
+  # Use this to control if `time -v` wraps runs.
+  run_stats:
+    description: >-
+      "Set to `false` to disable reporting of CPU/RAM/time scan statistics via `time -v`."
+    default: "true"
+  # Use this to export a summary of the findings to a SARIF file.
+  sarif_file:
+    description: >-
+      "Set to a location on your GitHub runner to output the findings in SARIF format."
+  # Scan dependencies.
+  scan_dependencies:
+    description: >-
+      "Scan git commits and generate findings for all dependencies."
+    default: "true"
+  # Scan all commits for exposed secrets.
+  scan_git_logs:
+    description: >-
+      "Perform a more complete and detailed scan of secrets in the repository history. 
+      Must be used together with `scan_secrets`."
+    default: "false"
+  # Scan source code for exposed secrets.
+  scan_secrets:
+    description: >-
+      "Scan source code repository and generate findings for secrets. See also `scan_git_logs`."
+    default: "false"
+  # Set the endorctl output format.
+  scan_summary_output_type:
+    description: >-
+      "Set the desired output format to one of: `table`, `json`, `yaml`, or `summary`."
+    default: "json"
+  # Use this to provide searchable tags for your scans.
+  tags:
+    description: >-
+      "Specify a list of user-defined tags to add to this scan. Tags can be used to search and filter scans later."
 runs:
   using: "node16"
   main: "dist/index.js"
