@@ -48,6 +48,10 @@ const fetchLatestEndorctlVersion = async (api: string) => {
     throw new Error(`Invalid response from Endor Labs API: \`${body}\``);
   }
 
+  if (!data.ClientVersion) {
+    data.ClientVersion = data.Service.Version;
+  }
+
   return data;
 };
 
@@ -67,7 +71,7 @@ const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
       core.info(`Endorctl version not provided, using latest version`);
 
       const data = await fetchLatestEndorctlVersion(api);
-      endorctlVersion = data.Service.Version;
+      endorctlVersion = data.ClientVersion;
       endorctlChecksum = getEndorctlChecksum(
         data.ClientChecksums,
         platform.os,

@@ -20,6 +20,7 @@ export interface ClientChecksumsType {
 
 export interface VersionResponse {
   Service: ServiceType;
+  ClientVersion: string;
   ClientChecksums: ClientChecksumsType;
 }
 
