@@ -21935,6 +21935,9 @@ const fetchLatestEndorctlVersion = (api) => __awaiter(void 0, void 0, void 0, fu
     if (!(0, utils_1.isVersionResponse)(data)) {
         throw new Error(`Invalid response from Endor Labs API: \`${body}\``);
     }
+    if (!data.ClientVersion) {
+        data.ClientVersion = data.Service.Version;
+    }
     return data;
 });
 const setupEndorctl = ({ version, checksum, api }) => __awaiter(void 0, void 0, void 0, function* () {
@@ -21949,7 +21952,7 @@ const setupEndorctl = ({ version, checksum, api }) => __awaiter(void 0, void 0, 
         if (!version) {
             core.info(`Endorctl version not provided, using latest version`);
             const data = yield fetchLatestEndorctlVersion(api);
-            endorctlVersion = data.Service.Version;
+            endorctlVersion = data.ClientVersion;
             endorctlChecksum = (0, utils_1.getEndorctlChecksum)(data.ClientChecksums, platform.os, platform.arch);
         }
         core.info(`Downloading endorctl version ${endorctlVersion}`);
