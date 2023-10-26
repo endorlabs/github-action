@@ -23,7 +23,7 @@ inputs:
   ci_run:
     deprecationMessage: >-
       The `ci_run` option has been deprecated, please use `pr` instead."
-    default: "true"
+    default: true
   # Deprecated
   ci_run_tags:
     deprecationMessage: >-
@@ -32,13 +32,13 @@ inputs:
   enable_github_action_token:
     description: >-
       "Set to `false` if you prefer to use another form of authentication over GitHub action OIDC tokens."
-    default: "true"
+    default: true
   # Use this to enable PR comments from endorctl. This is only applicable when a workflow is triggered by a PR.
   enable_pr_comments:
     description: >-
       "Set to `true` to publish new findings as review comments. Must be used together with `pr` and `github_token`. 
       Additionally, the `issues: write` and `pull-requests: write` permissions must be set in the workflow."
-    default: "false"
+    default: false
   # Use this to set the endorctl checksum.
   endorctl_checksum:
     description: >-
@@ -52,7 +52,7 @@ inputs:
   export_scan_result_artifact:
     description: >-
       "Set to `false` to disable the json scan result artifact export."
-    default: "true"
+    default: true
   # Use this to define your gcp service account.
   gcp_service_account:
     description: >-
@@ -71,7 +71,7 @@ inputs:
   log_verbose:
     description: >-
       "Set to `true` to enable verbose logging."
-    default: "false"
+    default: false
   # Use this to define your Endor Labs tenant namespace.
   namespace:
     description: >-
@@ -82,7 +82,7 @@ inputs:
     description: >-
       "Set to `false` to track this scan in Endor Labs as a release, as opposed to
       a point in time policy and finding test for a PR."
-    default: "true"
+    default: true
   # Set the baseline branch to enable action policies to only flag new findings for PRs.
   # Note that the findings are still created, but they will not block the commit unless they are new.
   pr_baseline:
@@ -93,7 +93,7 @@ inputs:
   run_stats:
     description: >-
       "Set to `false` to disable reporting of CPU/RAM/time scan statistics via `time -v`."
-    default: "true"
+    default: true
   # Use this to export a summary of the findings to a SARIF file.
   sarif_file:
     description: >-
@@ -102,18 +102,18 @@ inputs:
   scan_dependencies:
     description: >-
       "Scan git commits and generate findings for all dependencies."
-    default: "true"
+    default: true
   # Scan all commits for exposed secrets.
   scan_git_logs:
     description: >-
       "Perform a more complete and detailed scan of secrets in the repository history. 
       Must be used together with `scan_secrets`."
-    default: "false"
+    default: false
   # Scan source code for exposed secrets.
   scan_secrets:
     description: >-
       "Scan source code repository and generate findings for secrets. See also `scan_git_logs`."
-    default: "false"
+    default: false
   # Set the endorctl output format.
   scan_summary_output_type:
     description: >-
