@@ -175,10 +175,10 @@ async function run() {
     const SCAN_PR = core.getBooleanInput("pr");
     const SCAN_PR_BASELINE = core.getInput("pr_baseline");
     const SCAN_TAGS = core.getInput("tags");
-    const SCAN_DEPENDENCIES = core.getInput("scan_dependencies");
-    const SCAN_SECRETS = core.getInput("scan_secrets");
-    const SCAN_GIT_LOGS = core.getInput("scan_git_logs");
-    const RUN_STATS = core.getInput("run_stats");
+    const SCAN_DEPENDENCIES = core.getBooleanInput("scan_dependencies");
+    const SCAN_SECRETS = core.getBooleanInput("scan_secrets");
+    const SCAN_GIT_LOGS = core.getBooleanInput("scan_git_logs");
+    const RUN_STATS = core.getBooleanInput("run_stats");
     const ADDITIONAL_ARGS = core.getInput("additional_args");
     const EXPORT_SCAN_RESULT_ARTIFACT = core.getBooleanInput(
       "export_scan_result_artifact"
@@ -310,7 +310,7 @@ async function run() {
 
     let scan_command = `endorctl`;
     options.unshift("scan", "--path=."); // Standard options for scanner
-    if (RUN_STATS === "true") {
+    if (RUN_STATS) {
       // Wrap scan commmand in `time -v` to get stats
       if (platform.os === EndorctlAvailableOS.Windows) {
         core.info("Timing is not supported on Windows runners");
