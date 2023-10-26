@@ -22096,7 +22096,7 @@ function run() {
             }
             if (ENABLE_PR_COMMENTS && GITHUB_PR_ID) {
                 if (!SCAN_PR) {
-                    core.error('The `pr` option must be enabled for PR comments. Either set `pr: "true"` or disable PR comments');
+                    core.error("The `pr` option must be enabled for PR comments. Either set `pr: true` or disable PR comments");
                 }
                 else if (!CI_RUN) {
                     core.error("The `ci-run` option has been renamed to `pr` and must be enabled for PR comments. Remove the `ci-run` configuration or disable PR comments");
@@ -22114,7 +22114,7 @@ function run() {
             }
             if (SCAN_PR_BASELINE) {
                 if (!SCAN_PR) {
-                    core.error('The `pr` option must also be enabled if `pr_baseline` is set. Either set `pr: "true"` or remove the PR baseline');
+                    core.error("The `pr` option must also be enabled if `pr_baseline` is set. Either set `pr: true` or remove the PR baseline");
                 }
                 else if (!CI_RUN) {
                     core.error("The `ci-run` option has been renamed to `pr` and must be enabled if `pr_baseline` is set. Remove the `ci-run` configuration or the PR baseline");

@@ -34,7 +34,7 @@ on: push
 jobs:
   build-and-scan:
     permissions:
-      id-token: write   # Write permission is required to request a JWT token to perform keyless authentication
+      id-token: write # Write permission is required to request a JWT token to perform keyless authentication
       contents: read  # Required by actions/checkout@v3 to checkout a private repository.
     runs-on: ubuntu-latest
     steps:
@@ -48,7 +48,7 @@ jobs:
       - name: Compile Package
         run: mvn clean install
       - name: Scan with Endor Labs
-        uses: endorlabs/github-action@v1.1.0
+        uses: endorlabs/github-action@v1.1.1
         with:
           namespace: "example"
 ```
@@ -73,7 +73,7 @@ The following input parameters are supported for the Endor Labs GitHub action:
 | `log_verbose` | Set to `true` to enable verbose logging. (Default: `false`) |
 | `namespace` | Set to the namespace of the project that you are working with. (Required) |
 | `pr` | Set to `false` to track this scan as a monitored version within Endor Labs, as opposed to a point in time policy and finding test for a PR. (Default: `true`) |
-| `pr_baseline` | Set to the git reference that you are merging to, such as the default branch. Enables endorctl to compare findings so developers are only alerted to issues un the current changeset. Example: `pr_baseline: "main"` |
+| `pr_baseline` | Set to the git reference that you are merging to, such as the default branch. Enables endorctl to compare findings so developers are only alerted to issues un the current changeset. Example: `pr_baseline: "main"`. Note: Not needed if `enable_pr_comments` is set to `true`. |
 | `run_stats` | Set to `false` to disable reporting of CPU/RAM/time scan statistics via `time -v` (may be required on Windows runners). (Default: `true`) |
 | `sarif_file` | Set to a location on your GitHub runner to output the findings in SARIF format. |
 | `scan_dependencies` | Scan git commits and generate findings for all dependencies. (Default: `true`) |
@@ -84,29 +84,29 @@ The following input parameters are supported for the Endor Labs GitHub action:
 
 ## Alternative Authentication Methods
 
-If you are not using keyless authentication for GitHub actions, you should ensure that you do not provide `id-token: write` permissions to your GitHub token unless required by another step in this job. You must also set `enable_github_action_token: "false"` in your Endor Labs GitHub action configuration.
+If you are not using keyless authentication for GitHub actions, you should ensure that you do not provide `id-token: write` permissions to your GitHub token unless required by another step in this job. You must also set `enable_github_action_token: false` in your Endor Labs GitHub action configuration.
 
 Below is an example configuration using an Endor Labs API key:
 
 ```yaml
       - name: Scan with Endor Labs
-        uses: endorlabs/github-action@v1.1.0
+        uses: endorlabs/github-action@v1.1.1
         with:
           namespace: "example"
           api_key: ${{ secrets.ENDOR_API_CREDENTIALS_KEY }}
           api_secret: ${{ secrets.ENDOR_API_CREDENTIALS_SECRET }}
-          enable_github_action_token: "false"
+          enable_github_action_token: false
 ```
 
 Below is an example configuration using a GCP service account for keyless authentication to Endor Labs:
 
 ```yaml
       - name: Scan with Endor Labs
-        uses: endorlabs/github-action@v1.1.0
+        uses: endorlabs/github-action@v1.1.1
         with:
           namespace: "example"
           gcp_service_account: "<Insert_Your_Service_Account>@<Insert_Your_Project>.iam.gserviceaccount.com"
-          enable_github_action_token: "false"
+          enable_github_action_token: false
 ```
 
 ## Example workflow
@@ -136,21 +136,21 @@ jobs:
           java-version: '17'
       - name: Endor Labs Scan Pull Request
         if: github.event_name == 'pull_request'
-        uses: endorlabs/github-action@v1.1.0
+        uses: endorlabs/github-action@v1.1.1
         with:
           namespace: "example"
-          scan_dependencies: "true"
-          scan_secrets: "true"
+          scan_dependencies: true
+          scan_secrets: true
           scan_summary_output_type: "table"
-          pr: "true"
+          pr: true
           pr_baseline: "main"
       - name: Endor Labs Scan Push to main
         if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
-        uses: endorlabs/github-action@v1.1.0
+        uses: endorlabs/github-action@v1.1.1
         with:
           namespace: "example"
-          scan_dependencies: "true"
-          scan_secrets: "true"
+          scan_dependencies: true
+          scan_secrets: true
           scan_summary_output_type: "table"
-          pr: "false"
+          pr: false
 ```
