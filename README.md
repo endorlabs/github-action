@@ -81,6 +81,10 @@ The following input parameters are supported for the Endor Labs GitHub action:
 | `scan_secrets` | Scan source code repository and generate findings for secrets. See also `scan_git_logs`. (Default: `false`) |
 | `scan_summary_output_type` | Set the desired output format to `table`, `json`, `yaml`, or `summary`. (Default: `json`) |
 | `tags` | Specify a list of user-defined tags to add to this scan. Tags can be used to search and filter scans later. |
+| `use-bazel` | Enable the usage of Bazel for the scan. (Default: `false`)|
+| `bazel_exclude_targets` | The list of Bazel targets that are not to be scanned. |
+| `bazel_include_targets` | The list of Bazel targets that are to be scanned. If not given, Endorctl will by default used the targets queried from --bazel-targets-query. If given ---bazel-targets-query will be ignored. |
+| `bazel_targets_query` | The bazel query used by Endorctl to discover the targets to scan. (Default: `kind("(py_binary|java_binary)", //...)`) |
 
 ## Alternative Authentication Methods
 

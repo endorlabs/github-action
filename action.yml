@@ -123,6 +123,21 @@ inputs:
   tags:
     description: >-
       "Specify a list of user-defined tags to add to this scan. Tags can be used to search and filter scans later."
+  # bazel configuration
+  use_bazel:
+    default: false
+    description: >-
+      "Enable the usage of Bazel for the scan."
+  bazel_exclude_targets:
+      description: >-
+        "The list of Bazel targets that are not to be scanned."
+  bazel_include_targets:
+      description: >-
+        "The list of Bazel targets that are to be scanned. If not given, Endorctl will by default used the targets queried from --bazel-targets-query. If given ---bazel-targets-query will be ignored."
+  bazel_targets_query:
+      description: >-
+        "The bazel query used by Endorctl to discover the targets to scan."
+      default: 'kind("(py_binary|java_binary)", //...)'
 runs:
   using: "node16"
   main: "dist/index.js"
