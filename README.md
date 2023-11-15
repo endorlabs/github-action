@@ -140,6 +140,7 @@ jobs:
         if: github.event_name == 'pull_request'
         uses: endorlabs/github-action@v1.1.1
         with:
+          namespace: "example" # Replace with your Endor Labs tenant namespace
           enable_pr_comments: true
           github_token: ${{ secrets.GITHUB_TOKEN }} # needed for enable_pr_comments
           scan_dependencies: true
