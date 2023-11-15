@@ -82,9 +82,9 @@ The following input parameters are supported for the Endor Labs GitHub action:
 | `scan_summary_output_type` | Set the desired output format to `table`, `json`, `yaml`, or `summary`. (Default: `json`) |
 | `tags` | Specify a list of user-defined tags to add to this scan. Tags can be used to search and filter scans later. |
 | `use-bazel` | Enable the usage of Bazel for the scan. (Default: `false`)|
-| `bazel_exclude_targets` | The list of Bazel targets that are not to be scanned. |
-| `bazel_include_targets` | The list of Bazel targets that are to be scanned. If not given, Endorctl will by default used the targets queried from --bazel-targets-query. If given ---bazel-targets-query will be ignored. |
-| `bazel_targets_query` | The bazel query used by Endorctl to discover the targets to scan. (Default: `kind("(py_binary|java_binary)", //...)`) |
+| `bazel_exclude_targets` | Specify a a list of Bazel targets to exclude from scan. |
+| `bazel_include_targets` | Specify a list of Bazel targets to scan. If `bazel_targets_include` is not set the `bazel_targets_query` value is used to determine with bazel targets to scan. |
+| `bazel_targets_query` | Specify a bazel query to determine with Bazel targets to scan. Ignored if `bazel_targets_include` is set. (Default: `kind("(py_binary|java_binary)", //...)`) |
 
 ## Alternative Authentication Methods
 

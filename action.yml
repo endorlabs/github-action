@@ -130,13 +130,13 @@ inputs:
       "Enable the usage of Bazel for the scan."
   bazel_exclude_targets:
       description: >-
-        "The list of Bazel targets that are not to be scanned."
+        "Specify a a list of Bazel targets to exclude from scan."
   bazel_include_targets:
       description: >-
-        "The list of Bazel targets that are to be scanned. If not given, Endorctl will by default used the targets queried from --bazel-targets-query. If given ---bazel-targets-query will be ignored."
+        "Specify a list of Bazel targets to scan. If `bazel_targets_include` is not set the `bazel_targets_query` value is used to determine with bazel targets to scan."
   bazel_targets_query:
       description: >-
-        "The bazel query used by Endorctl to discover the targets to scan."
+        "Specify a Bazel query to determine with Bazel targets to scan. Ignored if `bazel_targets_include` is set."
       default: 'kind("(py_binary|java_binary)", //...)'
 runs:
   using: "node16"
