@@ -125,6 +125,8 @@ jobs:
     permissions:
       id-token: write # This is required for requesting the JWT
       contents: read  # Required by actions/checkout@v3 to checkout a private repository
+      pull-requests: write # for dorny/paths-filter to read pull requests and endorctl to write pr comments
+      issues: write        # for endorctl to write pr comments
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
@@ -138,19 +140,11 @@ jobs:
         if: github.event_name == 'pull_request'
         uses: endorlabs/github-action@v1.1.1
         with:
-          namespace: "example"
+          enable_pr_comments: true
+          github_token: ${{ secrets.GITHUB_TOKEN }} # needed for enable_pr_comments
           scan_dependencies: true
           scan_secrets: true
-          scan_summary_output_type: "table"
           pr: true
-          pr_baseline: "main"
-      - name: Endor Labs Scan Push to main
-        if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
-        uses: endorlabs/github-action@v1.1.1
-        with:
-          namespace: "example"
-          scan_dependencies: true
-          scan_secrets: true
           scan_summary_output_type: "table"
-          pr: false
+          tags: "actor=${{ github.actor }},run-id=${{ github.run_id }}"
 ```
