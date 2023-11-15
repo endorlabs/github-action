@@ -125,7 +125,7 @@ jobs:
     permissions:
       id-token: write # This is required for requesting the JWT
       contents: read  # Required by actions/checkout@v3 to checkout a private repository
-      pull-requests: write # for dorny/paths-filter to read pull requests and endorctl to write pr comments
+      pull-requests: write # for endorctl to write pr comments
       issues: write        # for endorctl to write pr comments
     runs-on: ubuntu-latest
     steps:
