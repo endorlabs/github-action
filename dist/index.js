@@ -22042,7 +22042,7 @@ function run() {
             const ENABLE_PR_COMMENTS = core.getBooleanInput("enable_pr_comments");
             const GITHUB_TOKEN = core.getInput("github_token");
             const GITHUB_PR_ID = (_a = github.context.payload.pull_request) === null || _a === void 0 ? void 0 : _a.number;
-            const USE_BAZEL = core.getInput("use_bazel");
+            const USE_BAZEL = core.getBooleanInput("use_bazel");
             const BAZEL_EXCLUDE_TARGETS = core.getInput("bazel_exclude_targets");
             const BAZEL_INCLUDE_TARGETS = core.getInput("bazel_include_targets");
             const BAZEL_TARGETS_QUERY = core.getInput("bazel_targets_query");
