@@ -34,8 +34,8 @@ on: push
 jobs:
   build-and-scan:
     permissions:
-      id-token: write # Write permission is required to request a JWT token to perform keyless authentication
-      contents: read  # Required by actions/checkout@v3 to checkout a private repository.
+      id-token: write # Write permission is required to request a json web token (JWT) to perform keyless authentication
+      contents: read  # Required by actions/checkout@v3 to checkout a private repository
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -127,8 +127,10 @@ on:
 jobs:
   ci-commons-demo-scan:
     permissions:
-      id-token: write # This is required for requesting the JWT
+      id-token: write # Required for requesting the JWT
       contents: read  # Required by actions/checkout@v3 to checkout a private repository
+      pull-requests: write # Required for endorctl to write pr comments
+      issues: write        # Required for endorctl to write pr comments
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
@@ -142,19 +144,12 @@ jobs:
         if: github.event_name == 'pull_request'
         uses: endorlabs/github-action@v1.1.1
         with:
-          namespace: "example"
+          namespace: "example" # Replace with your Endor Labs tenant namespace
+          enable_pr_comments: true # Enable endorctl to write pr comments
+          github_token: ${{ secrets.GITHUB_TOKEN }} # Required for endorctl to write pr comments
           scan_dependencies: true
           scan_secrets: true
-          scan_summary_output_type: "table"
           pr: true
-          pr_baseline: "main"
-      - name: Endor Labs Scan Push to main
-        if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
-        uses: endorlabs/github-action@v1.1.1
-        with:
-          namespace: "example"
-          scan_dependencies: true
-          scan_secrets: true
           scan_summary_output_type: "table"
-          pr: false
+          tags: "actor=${{ github.actor }},run-id=${{ github.run_id }}"
 ```
