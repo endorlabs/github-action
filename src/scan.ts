@@ -189,6 +189,11 @@ async function run() {
     const GITHUB_TOKEN = core.getInput("github_token");
     const GITHUB_PR_ID = github.context.payload.pull_request?.number;
 
+    const USE_BAZEL = core.getBooleanInput("use_bazel");
+    const BAZEL_EXCLUDE_TARGETS = core.getInput("bazel_exclude_targets");
+    const BAZEL_INCLUDE_TARGETS = core.getInput("bazel_include_targets");
+    const BAZEL_TARGETS_QUERY = core.getInput("bazel_targets_query");
+
     core.info(`Endor Namespace: ${NAMESPACE}`);
 
     if (!NAMESPACE) {
@@ -236,6 +241,19 @@ async function run() {
     }
     if (SCAN_SECRETS) {
       options.push(`--secrets=true`);
+    }
+
+    if (USE_BAZEL) {
+      options.push(`--use-bazel=true`);
+    }
+    if (BAZEL_EXCLUDE_TARGETS) {
+      options.push(`--bazel-exclude-targets=${BAZEL_EXCLUDE_TARGETS}`);
+    }
+    if (BAZEL_INCLUDE_TARGETS) {
+      options.push(`--bazel-include-targets=${BAZEL_INCLUDE_TARGETS}`);
+    }
+    if (BAZEL_TARGETS_QUERY) {
+      options.push(`--bazel-targets-query=${BAZEL_TARGETS_QUERY}`);
     }
 
     if (SCAN_GIT_LOGS) {
