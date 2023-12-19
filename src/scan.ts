@@ -137,6 +137,136 @@ const uploadArtifact = async (scanResult: string) => {
   }
 };
 
+// Scan options
+function get_scan_options(options: any[]): void {
+  const CI_RUN = core.getBooleanInput("ci_run"); // deprecated
+  const CI_RUN_TAGS = core.getInput("ci_run_tags"); // deprecated
+  const SCAN_PR = core.getBooleanInput("pr");
+  const SCAN_PR_BASELINE = core.getInput("pr_baseline");
+  const SCAN_TAGS = core.getInput("tags");
+  const SCAN_DEPENDENCIES = core.getBooleanInput("scan_dependencies");
+  const SCAN_SECRETS = core.getBooleanInput("scan_secrets");
+  const SCAN_GIT_LOGS = core.getBooleanInput("scan_git_logs");
+  const SCAN_PATH = core.getInput("scan_path");
+  const ADDITIONAL_ARGS = core.getInput("additional_args");
+
+  const ADDITION_OPTIONS = ADDITIONAL_ARGS.split(" ");
+  const SARIF_FILE = core.getInput("sarif_file");
+  const ENABLE_PR_COMMENTS = core.getBooleanInput("enable_pr_comments");
+  const GITHUB_TOKEN = core.getInput("github_token");
+  const GITHUB_PR_ID = github.context.payload.pull_request?.number;
+
+  const USE_BAZEL = core.getBooleanInput("use_bazel");
+  const BAZEL_EXCLUDE_TARGETS = core.getInput("bazel_exclude_targets");
+  const BAZEL_INCLUDE_TARGETS = core.getInput("bazel_include_targets");
+  const BAZEL_TARGETS_QUERY = core.getInput("bazel_targets_query");
+
+  if (!SCAN_DEPENDENCIES && !SCAN_SECRETS) {
+    core.error(
+      "At least one of `scan_dependencies` or `scan_secrets` must be enabled"
+    );
+  }
+  if (SCAN_DEPENDENCIES) {
+    options.push(`--dependencies=true`);
+  }
+  if (SCAN_SECRETS) {
+    options.push(`--secrets=true`);
+  }
+
+  if (USE_BAZEL) {
+    options.push(`--use-bazel=true`);
+
+    if (BAZEL_EXCLUDE_TARGETS) {
+      options.push(`--bazel-exclude-targets=${BAZEL_EXCLUDE_TARGETS}`);
+    }
+    if (BAZEL_INCLUDE_TARGETS) {
+      options.push(`--bazel-include-targets=${BAZEL_INCLUDE_TARGETS}`);
+    }
+    if (BAZEL_TARGETS_QUERY) {
+      options.push(`--bazel-targets-query=${BAZEL_TARGETS_QUERY}`);
+    }
+  }
+
+  if (SCAN_GIT_LOGS) {
+    if (!SCAN_SECRETS) {
+      core.error(
+        "Please also enable `scan_secrets` to scan Git logs for secrets"
+      );
+    } else {
+      options.push(`--git-logs=true`);
+    }
+  }
+
+  if (ENABLE_PR_COMMENTS && GITHUB_PR_ID) {
+    if (!SCAN_PR) {
+      core.error(
+        "The `pr` option must be enabled for PR comments. Either set `pr: true` or disable PR comments"
+      );
+    } else if (!CI_RUN) {
+      core.error(
+        "The `ci-run` option has been renamed to `pr` and must be enabled for PR comments. Remove the `ci-run` configuration or disable PR comments"
+      );
+    } else if (!GITHUB_TOKEN) {
+      core.error("`github_token` is required to enable PR comments");
+    } else {
+      options.push(
+        `--enable-pr-comments=true`,
+        `--github-pr-id=${GITHUB_PR_ID}`,
+        `--github-token=${GITHUB_TOKEN}`
+      );
+    }
+  }
+
+  if (CI_RUN && SCAN_PR) {
+    // Both are enabled by default so only set this flag if neither option has been disabled
+    options.push(`--pr=true`);
+  }
+  if (SCAN_PR_BASELINE) {
+    if (!SCAN_PR) {
+      core.error(
+        "The `pr` option must also be enabled if `pr_baseline` is set. Either set `pr: true` or remove the PR baseline"
+      );
+    } else if (!CI_RUN) {
+      core.error(
+        "The `ci-run` option has been renamed to `pr` and must be enabled if `pr_baseline` is set. Remove the `ci-run` configuration or the PR baseline"
+      );
+    } else {
+      options.push(`--pr-baseline=${SCAN_PR_BASELINE}`);
+    }
+  }
+
+  // Deprecated
+  if (CI_RUN_TAGS) {
+    options.push(`--ci-run-tags=${CI_RUN_TAGS}`);
+  }
+  if (SCAN_TAGS) {
+    options.push(`--tags=${SCAN_TAGS}`);
+  }
+  if (SCAN_PATH) {
+    options.push(`--path=${SCAN_PATH}`);
+  }
+  if (ADDITIONAL_ARGS && ADDITION_OPTIONS.length > 0) {
+    options.push(...ADDITION_OPTIONS);
+  }
+  if (SARIF_FILE) {
+    options.push(`--sarif-file=${SARIF_FILE}`);
+  }
+}
+
+// Sign options
+function get_sign_options(options: any[]): void {
+  const IMAGE_NAME = core.getInput("artifact_name");
+
+  if (!IMAGE_NAME) {
+    core.setFailed(
+      "artifact_name is required for the sign command and must be passed as an input from the workflow"
+    );
+    return;
+  }
+
+  options.push(`--image-name=${IMAGE_NAME}`);
+}
+
 async function run() {
   let scanResult = "";
 
@@ -155,6 +285,16 @@ async function run() {
       throw new Error(platform.error);
     }
 
+    // Scan or Sign.
+    let COMMAND = core.getInput("command");
+    COMMAND ??= "scan";
+
+    if (COMMAND !== "scan" && COMMAND !== "sign") {
+      core.setFailed(`Unknown COMMAND: ${COMMAND}`);
+      return;
+    }
+
+    // Common options
     const API = core.getInput("api");
     const API_KEY = core.getInput("api_key");
     const API_SECRET = core.getInput("api_secret");
@@ -169,31 +309,11 @@ async function run() {
     const ENDORCTL_CHECKSUM = core.getInput("endorctl_checksum");
     const LOG_VERBOSE = core.getBooleanInput("log_verbose");
     const LOG_LEVEL = core.getInput("log_level");
-    const SCAN_SUMMARY_OUTPUT_TYPE = core.getInput("scan_summary_output_type");
-    const CI_RUN = core.getBooleanInput("ci_run"); // deprecated
-    const CI_RUN_TAGS = core.getInput("ci_run_tags"); // deprecated
-    const SCAN_PR = core.getBooleanInput("pr");
-    const SCAN_PR_BASELINE = core.getInput("pr_baseline");
-    const SCAN_TAGS = core.getInput("tags");
-    const SCAN_DEPENDENCIES = core.getBooleanInput("scan_dependencies");
-    const SCAN_SECRETS = core.getBooleanInput("scan_secrets");
-    const SCAN_GIT_LOGS = core.getBooleanInput("scan_git_logs");
     const RUN_STATS = core.getBooleanInput("run_stats");
-    const SCAN_PATH = core.getInput("scan_path");
-    const ADDITIONAL_ARGS = core.getInput("additional_args");
     const EXPORT_SCAN_RESULT_ARTIFACT = core.getBooleanInput(
       "export_scan_result_artifact"
     );
-    const ADDITION_OPTIONS = ADDITIONAL_ARGS.split(" ");
-    const SARIF_FILE = core.getInput("sarif_file");
-    const ENABLE_PR_COMMENTS = core.getBooleanInput("enable_pr_comments");
-    const GITHUB_TOKEN = core.getInput("github_token");
-    const GITHUB_PR_ID = github.context.payload.pull_request?.number;
-
-    const USE_BAZEL = core.getBooleanInput("use_bazel");
-    const BAZEL_EXCLUDE_TARGETS = core.getInput("bazel_exclude_targets");
-    const BAZEL_INCLUDE_TARGETS = core.getInput("bazel_include_targets");
-    const BAZEL_TARGETS_QUERY = core.getInput("bazel_targets_query");
+    const SCAN_SUMMARY_OUTPUT_TYPE = core.getInput("scan_summary_output_type");
 
     core.info(`Endor Namespace: ${NAMESPACE}`);
 
@@ -203,6 +323,7 @@ async function run() {
       );
       return;
     }
+
     if (
       !ENABLE_GITHUB_ACTION_TOKEN &&
       !(API_KEY && API_SECRET) &&
@@ -221,9 +342,8 @@ async function run() {
 
     const repoName = github.context.repo.repo;
 
-    core.info(`Scanning repository ${repoName}`);
-
-    const options = [
+    // Common options.
+    let options = [
       `--namespace=${NAMESPACE}`,
       `--verbose=${LOG_VERBOSE}`,
       `--output-type=${SCAN_SUMMARY_OUTPUT_TYPE}`,
@@ -231,42 +351,6 @@ async function run() {
     ];
 
     if (API) options.push(`--api=${API}`);
-
-    if (!SCAN_DEPENDENCIES && !SCAN_SECRETS) {
-      core.error(
-        "At least one of `scan_dependencies` or `scan_secrets` must be enabled"
-      );
-    }
-    if (SCAN_DEPENDENCIES) {
-      options.push(`--dependencies=true`);
-    }
-    if (SCAN_SECRETS) {
-      options.push(`--secrets=true`);
-    }
-
-    if (USE_BAZEL) {
-      options.push(`--use-bazel=true`);
-
-      if (BAZEL_EXCLUDE_TARGETS) {
-        options.push(`--bazel-exclude-targets=${BAZEL_EXCLUDE_TARGETS}`);
-      }
-      if (BAZEL_INCLUDE_TARGETS) {
-        options.push(`--bazel-include-targets=${BAZEL_INCLUDE_TARGETS}`);
-      }
-      if (BAZEL_TARGETS_QUERY) {
-        options.push(`--bazel-targets-query=${BAZEL_TARGETS_QUERY}`);
-      }
-    }
-
-    if (SCAN_GIT_LOGS) {
-      if (!SCAN_SECRETS) {
-        core.error(
-          "Please also enable `scan_secrets` to scan Git logs for secrets"
-        );
-      } else {
-        options.push(`--git-logs=true`);
-      }
-    }
 
     if (ENABLE_GITHUB_ACTION_TOKEN) {
       options.push(`--enable-github-action-token=true`);
@@ -276,93 +360,56 @@ async function run() {
       options.push(`--gcp-service-account=${GCP_CREDENTIALS_SERVICE_ACCOUNT}`);
     }
 
-    if (ENABLE_PR_COMMENTS && GITHUB_PR_ID) {
-      if (!SCAN_PR) {
-        core.error(
-          "The `pr` option must be enabled for PR comments. Either set `pr: true` or disable PR comments"
-        );
-      } else if (!CI_RUN) {
-        core.error(
-          "The `ci-run` option has been renamed to `pr` and must be enabled for PR comments. Remove the `ci-run` configuration or disable PR comments"
-        );
-      } else if (!GITHUB_TOKEN) {
-        core.error("`github_token` is required to enable PR comments");
-      } else {
-        options.push(
-          `--enable-pr-comments=true`,
-          `--github-pr-id=${GITHUB_PR_ID}`,
-          `--github-token=${GITHUB_TOKEN}`
-        );
-      }
+    // Command specific options
+    const command_options = [];
+    if (COMMAND === "scan") {
+      core.info(`Scanning repository ${repoName}`);
+      command_options.push(`scan`);
+      get_scan_options(command_options);
+    } else {
+      command_options.push(`artifact sign`);
+      get_sign_options(command_options);
     }
 
-    if (CI_RUN && SCAN_PR) {
-      // Both are enabled by default so only set this flag if neither option has been disabled
-      options.push(`--pr=true`);
-    }
-    if (SCAN_PR_BASELINE) {
-      if (!SCAN_PR) {
-        core.error(
-          "The `pr` option must also be enabled if `pr_baseline` is set. Either set `pr: true` or remove the PR baseline"
-        );
-      } else if (!CI_RUN) {
-        core.error(
-          "The `ci-run` option has been renamed to `pr` and must be enabled if `pr_baseline` is set. Remove the `ci-run` configuration or the PR baseline"
-        );
-      } else {
-        options.push(`--pr-baseline=${SCAN_PR_BASELINE}`);
-      }
-    }
-
-    // Deprecated
-    if (CI_RUN_TAGS) {
-      options.push(`--ci-run-tags=${CI_RUN_TAGS}`);
-    }
-    if (SCAN_TAGS) {
-      options.push(`--tags=${SCAN_TAGS}`);
-    }
-    if (SCAN_PATH) {
-      options.push(`--path=${SCAN_PATH}`);
-    }
-    if (ADDITIONAL_ARGS && ADDITION_OPTIONS.length > 0) {
-      options.push(...ADDITION_OPTIONS);
-    }
-    if (SARIF_FILE) {
-      options.push(`--sarif-file=${SARIF_FILE}`);
-    }
-
-    let scan_command = `endorctl`;
+    let endorctl_command = `endorctl`;
     options.unshift("scan"); // Standard options for scanner
     if (RUN_STATS) {
       // Wrap scan commmand in `time -v` to get stats
       if (platform.os === EndorctlAvailableOS.Windows) {
         core.info("Timing is not supported on Windows runners");
       } else if (platform.os === EndorctlAvailableOS.Macos) {
-        options.unshift("-l", scan_command);
-        scan_command = `/usr/bin/time`;
+        options.unshift("-l", endorctl_command);
+        endorctl_command = `/usr/bin/time`;
       } else if (platform.os === EndorctlAvailableOS.Linux) {
-        options.unshift("-v", scan_command);
-        scan_command = `time`;
+        options.unshift("-v", endorctl_command);
+        endorctl_command = `time`;
       } else {
         core.info("Timing not supported on this OS");
       }
     }
-    await exec.exec(scan_command, options, scanOptions);
 
-    core.info("Scan completed successfully!");
-    if (!scanResult) {
-      core.info("No vulnerabilities found for given filters.");
-    }
+    options = options.concat(command_options);
 
-    if (
-      EXPORT_SCAN_RESULT_ARTIFACT &&
-      SCAN_SUMMARY_OUTPUT_TYPE === "json" &&
-      scanResult
-    ) {
-      await uploadArtifact(scanResult);
+    // Run the command
+    await exec.exec(endorctl_command, options, scanOptions);
+
+    core.info("${COMMAND} completed successfully!");
+
+    if (COMMAND === "scan") {
+      if (!scanResult) {
+        core.info("No vulnerabilities found for given filters.");
+      }
+
+      if (
+        EXPORT_SCAN_RESULT_ARTIFACT &&
+        SCAN_SUMMARY_OUTPUT_TYPE === "json" &&
+        scanResult
+      ) {
+        await uploadArtifact(scanResult);
+      }
     }
   } catch {
-    core.setFailed("Endorctl Scan Failed");
+    core.setFailed("Endorctl ${COMMAND} Failed");
   }
 }
 
