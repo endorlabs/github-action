@@ -109,6 +109,11 @@ inputs:
       "Perform a more complete and detailed scan of secrets in the repository history. 
       Must be used together with `scan_secrets`."
     default: false
+  # Source Code Path To Scan.
+  scan_path:
+    description: >-
+      "Set to the path to scan. Defaults to the current working directory."
+    default: "."
   # Scan source code for exposed secrets.
   scan_secrets:
     description: >-

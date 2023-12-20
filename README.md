@@ -78,6 +78,7 @@ The following input parameters are supported for the Endor Labs GitHub action:
 | `sarif_file` | Set to a location on your GitHub runner to output the findings in SARIF format. |
 | `scan_dependencies` | Scan git commits and generate findings for all dependencies. (Default: `true`) |
 | `scan_git_logs` | Perform a more complete and detailed scan of secrets in the repository history. Must be used together with `scan_secrets`. (Default: `false`) |
+| `scan_path` | Set the path to the directory to scan. (Default: `.`) |
 | `scan_secrets` | Scan source code repository and generate findings for secrets. See also `scan_git_logs`. (Default: `false`) |
 | `scan_summary_output_type` | Set the desired output format to `table`, `json`, `yaml`, or `summary`. (Default: `json`) |
 | `tags` | Specify a list of user-defined tags to add to this scan. Tags can be used to search and filter scans later. |

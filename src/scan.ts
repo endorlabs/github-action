@@ -179,6 +179,7 @@ async function run() {
     const SCAN_SECRETS = core.getBooleanInput("scan_secrets");
     const SCAN_GIT_LOGS = core.getBooleanInput("scan_git_logs");
     const RUN_STATS = core.getBooleanInput("run_stats");
+    const SCAN_PATH = core.getInput("scan_path");
     const ADDITIONAL_ARGS = core.getInput("additional_args");
     const EXPORT_SCAN_RESULT_ARTIFACT = core.getBooleanInput(
       "export_scan_result_artifact"
@@ -245,15 +246,16 @@ async function run() {
 
     if (USE_BAZEL) {
       options.push(`--use-bazel=true`);
-    }
-    if (BAZEL_EXCLUDE_TARGETS) {
-      options.push(`--bazel-exclude-targets=${BAZEL_EXCLUDE_TARGETS}`);
-    }
-    if (BAZEL_INCLUDE_TARGETS) {
-      options.push(`--bazel-include-targets=${BAZEL_INCLUDE_TARGETS}`);
-    }
-    if (BAZEL_TARGETS_QUERY) {
-      options.push(`--bazel-targets-query=${BAZEL_TARGETS_QUERY}`);
+
+      if (BAZEL_EXCLUDE_TARGETS) {
+        options.push(`--bazel-exclude-targets=${BAZEL_EXCLUDE_TARGETS}`);
+      }
+      if (BAZEL_INCLUDE_TARGETS) {
+        options.push(`--bazel-include-targets=${BAZEL_INCLUDE_TARGETS}`);
+      }
+      if (BAZEL_TARGETS_QUERY) {
+        options.push(`--bazel-targets-query=${BAZEL_TARGETS_QUERY}`);
+      }
     }
 
     if (SCAN_GIT_LOGS) {
@@ -319,6 +321,9 @@ async function run() {
     if (SCAN_TAGS) {
       options.push(`--tags=${SCAN_TAGS}`);
     }
+    if (SCAN_PATH) {
+      options.push(`--path=${SCAN_PATH}`);
+    }
     if (ADDITIONAL_ARGS && ADDITION_OPTIONS.length > 0) {
       options.push(...ADDITION_OPTIONS);
     }
@@ -327,7 +332,7 @@ async function run() {
     }
 
     let scan_command = `endorctl`;
-    options.unshift("scan", "--path=."); // Standard options for scanner
+    options.unshift("scan"); // Standard options for scanner
     if (RUN_STATS) {
       // Wrap scan commmand in `time -v` to get stats
       if (platform.os === EndorctlAvailableOS.Windows) {
