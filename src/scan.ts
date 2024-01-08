@@ -290,7 +290,7 @@ async function run() {
     COMMAND ??= "scan";
 
     if (COMMAND !== "scan" && COMMAND !== "sign") {
-      core.setFailed(`Unknown COMMAND: ${COMMAND}`);
+      core.setFailed(`Unknown command: ${COMMAND}`);
       return;
     }
 
@@ -343,7 +343,7 @@ async function run() {
     const repoName = github.context.repo.repo;
 
     // Common options.
-    let options = [
+    const options = [
       `--namespace=${NAMESPACE}`,
       `--verbose=${LOG_VERBOSE}`,
       `--output-type=${SCAN_SUMMARY_OUTPUT_TYPE}`,
@@ -361,7 +361,7 @@ async function run() {
     }
 
     // Command specific options
-    const command_options = [];
+    let command_options = [];
     if (COMMAND === "scan") {
       core.info(`Scanning repository ${repoName}`);
       command_options.unshift(`scan`);
@@ -370,6 +370,8 @@ async function run() {
       command_options.unshift(`artifact sign`);
       get_sign_options(command_options);
     }
+
+    options.unshift(...command_options);
 
     let endorctl_command = `endorctl`;
     if (RUN_STATS) {
@@ -386,10 +388,7 @@ async function run() {
         core.info("Timing not supported on this OS");
       }
     }
-
-    // Concat common options with command specific options
-    options = options.concat(command_options);
-
+    
     // Run the command
     await exec.exec(endorctl_command, options, scanOptions);
 
