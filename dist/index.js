@@ -22159,7 +22159,7 @@ function run() {
             });
             const repoName = github.context.repo.repo;
             // Common options.
-            const options = [
+            let options = [
                 `--namespace=${NAMESPACE}`,
                 `--verbose=${LOG_VERBOSE}`,
                 `--output-type=${SCAN_SUMMARY_OUTPUT_TYPE}`,
@@ -22205,6 +22205,8 @@ function run() {
                     core.info("Timing not supported on this OS");
                 }
             }
+            // Concat common options with command specific options
+            options = options.concat(command_options);
             // Run the command
             yield exec.exec(endorctl_command, options, scanOptions);
             core.info("${COMMAND} completed successfully!");
