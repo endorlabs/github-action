@@ -101,7 +101,7 @@ const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
       binPath,
       `endorctl${isWindows ? ".exe" : ""}`
     );
-    await io.mv(downloadPath, endorctlPath);
+    await io.cp(downloadPath, endorctlPath);
     core.addPath(binPath);
 
     core.info(`Endorctl downloaded and added to the path`);
