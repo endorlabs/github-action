@@ -101,7 +101,7 @@ const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
       binPath,
       `endorctl${isWindows ? ".exe" : ""}`
     );
-    await io.mv(downloadPath, endorctlPath);
+    await io.cp(downloadPath, endorctlPath);
     core.addPath(binPath);
 
     core.info(`Endorctl downloaded and added to the path`);
@@ -139,7 +139,6 @@ const uploadArtifact = async (scanResult: string) => {
 
 // Scan options
 function get_scan_options(options: any[]): void {
-
   const CI_RUN = core.getBooleanInput("ci_run"); // deprecated
   const CI_RUN_TAGS = core.getInput("ci_run_tags"); // deprecated
   const SCAN_PR = core.getBooleanInput("pr");
@@ -256,7 +255,6 @@ function get_scan_options(options: any[]): void {
 
 // Sign options
 function get_sign_options(options: any[]): void {
-
   const IMAGE_NAME = core.getInput("image_name");
 
   if (!IMAGE_NAME) {
@@ -345,7 +343,7 @@ async function run() {
     const repoName = github.context.repo.repo;
 
     // Common options.
-    let options = [
+    const options = [
       `--namespace=${NAMESPACE}`,
       `--verbose=${LOG_VERBOSE}`,
       `--output-type=${SCAN_SUMMARY_OUTPUT_TYPE}`,

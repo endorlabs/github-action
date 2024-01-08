@@ -21969,7 +21969,7 @@ const setupEndorctl = ({ version, checksum, api }) => __awaiter(void 0, void 0, 
         yield exec.exec("chmod", ["+x", downloadPath], execOptionSilent);
         const binPath = ".";
         const endorctlPath = path.join(binPath, `endorctl${isWindows ? ".exe" : ""}`);
-        yield io.mv(downloadPath, endorctlPath);
+        yield io.cp(downloadPath, endorctlPath);
         core.addPath(binPath);
         core.info(`Endorctl downloaded and added to the path`);
     }
@@ -22098,7 +22098,7 @@ function get_scan_options(options) {
 }
 // Sign options
 function get_sign_options(options) {
-    const IMAGE_NAME = core.getInput("artifact_name");
+    const IMAGE_NAME = core.getInput("image_name");
     if (!IMAGE_NAME) {
         core.setFailed("artifact_name is required for the sign command and must be passed as an input from the workflow");
         return;
@@ -22159,7 +22159,7 @@ function run() {
             });
             const repoName = github.context.repo.repo;
             // Common options.
-            let options = [
+            const options = [
                 `--namespace=${NAMESPACE}`,
                 `--verbose=${LOG_VERBOSE}`,
                 `--output-type=${SCAN_SUMMARY_OUTPUT_TYPE}`,
@@ -22180,15 +22180,14 @@ function run() {
             const command_options = [];
             if (COMMAND === "scan") {
                 core.info(`Scanning repository ${repoName}`);
-                command_options.push(`scan`);
+                command_options.unshift(`scan`);
                 get_scan_options(command_options);
             }
             else {
-                command_options.push(`artifact sign`);
+                command_options.unshift(`artifact sign`);
                 get_sign_options(command_options);
             }
             let endorctl_command = `endorctl`;
-            options.unshift("scan"); // Standard options for scanner
             if (RUN_STATS) {
                 // Wrap scan commmand in `time -v` to get stats
                 if (platform.os === constants_1.EndorctlAvailableOS.Windows) {
@@ -22206,7 +22205,6 @@ function run() {
                     core.info("Timing not supported on this OS");
                 }
             }
-            options = options.concat(command_options);
             // Run the command
             yield exec.exec(endorctl_command, options, scanOptions);
             core.info("${COMMAND} completed successfully!");
