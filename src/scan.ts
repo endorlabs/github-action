@@ -361,7 +361,7 @@ async function run() {
     }
 
     // Command specific options
-    let command_options = [];
+    const command_options = [];
     if (COMMAND === "scan") {
       core.info(`Scanning repository ${repoName}`);
       command_options.unshift(`scan`);
@@ -388,7 +388,7 @@ async function run() {
         core.info("Timing not supported on this OS");
       }
     }
-    
+
     // Run the command
     await exec.exec(endorctl_command, options, scanOptions);
 
