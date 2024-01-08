@@ -139,6 +139,7 @@ const uploadArtifact = async (scanResult: string) => {
 
 // Scan options
 function get_scan_options(options: any[]): void {
+
   const CI_RUN = core.getBooleanInput("ci_run"); // deprecated
   const CI_RUN_TAGS = core.getInput("ci_run_tags"); // deprecated
   const SCAN_PR = core.getBooleanInput("pr");
@@ -255,7 +256,8 @@ function get_scan_options(options: any[]): void {
 
 // Sign options
 function get_sign_options(options: any[]): void {
-  const IMAGE_NAME = core.getInput("artifact_name");
+
+  const IMAGE_NAME = core.getInput("image_name");
 
   if (!IMAGE_NAME) {
     core.setFailed(
@@ -364,15 +366,14 @@ async function run() {
     const command_options = [];
     if (COMMAND === "scan") {
       core.info(`Scanning repository ${repoName}`);
-      command_options.push(`scan`);
+      command_options.unshift(`scan`);
       get_scan_options(command_options);
     } else {
-      command_options.push(`artifact sign`);
+      command_options.unshift(`artifact sign`);
       get_sign_options(command_options);
     }
 
     let endorctl_command = `endorctl`;
-    options.unshift("scan"); // Standard options for scanner
     if (RUN_STATS) {
       // Wrap scan commmand in `time -v` to get stats
       if (platform.os === EndorctlAvailableOS.Windows) {
@@ -387,8 +388,6 @@ async function run() {
         core.info("Timing not supported on this OS");
       }
     }
-
-    options = options.concat(command_options);
 
     // Run the command
     await exec.exec(endorctl_command, options, scanOptions);
