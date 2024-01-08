@@ -21969,7 +21969,7 @@ const setupEndorctl = ({ version, checksum, api }) => __awaiter(void 0, void 0, 
         yield exec.exec("chmod", ["+x", downloadPath], execOptionSilent);
         const binPath = ".";
         const endorctlPath = path.join(binPath, `endorctl${isWindows ? ".exe" : ""}`);
-        yield io.mv(downloadPath, endorctlPath);
+        yield io.cp(downloadPath, endorctlPath);
         core.addPath(binPath);
         core.info(`Endorctl downloaded and added to the path`);
     }
