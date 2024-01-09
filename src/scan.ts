@@ -347,11 +347,14 @@ async function run() {
     const options = [
       `--namespace=${NAMESPACE}`,
       `--verbose=${LOG_VERBOSE}`,
-      `--output-type=${SCAN_SUMMARY_OUTPUT_TYPE}`,
       `--log-level=${LOG_LEVEL}`,
     ];
 
     if (API) options.push(`--api=${API}`);
+
+    if (COMMAND === "scan") {
+      options.push(`--output-type=${SCAN_SUMMARY_OUTPUT_TYPE}`);
+    }
 
     if (ENABLE_GITHUB_ACTION_TOKEN) {
       options.push(`--enable-github-action-token=true`);
