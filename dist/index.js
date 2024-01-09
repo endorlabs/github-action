@@ -22115,13 +22115,13 @@ function run() {
                 },
             },
         };
+        let COMMAND = core.getInput("command");
         try {
             const platform = (0, utils_1.getPlatformInfo)();
             if (platform.error) {
                 throw new Error(platform.error);
             }
             // Scan or Sign.
-            let COMMAND = core.getInput("command");
             COMMAND !== null && COMMAND !== void 0 ? COMMAND : (COMMAND = "scan");
             if (COMMAND !== "scan" && COMMAND !== "sign") {
                 core.setFailed(`Unknown command: ${COMMAND}`);
@@ -22184,7 +22184,8 @@ function run() {
                 get_scan_options(command_options);
             }
             else {
-                command_options.unshift(`artifact sign`);
+                command_options.unshift(`sign`);
+                command_options.unshift(`artifact`);
                 get_sign_options(command_options);
             }
             options.unshift(...command_options);
@@ -22221,7 +22222,7 @@ function run() {
             }
         }
         catch (_a) {
-            core.setFailed("Endorctl ${COMMAND} Failed");
+            core.setFailed(`Endorctl ${COMMAND} failed`);
         }
     });
 }

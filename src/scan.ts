@@ -278,6 +278,8 @@ async function run() {
     },
   };
 
+  let COMMAND = core.getInput("command");
+
   try {
     const platform = getPlatformInfo();
 
@@ -286,7 +288,6 @@ async function run() {
     }
 
     // Scan or Sign.
-    let COMMAND = core.getInput("command");
     COMMAND ??= "scan";
 
     if (COMMAND !== "scan" && COMMAND !== "sign") {
@@ -367,7 +368,8 @@ async function run() {
       command_options.unshift(`scan`);
       get_scan_options(command_options);
     } else {
-      command_options.unshift(`artifact sign`);
+      command_options.unshift(`sign`);
+      command_options.unshift(`artifact`);
       get_sign_options(command_options);
     }
 
@@ -408,7 +410,7 @@ async function run() {
       }
     }
   } catch {
-    core.setFailed("Endorctl ${COMMAND} Failed");
+    core.setFailed(`Endorctl ${COMMAND} failed`);
   }
 }
 
