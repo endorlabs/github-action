@@ -86,7 +86,7 @@ jobs:
         uses: endorlabs/github-action@version
         with:
            command: sign
-           image-name: ghcr.io/endorlabs/hello-sign@sha256:8d6e969186b7f8b6ece93c353b1f0030428540de5305405e643611911f7bd34a
+           image_name: ghcr.io/endorlabs/hello-sign@sha256:8d6e969186b7f8b6ece93c353b1f0030428540de5305405e643611911f7bd34a
            namespace: "example"
 ```
 
