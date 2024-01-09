@@ -287,9 +287,12 @@ async function run() {
       throw new Error(platform.error);
     }
 
-    // Scan or Sign.
-    COMMAND ??= "scan";
+    // Set default value if COMMAND is an empty string or undefined
+    if (!COMMAND) {
+      COMMAND = "scan";
+    }
 
+    // Needs to be either scan or sign.
     if (COMMAND !== "scan" && COMMAND !== "sign") {
       core.setFailed(`Unknown command: ${COMMAND}`);
       return;
