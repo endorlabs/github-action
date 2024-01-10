@@ -142,7 +142,6 @@ inputs:
   bazel_targets_query:
       description: >-
         "Specify a Bazel query to determine with Bazel targets to scan. Ignored if `bazel_targets_include` is set."
-      default: 'kind("(py_binary|java_binary)", //...)'
 runs:
   using: "node16"
   main: "dist/index.js"
