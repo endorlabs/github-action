@@ -132,7 +132,7 @@ The following input parameters are also supported for the Endor Labs GitHub acti
 | `use-bazel` | Enable the usage of Bazel for the scan. (Default: `false`)|
 | `bazel_exclude_targets` | Specify a a list of Bazel targets to exclude from scan. |
 | `bazel_include_targets` | Specify a list of Bazel targets to scan. If `bazel_targets_include` is not set the `bazel_targets_query` value is used to determine with bazel targets to scan. |
-| `bazel_targets_query` | Specify a bazel query to determine with Bazel targets to scan. Ignored if `bazel_targets_include` is set. (Default: `kind("(py_binary|java_binary)", //...)`) |
+| `bazel_targets_query` | Specify a bazel query to determine with Bazel targets to scan. Ignored if `bazel_targets_include` is set. |
 
 ### Image Signing parameters
 
