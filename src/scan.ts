@@ -373,10 +373,13 @@ async function run() {
       core.info(`Scanning repository ${repoName}`);
       command_options.unshift(`scan`);
       get_scan_options(command_options);
-    } else {
+    } else if (COMMAND === "sign") {
       command_options.unshift(`sign`);
       command_options.unshift(`artifact`);
       get_sign_options(command_options);
+    } else if (COMMAND === "verify") {
+      command_options.unshift(`verify`);
+      command_options.unshift(`artifact`);
     }
 
     options.unshift(...command_options);
