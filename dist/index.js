@@ -22105,6 +22105,15 @@ function get_sign_options(options) {
     }
     options.push(`--image-name=${IMAGE_NAME}`);
 }
+// Verify options
+function get_verify_options(options) {
+    const IMAGE_NAME = core.getInput("image_name");
+    if (!IMAGE_NAME) {
+        core.setFailed("artifact_name is required for the verify command and must be passed as an input from the workflow");
+        return;
+    }
+    options.push(`--image-name=${IMAGE_NAME}`);
+}
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         let scanResult = "";
@@ -22125,8 +22134,8 @@ function run() {
             if (!COMMAND) {
                 COMMAND = "scan";
             }
-            // Needs to be either scan or sign.
-            if (COMMAND !== "scan" && COMMAND !== "sign") {
+            // Needs to be either scan, sign or verify.
+            if (COMMAND !== "scan" && COMMAND !== "sign" && COMMAND !== "verify") {
                 core.setFailed(`Unknown command: ${COMMAND}`);
                 return;
             }
@@ -22196,6 +22205,7 @@ function run() {
             else if (COMMAND === "verify") {
                 command_options.unshift(`verify`);
                 command_options.unshift(`artifact`);
+                get_verify_options(command_options);
             }
             options.unshift(...command_options);
             let endorctl_command = `endorctl`;

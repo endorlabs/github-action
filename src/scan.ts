@@ -267,6 +267,20 @@ function get_sign_options(options: any[]): void {
   options.push(`--image-name=${IMAGE_NAME}`);
 }
 
+// Verify options
+function get_verify_options(options: any[]): void {
+  const IMAGE_NAME = core.getInput("image_name");
+
+  if (!IMAGE_NAME) {
+    core.setFailed(
+      "artifact_name is required for the verify command and must be passed as an input from the workflow"
+    );
+    return;
+  }
+
+  options.push(`--image-name=${IMAGE_NAME}`);
+}
+
 async function run() {
   let scanResult = "";
 
@@ -292,8 +306,8 @@ async function run() {
       COMMAND = "scan";
     }
 
-    // Needs to be either scan or sign.
-    if (COMMAND !== "scan" && COMMAND !== "sign") {
+    // Needs to be either scan, sign or verify.
+    if (COMMAND !== "scan" && COMMAND !== "sign" && COMMAND !== "verify") {
       core.setFailed(`Unknown command: ${COMMAND}`);
       return;
     }
@@ -380,6 +394,7 @@ async function run() {
     } else if (COMMAND === "verify") {
       command_options.unshift(`verify`);
       command_options.unshift(`artifact`);
+      get_verify_options(command_options);
     }
 
     options.unshift(...command_options);
