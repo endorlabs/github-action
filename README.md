@@ -83,9 +83,8 @@ jobs:
         run: KO_DOCKER_REPO=ghcr.io/endorlabs/hello-sign ko publish --bare github.com/endorlabs/hello-sign
 
       - name: Sign with Endor Labs
-        uses: endorlabs/github-action@version
+        uses: endorlabs/github-action/sign@version
         with:
-           command: sign
            image_name: ghcr.io/endorlabs/hello-sign@sha256:8d6e969186b7f8b6ece93c353b1f0030428540de5305405e643611911f7bd34a
            namespace: "example"
 ```
@@ -107,7 +106,6 @@ The following input global parameters are supported for the Endor Labs GitHub ac
 | `log_verbose` | Set to `true` to enable verbose logging. (Default: `false`) |
 | `namespace` | Set to the namespace of the project that you are working with. (Required) |
 | `gcp_service_account` | Set the target service account for GCP based authentication. GCP authentication is only enabled if this flag is set. Cannot be used with `api_key`. |
-| `command` | Should be set to `scan` (default) or `sign`.|
 
 ### Scanning parameters
 
@@ -136,11 +134,10 @@ The following input parameters are also supported for the Endor Labs GitHub acti
 
 ### Image Signing parameters
 
-The following input parameters are also supported for the Endor Labs GitHub action when used for image signing:
+The following input parameters are also supported for the Endor Labs GitHub action when used for image signing. The new "sign" action should be used: endorlabs/github-action/sign@version
 
 | Flags | Description |
 | :-- | :-- |
-| `command` | Should be set to `sign`. |
 | `image_name` | Set to the name of the image to be signed |
 
 ## Alternative Authentication Methods

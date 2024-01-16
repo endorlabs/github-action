@@ -1,141 +1,9 @@
-import * as artifact from "@actions/artifact";
 import * as core from "@actions/core";
 import * as exec from "@actions/exec";
 import * as github from "@actions/github";
-import * as httpm from "@actions/http-client";
-import * as io from "@actions/io";
-import * as tc from "@actions/tool-cache";
 
-import * as path from "path";
 import { EndorctlAvailableOS } from "./constants";
-import { SetupProps, VersionResponse } from "./types";
-import {
-  createHashFromFile,
-  getEndorctlChecksum,
-  getPlatformInfo,
-  writeJsonToFile,
-  isVersionResponse,
-} from "./utils";
-
-const execOptionSilent = {
-  silent: true,
-};
-
-/**
- * @throws {Error} when api is unreachable or returns invalid response
- */
-const fetchLatestEndorctlVersion = async (api: string) => {
-  const _http: httpm.HttpClient = new httpm.HttpClient("endor-http-client");
-
-  const res: httpm.HttpClientResponse = await _http
-    .get(`${api}/meta/version`)
-    // eslint-disable-next-line github/no-then
-    .catch((error) => {
-      throw new Error(
-        `Failed to fetch latest version of endorctl from Endor Labs API: ${error.toString()}`
-      );
-    });
-  const body: string = await res.readBody();
-
-  let data: VersionResponse | undefined;
-  try {
-    data = JSON.parse(body);
-  } catch (error) {
-    throw new Error(`Invalid response from Endor Labs API: \`${body}\``);
-  }
-
-  if (!isVersionResponse(data)) {
-    throw new Error(`Invalid response from Endor Labs API: \`${body}\``);
-  }
-
-  if (!data.ClientVersion) {
-    data.ClientVersion = data.Service.Version;
-  }
-
-  return data;
-};
-
-const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
-  try {
-    const platform = getPlatformInfo();
-
-    if (platform.error) {
-      throw new Error(platform.error);
-    }
-
-    const isWindows = platform.os === EndorctlAvailableOS.Windows;
-
-    let endorctlVersion = version;
-    let endorctlChecksum = checksum;
-    if (!version) {
-      core.info(`Endorctl version not provided, using latest version`);
-
-      const data = await fetchLatestEndorctlVersion(api);
-      endorctlVersion = data.ClientVersion;
-      endorctlChecksum = getEndorctlChecksum(
-        data.ClientChecksums,
-        platform.os,
-        platform.arch
-      );
-    }
-
-    core.info(`Downloading endorctl version ${endorctlVersion}`);
-    const url = `${api}/download/endorlabs/${endorctlVersion}/binaries/endorctl_${endorctlVersion}_${
-      platform.os
-    }_${platform.arch}${isWindows ? ".exe" : ""}`;
-    let downloadPath: string | null = null;
-
-    downloadPath = await tc.downloadTool(url);
-    const hash = await createHashFromFile(downloadPath);
-    if (hash !== endorctlChecksum) {
-      throw new Error(
-        "The checksum of the downloaded binary does not match the expected value!"
-      );
-    } else {
-      core.info(`Binary checksum: ${endorctlChecksum}`);
-    }
-
-    await exec.exec("chmod", ["+x", downloadPath], execOptionSilent);
-    const binPath = ".";
-    const endorctlPath = path.join(
-      binPath,
-      `endorctl${isWindows ? ".exe" : ""}`
-    );
-    await io.cp(downloadPath, endorctlPath);
-    core.addPath(binPath);
-
-    core.info(`Endorctl downloaded and added to the path`);
-  } catch (error: any) {
-    core.setFailed(error);
-  }
-};
-
-const uploadArtifact = async (scanResult: string) => {
-  const artifactClient = artifact.create();
-  const artifactName = "endor-scan";
-
-  const { filePath, uploadPath, error } = await writeJsonToFile(scanResult);
-  if (error) {
-    core.error(error);
-  } else {
-    const files = [filePath];
-    const rootDirectory = uploadPath;
-    const options = {
-      continueOnError: true,
-    };
-    const uploadResult = await artifactClient.uploadArtifact(
-      artifactName,
-      files,
-      rootDirectory,
-      options
-    );
-    if (uploadResult.failedItems.length > 0) {
-      core.error("Some items failed to export");
-    } else {
-      core.info("Scan result exported to artifact");
-    }
-  }
-};
+import { getPlatformInfo, setupEndorctl, uploadArtifact } from "./utils";
 
 // Scan options
 function get_scan_options(options: any[]): void {
@@ -253,34 +121,6 @@ function get_scan_options(options: any[]): void {
   }
 }
 
-// Sign options
-function get_sign_options(options: any[]): void {
-  const IMAGE_NAME = core.getInput("image_name");
-
-  if (!IMAGE_NAME) {
-    core.setFailed(
-      "artifact_name is required for the sign command and must be passed as an input from the workflow"
-    );
-    return;
-  }
-
-  options.push(`--image-name=${IMAGE_NAME}`);
-}
-
-// Verify options
-function get_verify_options(options: any[]): void {
-  const IMAGE_NAME = core.getInput("image_name");
-
-  if (!IMAGE_NAME) {
-    core.setFailed(
-      "artifact_name is required for the verify command and must be passed as an input from the workflow"
-    );
-    return;
-  }
-
-  options.push(`--image-name=${IMAGE_NAME}`);
-}
-
 async function run() {
   let scanResult = "";
 
@@ -292,24 +132,11 @@ async function run() {
     },
   };
 
-  let COMMAND = core.getInput("command");
-
   try {
     const platform = getPlatformInfo();
 
     if (platform.error) {
       throw new Error(platform.error);
-    }
-
-    // Set default value if COMMAND is an empty string or undefined
-    if (!COMMAND) {
-      COMMAND = "scan";
-    }
-
-    // Needs to be either scan, sign or verify.
-    if (COMMAND !== "scan" && COMMAND !== "sign" && COMMAND !== "verify") {
-      core.setFailed(`Unknown command: ${COMMAND}`);
-      return;
     }
 
     // Common options
@@ -369,9 +196,7 @@ async function run() {
 
     if (API) options.push(`--api=${API}`);
 
-    if (COMMAND === "scan") {
-      options.push(`--output-type=${SCAN_SUMMARY_OUTPUT_TYPE}`);
-    }
+    options.push(`--output-type=${SCAN_SUMMARY_OUTPUT_TYPE}`);
 
     if (ENABLE_GITHUB_ACTION_TOKEN) {
       options.push(`--enable-github-action-token=true`);
@@ -381,23 +206,9 @@ async function run() {
       options.push(`--gcp-service-account=${GCP_CREDENTIALS_SERVICE_ACCOUNT}`);
     }
 
-    // Command specific options
-    const command_options = [];
-    if (COMMAND === "scan") {
-      core.info(`Scanning repository ${repoName}`);
-      command_options.unshift(`scan`);
-      get_scan_options(command_options);
-    } else if (COMMAND === "sign") {
-      command_options.unshift(`sign`);
-      command_options.unshift(`artifact`);
-      get_sign_options(command_options);
-    } else if (COMMAND === "verify") {
-      command_options.unshift(`verify`);
-      command_options.unshift(`artifact`);
-      get_verify_options(command_options);
-    }
-
-    options.unshift(...command_options);
+    core.info(`Scanning repository ${repoName}`);
+    options.unshift(`scan`);
+    get_scan_options(options);
 
     let endorctl_command = `endorctl`;
     if (RUN_STATS) {
@@ -418,23 +229,21 @@ async function run() {
     // Run the command
     await exec.exec(endorctl_command, options, scanOptions);
 
-    core.info("${COMMAND} completed successfully!");
+    core.info("Scan completed successfully!");
 
-    if (COMMAND === "scan") {
-      if (!scanResult) {
-        core.info("No vulnerabilities found for given filters.");
-      }
+    if (!scanResult) {
+      core.info("No vulnerabilities found for given filters.");
+    }
 
-      if (
-        EXPORT_SCAN_RESULT_ARTIFACT &&
-        SCAN_SUMMARY_OUTPUT_TYPE === "json" &&
-        scanResult
-      ) {
-        await uploadArtifact(scanResult);
-      }
+    if (
+      EXPORT_SCAN_RESULT_ARTIFACT &&
+      SCAN_SUMMARY_OUTPUT_TYPE === "json" &&
+      scanResult
+    ) {
+      await uploadArtifact(scanResult);
     }
   } catch {
-    core.setFailed(`Endorctl ${COMMAND} failed`);
+    core.setFailed(`Endorctl scan failed`);
   }
 }
 

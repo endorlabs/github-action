@@ -21900,105 +21900,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const artifact = __importStar(__nccwpck_require__(2605));
 const core = __importStar(__nccwpck_require__(2186));
 const exec = __importStar(__nccwpck_require__(1514));
 const github = __importStar(__nccwpck_require__(5438));
-const httpm = __importStar(__nccwpck_require__(6255));
-const io = __importStar(__nccwpck_require__(7436));
-const tc = __importStar(__nccwpck_require__(7784));
-const path = __importStar(__nccwpck_require__(1017));
 const constants_1 = __nccwpck_require__(9042);
 const utils_1 = __nccwpck_require__(1314);
-const execOptionSilent = {
-    silent: true,
-};
-/**
- * @throws {Error} when api is unreachable or returns invalid response
- */
-const fetchLatestEndorctlVersion = (api) => __awaiter(void 0, void 0, void 0, function* () {
-    const _http = new httpm.HttpClient("endor-http-client");
-    const res = yield _http
-        .get(`${api}/meta/version`)
-        // eslint-disable-next-line github/no-then
-        .catch((error) => {
-        throw new Error(`Failed to fetch latest version of endorctl from Endor Labs API: ${error.toString()}`);
-    });
-    const body = yield res.readBody();
-    let data;
-    try {
-        data = JSON.parse(body);
-    }
-    catch (error) {
-        throw new Error(`Invalid response from Endor Labs API: \`${body}\``);
-    }
-    if (!(0, utils_1.isVersionResponse)(data)) {
-        throw new Error(`Invalid response from Endor Labs API: \`${body}\``);
-    }
-    if (!data.ClientVersion) {
-        data.ClientVersion = data.Service.Version;
-    }
-    return data;
-});
-const setupEndorctl = ({ version, checksum, api }) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const platform = (0, utils_1.getPlatformInfo)();
-        if (platform.error) {
-            throw new Error(platform.error);
-        }
-        const isWindows = platform.os === constants_1.EndorctlAvailableOS.Windows;
-        let endorctlVersion = version;
-        let endorctlChecksum = checksum;
-        if (!version) {
-            core.info(`Endorctl version not provided, using latest version`);
-            const data = yield fetchLatestEndorctlVersion(api);
-            endorctlVersion = data.ClientVersion;
-            endorctlChecksum = (0, utils_1.getEndorctlChecksum)(data.ClientChecksums, platform.os, platform.arch);
-        }
-        core.info(`Downloading endorctl version ${endorctlVersion}`);
-        const url = `${api}/download/endorlabs/${endorctlVersion}/binaries/endorctl_${endorctlVersion}_${platform.os}_${platform.arch}${isWindows ? ".exe" : ""}`;
-        let downloadPath = null;
-        downloadPath = yield tc.downloadTool(url);
-        const hash = yield (0, utils_1.createHashFromFile)(downloadPath);
-        if (hash !== endorctlChecksum) {
-            throw new Error("The checksum of the downloaded binary does not match the expected value!");
-        }
-        else {
-            core.info(`Binary checksum: ${endorctlChecksum}`);
-        }
-        yield exec.exec("chmod", ["+x", downloadPath], execOptionSilent);
-        const binPath = ".";
-        const endorctlPath = path.join(binPath, `endorctl${isWindows ? ".exe" : ""}`);
-        yield io.cp(downloadPath, endorctlPath);
-        core.addPath(binPath);
-        core.info(`Endorctl downloaded and added to the path`);
-    }
-    catch (error) {
-        core.setFailed(error);
-    }
-});
-const uploadArtifact = (scanResult) => __awaiter(void 0, void 0, void 0, function* () {
-    const artifactClient = artifact.create();
-    const artifactName = "endor-scan";
-    const { filePath, uploadPath, error } = yield (0, utils_1.writeJsonToFile)(scanResult);
-    if (error) {
-        core.error(error);
-    }
-    else {
-        const files = [filePath];
-        const rootDirectory = uploadPath;
-        const options = {
-            continueOnError: true,
-        };
-        const uploadResult = yield artifactClient.uploadArtifact(artifactName, files, rootDirectory, options);
-        if (uploadResult.failedItems.length > 0) {
-            core.error("Some items failed to export");
-        }
-        else {
-            core.info("Scan result exported to artifact");
-        }
-    }
-});
 // Scan options
 function get_scan_options(options) {
     var _a;
@@ -22096,24 +22002,6 @@ function get_scan_options(options) {
         options.push(`--sarif-file=${SARIF_FILE}`);
     }
 }
-// Sign options
-function get_sign_options(options) {
-    const IMAGE_NAME = core.getInput("image_name");
-    if (!IMAGE_NAME) {
-        core.setFailed("artifact_name is required for the sign command and must be passed as an input from the workflow");
-        return;
-    }
-    options.push(`--image-name=${IMAGE_NAME}`);
-}
-// Verify options
-function get_verify_options(options) {
-    const IMAGE_NAME = core.getInput("image_name");
-    if (!IMAGE_NAME) {
-        core.setFailed("artifact_name is required for the verify command and must be passed as an input from the workflow");
-        return;
-    }
-    options.push(`--image-name=${IMAGE_NAME}`);
-}
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         let scanResult = "";
@@ -22124,20 +22012,10 @@ function run() {
                 },
             },
         };
-        let COMMAND = core.getInput("command");
         try {
             const platform = (0, utils_1.getPlatformInfo)();
             if (platform.error) {
                 throw new Error(platform.error);
-            }
-            // Set default value if COMMAND is an empty string or undefined
-            if (!COMMAND) {
-                COMMAND = "scan";
-            }
-            // Needs to be either scan, sign or verify.
-            if (COMMAND !== "scan" && COMMAND !== "sign" && COMMAND !== "verify") {
-                core.setFailed(`Unknown command: ${COMMAND}`);
-                return;
             }
             // Common options
             const API = core.getInput("api");
@@ -22164,7 +22042,7 @@ function run() {
                 core.setFailed("Authentication info not found. Either set enable_github_action_token: true or provide one of gcp_service_account or api_key and api_secret combination");
                 return;
             }
-            yield setupEndorctl({
+            yield (0, utils_1.setupEndorctl)({
                 version: ENDORCTL_VERSION,
                 checksum: ENDORCTL_CHECKSUM,
                 api: API,
@@ -22178,9 +22056,7 @@ function run() {
             ];
             if (API)
                 options.push(`--api=${API}`);
-            if (COMMAND === "scan") {
-                options.push(`--output-type=${SCAN_SUMMARY_OUTPUT_TYPE}`);
-            }
+            options.push(`--output-type=${SCAN_SUMMARY_OUTPUT_TYPE}`);
             if (ENABLE_GITHUB_ACTION_TOKEN) {
                 options.push(`--enable-github-action-token=true`);
             }
@@ -22190,24 +22066,9 @@ function run() {
             else if (GCP_CREDENTIALS_SERVICE_ACCOUNT) {
                 options.push(`--gcp-service-account=${GCP_CREDENTIALS_SERVICE_ACCOUNT}`);
             }
-            // Command specific options
-            const command_options = [];
-            if (COMMAND === "scan") {
-                core.info(`Scanning repository ${repoName}`);
-                command_options.unshift(`scan`);
-                get_scan_options(command_options);
-            }
-            else if (COMMAND === "sign") {
-                command_options.unshift(`sign`);
-                command_options.unshift(`artifact`);
-                get_sign_options(command_options);
-            }
-            else if (COMMAND === "verify") {
-                command_options.unshift(`verify`);
-                command_options.unshift(`artifact`);
-                get_verify_options(command_options);
-            }
-            options.unshift(...command_options);
+            core.info(`Scanning repository ${repoName}`);
+            options.unshift(`scan`);
+            get_scan_options(options);
             let endorctl_command = `endorctl`;
             if (RUN_STATS) {
                 // Wrap scan commmand in `time -v` to get stats
@@ -22228,20 +22089,18 @@ function run() {
             }
             // Run the command
             yield exec.exec(endorctl_command, options, scanOptions);
-            core.info("${COMMAND} completed successfully!");
-            if (COMMAND === "scan") {
-                if (!scanResult) {
-                    core.info("No vulnerabilities found for given filters.");
-                }
-                if (EXPORT_SCAN_RESULT_ARTIFACT &&
-                    SCAN_SUMMARY_OUTPUT_TYPE === "json" &&
-                    scanResult) {
-                    yield uploadArtifact(scanResult);
-                }
+            core.info("Scan completed successfully!");
+            if (!scanResult) {
+                core.info("No vulnerabilities found for given filters.");
+            }
+            if (EXPORT_SCAN_RESULT_ARTIFACT &&
+                SCAN_SUMMARY_OUTPUT_TYPE === "json" &&
+                scanResult) {
+                yield (0, utils_1.uploadArtifact)(scanResult);
             }
         }
         catch (_a) {
-            core.setFailed(`Endorctl ${COMMAND} failed`);
+            core.setFailed(`Endorctl scan failed`);
         }
     });
 }
@@ -22288,12 +22147,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.isVersionResponse = exports.isObject = exports.writeJsonToFile = exports.getEndorctlChecksum = exports.getPlatformInfo = exports.createHashFromFile = void 0;
+exports.uploadArtifact = exports.setupEndorctl = exports.fetchLatestEndorctlVersion = exports.isVersionResponse = exports.isObject = exports.writeJsonToFile = exports.getEndorctlChecksum = exports.getPlatformInfo = exports.createHashFromFile = void 0;
+const artifact = __importStar(__nccwpck_require__(2605));
+const core = __importStar(__nccwpck_require__(2186));
 const crypto = __importStar(__nccwpck_require__(6113));
+const exec = __importStar(__nccwpck_require__(1514));
 const fs = __importStar(__nccwpck_require__(7147));
 const fspromises = __importStar(__nccwpck_require__(3292));
+const httpm = __importStar(__nccwpck_require__(6255));
+const io = __importStar(__nccwpck_require__(7436));
+const tc = __importStar(__nccwpck_require__(7784));
 const path = __importStar(__nccwpck_require__(1017));
 const constants_1 = __nccwpck_require__(9042);
+const execOptionSilent = {
+    silent: true,
+};
 const createHashFromFile = (filePath) => new Promise((resolve) => {
     const hash = crypto.createHash("sha256");
     fs.createReadStream(filePath)
@@ -22382,6 +22250,95 @@ const isVersionResponse = (value) => {
         (0, exports.isObject)(value.ClientChecksums));
 };
 exports.isVersionResponse = isVersionResponse;
+/**
+ * @throws {Error} when api is unreachable or returns invalid response
+ */
+const fetchLatestEndorctlVersion = (api) => __awaiter(void 0, void 0, void 0, function* () {
+    const _http = new httpm.HttpClient("endor-http-client");
+    const res = yield _http
+        .get(`${api}/meta/version`)
+        // eslint-disable-next-line github/no-then
+        .catch((error) => {
+        throw new Error(`Failed to fetch latest version of endorctl from Endor Labs API: ${error.toString()}`);
+    });
+    const body = yield res.readBody();
+    let data;
+    try {
+        data = JSON.parse(body);
+    }
+    catch (error) {
+        throw new Error(`Invalid response from Endor Labs API: \`${body}\``);
+    }
+    if (!(0, exports.isVersionResponse)(data)) {
+        throw new Error(`Invalid response from Endor Labs API: \`${body}\``);
+    }
+    if (!data.ClientVersion) {
+        data.ClientVersion = data.Service.Version;
+    }
+    return data;
+});
+exports.fetchLatestEndorctlVersion = fetchLatestEndorctlVersion;
+const setupEndorctl = ({ version, checksum, api }) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const platform = (0, exports.getPlatformInfo)();
+        if (platform.error) {
+            throw new Error(platform.error);
+        }
+        const isWindows = platform.os === constants_1.EndorctlAvailableOS.Windows;
+        let endorctlVersion = version;
+        let endorctlChecksum = checksum;
+        if (!version) {
+            core.info(`Endorctl version not provided, using latest version`);
+            const data = yield (0, exports.fetchLatestEndorctlVersion)(api);
+            endorctlVersion = data.ClientVersion;
+            endorctlChecksum = (0, exports.getEndorctlChecksum)(data.ClientChecksums, platform.os, platform.arch);
+        }
+        core.info(`Downloading endorctl version ${endorctlVersion}`);
+        const url = `${api}/download/endorlabs/${endorctlVersion}/binaries/endorctl_${endorctlVersion}_${platform.os}_${platform.arch}${isWindows ? ".exe" : ""}`;
+        let downloadPath = null;
+        downloadPath = yield tc.downloadTool(url);
+        const hash = yield (0, exports.createHashFromFile)(downloadPath);
+        if (hash !== endorctlChecksum) {
+            throw new Error("The checksum of the downloaded binary does not match the expected value!");
+        }
+        else {
+            core.info(`Binary checksum: ${endorctlChecksum}`);
+        }
+        yield exec.exec("chmod", ["+x", downloadPath], execOptionSilent);
+        const binPath = ".";
+        const endorctlPath = path.join(binPath, `endorctl${isWindows ? ".exe" : ""}`);
+        yield io.cp(downloadPath, endorctlPath);
+        core.addPath(binPath);
+        core.info(`Endorctl downloaded and added to the path`);
+    }
+    catch (error) {
+        core.setFailed(error);
+    }
+});
+exports.setupEndorctl = setupEndorctl;
+const uploadArtifact = (scanResult) => __awaiter(void 0, void 0, void 0, function* () {
+    const artifactClient = artifact.create();
+    const artifactName = "endor-scan";
+    const { filePath, uploadPath, error } = yield (0, exports.writeJsonToFile)(scanResult);
+    if (error) {
+        core.error(error);
+    }
+    else {
+        const files = [filePath];
+        const rootDirectory = uploadPath;
+        const options = {
+            continueOnError: true,
+        };
+        const uploadResult = yield artifactClient.uploadArtifact(artifactName, files, rootDirectory, options);
+        if (uploadResult.failedItems.length > 0) {
+            core.error("Some items failed to export");
+        }
+        else {
+            core.info("Scan result exported to artifact");
+        }
+    }
+});
+exports.uploadArtifact = uploadArtifact;
 
 
 /***/ }),
