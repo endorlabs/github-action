@@ -77,4 +77,4 @@ inputs:
       "Set to a location on your GitHub runner to output the findings in SARIF format."
 runs:
   using: "node16"
-  main: "../dist/sign.js"
+  main: "../dist/sign/index.js"
