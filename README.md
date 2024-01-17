@@ -85,7 +85,7 @@ jobs:
       - name: Sign with Endor Labs
         uses: endorlabs/github-action/sign@version
         with:
-           image_name: ghcr.io/endorlabs/hello-sign@sha256:8d6e969186b7f8b6ece93c353b1f0030428540de5305405e643611911f7bd34a
+           artifact_name: ghcr.io/endorlabs/hello-sign@sha256:8d6e969186b7f8b6ece93c353b1f0030428540de5305405e643611911f7bd34a
            namespace: "example"
 ```
 
@@ -138,7 +138,7 @@ The following input parameters are also supported for the Endor Labs GitHub acti
 
 | Flags | Description |
 | :-- | :-- |
-| `image_name` | Set to the name of the image to be signed |
+| `artifact_name` | Set to the name of the image to be signed |
 
 ## Alternative Authentication Methods
 

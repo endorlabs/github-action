@@ -15322,12 +15322,12 @@ const constants_1 = __nccwpck_require__(9042);
 const utils_1 = __nccwpck_require__(1314);
 // Verify options
 function get_verify_options(options) {
-    const IMAGE_NAME = core.getInput("image_name");
-    if (!IMAGE_NAME) {
-        core.setFailed("image_name is required for the verify command and must be passed as an input from the workflow");
+    const ARTIFACT_NAME = core.getInput("artifact_name");
+    if (!ARTIFACT_NAME) {
+        core.setFailed("artifact_name is required for the verify command and must be passed as an input from the workflow");
         return;
     }
-    options.push(`--image-name=${IMAGE_NAME}`);
+    options.push(`--name=${ARTIFACT_NAME}`);
 }
 function run() {
     return __awaiter(this, void 0, void 0, function* () {

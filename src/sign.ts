@@ -6,16 +6,16 @@ import { getPlatformInfo, setupEndorctl } from "./utils";
 
 // Sign options
 function get_sign_options(options: any[]): void {
-  const IMAGE_NAME = core.getInput("image_name");
+  const ARTIFACT_NAME = core.getInput("artifact_name");
 
-  if (!IMAGE_NAME) {
+  if (!ARTIFACT_NAME) {
     core.setFailed(
-      "image_name is required for the sign command and must be passed as an input from the workflow"
+      "artifact_name is required for the sign command and must be passed as an input from the workflow"
     );
     return;
   }
 
-  options.push(`--image-name=${IMAGE_NAME}`);
+  options.push(`--name=${ARTIFACT_NAME}`);
 }
 
 async function run() {

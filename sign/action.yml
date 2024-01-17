@@ -48,7 +48,7 @@ inputs:
     description: >-
       "Set the token used to authenticate with GitHub. Required if `enable_pr_comments` is set to `true`."
 # Use this to provide the name of the image to be signed.
-  image_name:
+  artifact_name:
     description: >-
       "Set the name of the image to sign. It should be the path to the built container followed by the SHA256 digest, e.g 'path/to/image@sha256:digest."
   # Use this for endorctl troubleshooting.
