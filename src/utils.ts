@@ -1,7 +1,14 @@
+import * as artifact from "@actions/artifact";
+import * as core from "@actions/core";
 import * as crypto from "crypto";
+import * as exec from "@actions/exec";
 import * as fs from "fs";
 import * as fspromises from "fs/promises";
+import * as httpm from "@actions/http-client";
+import * as io from "@actions/io";
+import * as tc from "@actions/tool-cache";
 import * as path from "path";
+
 import {
   EndorctlAvailableArch,
   EndorctlAvailableOS,
@@ -10,7 +17,16 @@ import {
   SupportedRunnerArch,
   SupportedRunnerOS,
 } from "./constants";
-import { ClientChecksumsType, PlatformInfo, VersionResponse } from "./types";
+import {
+  ClientChecksumsType,
+  PlatformInfo,
+  SetupProps,
+  VersionResponse,
+} from "./types";
+
+const execOptionSilent = {
+  silent: true,
+};
 
 export const createHashFromFile = (filePath: string) =>
   new Promise((resolve) => {
@@ -121,4 +137,120 @@ export const isVersionResponse = (value: unknown): value is VersionResponse => {
     "ClientChecksums" in value &&
     isObject(value.ClientChecksums)
   );
+};
+
+/**
+ * @throws {Error} when api is unreachable or returns invalid response
+ */
+export const fetchLatestEndorctlVersion = async (api: string) => {
+  const _http: httpm.HttpClient = new httpm.HttpClient("endor-http-client");
+
+  const res: httpm.HttpClientResponse = await _http
+    .get(`${api}/meta/version`)
+    // eslint-disable-next-line github/no-then
+    .catch((error) => {
+      throw new Error(
+        `Failed to fetch latest version of endorctl from Endor Labs API: ${error.toString()}`
+      );
+    });
+  const body: string = await res.readBody();
+
+  let data: VersionResponse | undefined;
+  try {
+    data = JSON.parse(body);
+  } catch (error) {
+    throw new Error(`Invalid response from Endor Labs API: \`${body}\``);
+  }
+
+  if (!isVersionResponse(data)) {
+    throw new Error(`Invalid response from Endor Labs API: \`${body}\``);
+  }
+
+  if (!data.ClientVersion) {
+    data.ClientVersion = data.Service.Version;
+  }
+
+  return data;
+};
+
+export const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
+  try {
+    const platform = getPlatformInfo();
+
+    if (platform.error) {
+      throw new Error(platform.error);
+    }
+
+    const isWindows = platform.os === EndorctlAvailableOS.Windows;
+
+    let endorctlVersion = version;
+    let endorctlChecksum = checksum;
+    if (!version) {
+      core.info(`Endorctl version not provided, using latest version`);
+
+      const data = await fetchLatestEndorctlVersion(api);
+      endorctlVersion = data.ClientVersion;
+      endorctlChecksum = getEndorctlChecksum(
+        data.ClientChecksums,
+        platform.os,
+        platform.arch
+      );
+    }
+
+    core.info(`Downloading endorctl version ${endorctlVersion}`);
+    const url = `${api}/download/endorlabs/${endorctlVersion}/binaries/endorctl_${endorctlVersion}_${
+      platform.os
+    }_${platform.arch}${isWindows ? ".exe" : ""}`;
+    let downloadPath: string | null = null;
+
+    downloadPath = await tc.downloadTool(url);
+    const hash = await createHashFromFile(downloadPath);
+    if (hash !== endorctlChecksum) {
+      throw new Error(
+        "The checksum of the downloaded binary does not match the expected value!"
+      );
+    } else {
+      core.info(`Binary checksum: ${endorctlChecksum}`);
+    }
+
+    await exec.exec("chmod", ["+x", downloadPath], execOptionSilent);
+    const binPath = ".";
+    const endorctlPath = path.join(
+      binPath,
+      `endorctl${isWindows ? ".exe" : ""}`
+    );
+    await io.cp(downloadPath, endorctlPath);
+    core.addPath(binPath);
+
+    core.info(`Endorctl downloaded and added to the path`);
+  } catch (error: any) {
+    core.setFailed(error);
+  }
+};
+
+export const uploadArtifact = async (scanResult: string) => {
+  const artifactClient = artifact.create();
+  const artifactName = "endor-scan";
+
+  const { filePath, uploadPath, error } = await writeJsonToFile(scanResult);
+  if (error) {
+    core.error(error);
+  } else {
+    const files = [filePath];
+    const rootDirectory = uploadPath;
+    const options = {
+      continueOnError: true,
+    };
+    const uploadResult = await artifactClient.uploadArtifact(
+      artifactName,
+      files,
+      rootDirectory,
+      options
+    );
+    if (uploadResult.failedItems.length > 0) {
+      core.error("Some items failed to export");
+    } else {
+      core.info("Scan result exported to artifact");
+    }
+  }
 };

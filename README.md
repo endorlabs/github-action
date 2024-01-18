@@ -1,8 +1,8 @@
-# Endor Labs Repository Scan Action
+# Endor Labs Repository GitHub Action
 
 Endor Labs helps developers spend less time dealing with security issues and more time accelerating development through safe Open Source Software (OSS) adoption. Our Dependency Lifecycle Management™ Solution helps organizations maximize software reuse by enabling security and development teams to select, secure, and maintain OSS at scale.
 
-The Endor Labs GitHub action may be used to repeatably integrate Endor Labs scanning jobs into your CI pipelines.
+The Endor Labs GitHub action may be used to repeatably integrate Endor Labs scanning or signing jobs into your CI pipelines.
 
 ## Required Parameters and Pre-requisites
 
@@ -24,7 +24,7 @@ The following pre-requisites are required for the Endor Labs GitHub action to su
 2. Checkout your code
 3. Install your build toolchain
 4. Build your code
-5. Scan with Endor Labs
+5. Scan or Sign with Endor Labs
 
 Below is an example workflow to scan with Endor Labs for a Java application using the recommended keyless authentication for GitHub actions:
 
@@ -53,25 +53,70 @@ jobs:
           namespace: "example"
 ```
 
+Below is an example workflow to sign with Endor Labs:
+
+```yaml
+on: [push, workflow_dispatch]
+name: build
+jobs:
+  ko-publish:
+    name: Release ko artifact
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      packages: write
+      contents: read
+    steps:
+      - uses: actions/setup-go@v4
+        with:
+          go-version: '1.20.x'
+      - uses: actions/checkout@v3
+      - uses: ko-build/setup-ko@v0.6
+      - run: ko build
+      - name: Login to the GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish
+        run: KO_DOCKER_REPO=ghcr.io/endorlabs/hello-sign ko publish --bare github.com/endorlabs/hello-sign
+
+      - name: Sign with Endor Labs
+        uses: endorlabs/github-action/sign@version
+        with:
+           artifact_name: ghcr.io/endorlabs/hello-sign@sha256:8d6e969186b7f8b6ece93c353b1f0030428540de5305405e643611911f7bd34a
+           namespace: "example"
+```
+
 ## Supported Configuration Parameters
 
-The following input parameters are supported for the Endor Labs GitHub action:
+### Common parameters
+
+The following input global parameters are supported for the Endor Labs GitHub action:
+
+| Flags | Description |
+| :-- | :-- |
+| `api_key` | Set the API key used to authenticate with Endor Labs. |
+| `api_secret` | Set the secret corresponding to the API key used to authenticate with Endor Labs. |
+| `enable_github_action_token` | Set to `false` if you prefer to use another form of authentication over GitHub action OIDC tokens. (Default: `true`) |
+| `endorctl_checksum` | Set to the checksum associated with a pinned version of endorctl. |
+| `endorctl_version` | Set to a version of endorctl to pin this specific version for use. Defaults to the latest version. |
+| `log_level` | Set the log level. (Default: `info`) |
+| `log_verbose` | Set to `true` to enable verbose logging. (Default: `false`) |
+| `namespace` | Set to the namespace of the project that you are working with. (Required) |
+| `gcp_service_account` | Set the target service account for GCP based authentication. GCP authentication is only enabled if this flag is set. Cannot be used with `api_key`. |
+
+### Scanning parameters
+
+The following input parameters are also supported for the Endor Labs GitHub action when used for scanning:
 
 | Flags | Description |
 | :-- | :-- |
 | `additional_args` | Use additional_args to add custom arguments to the endorctl scan command. |
-| `api_key` | Set the API key used to authenticate with Endor Labs. |
-| `api_secret` | Set the secret corresponding to the API key used to authenticate with Endor Labs. |
-| `enable_github_action_token` | Set to `false` if you prefer to use another form of authentication over GitHub action OIDC tokens. (Default: `true`) |
 | `enable_pr_comments` | Set to `true` to publish new findings as review comments. Must be set together with `pr` and `github_token`. Additionally, the `issues: write` and `pull-requests: write` permissions must be set in the workflow. (Default: `false`) |
-| `endorctl_checksum` | Set to the checksum associated with a pinned version of endorctl. |
-| `endorctl_version` | Set to a version of endorctl to pin this specific version for use. Defaults to the latest version. |
 | `export_scan_result_artifact` | Set to `false` to disable the json scan result artifact export. (Default: `true`) |
-| `gcp_service_account` | Set the target service account for GCP based authentication. GCP authentication is only enabled if this flag is set. Cannot be used with `api_key`. |
 | `github_token` | Set the token used to authenticate with GitHub. Must be provided if `enable_pr_comments` is set to `true` |
-| `log_level` | Set the log level. (Default: `info`) |
-| `log_verbose` | Set to `true` to enable verbose logging. (Default: `false`) |
-| `namespace` | Set to the namespace of the project that you are working with. (Required) |
 | `pr` | Set to `false` to track this scan as a monitored version within Endor Labs, as opposed to a point in time policy and finding test for a PR. (Default: `true`) |
 | `pr_baseline` | Set to the git reference that you are merging to, such as the default branch. Enables endorctl to compare findings so developers are only alerted to issues un the current changeset. Example: `pr_baseline: "main"`. Note: Not needed if `enable_pr_comments` is set to `true`. |
 | `run_stats` | Set to `false` to disable reporting of CPU/RAM/time scan statistics via `time -v` (may be required on Windows runners). (Default: `true`) |
@@ -86,6 +131,14 @@ The following input parameters are supported for the Endor Labs GitHub action:
 | `bazel_exclude_targets` | Specify a a list of Bazel targets to exclude from scan. |
 | `bazel_include_targets` | Specify a list of Bazel targets to scan. If `bazel_targets_include` is not set the `bazel_targets_query` value is used to determine with bazel targets to scan. |
 | `bazel_targets_query` | Specify a bazel query to determine with Bazel targets to scan. Ignored if `bazel_targets_include` is set. |
+
+### Image Signing parameters
+
+The following input parameters are also supported for the Endor Labs GitHub action when used for image signing. The new "sign" action should be used: endorlabs/github-action/sign@version
+
+| Flags | Description |
+| :-- | :-- |
+| `artifact_name` | Set to the name of the image to be signed |
 
 ## Alternative Authentication Methods
 
