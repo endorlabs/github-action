@@ -146,7 +146,7 @@ inputs:
   disable_phantom:
     default: true
     description: >-
-      "Enable phantom dependency analysis to identify dependencies used, but not declared in the manifest file.""
+      "Enable phantom dependency analysis to identify dependencies used, but not declared in the manifest file."
 runs:
   using: "node16"
   main: "dist/index.js"
