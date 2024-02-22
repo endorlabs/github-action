@@ -17,7 +17,7 @@ function get_scan_options(options: any[]): void {
   const SCAN_GIT_LOGS = core.getBooleanInput("scan_git_logs");
   const SCAN_PATH = core.getInput("scan_path");
   const ADDITIONAL_ARGS = core.getInput("additional_args");
-  const DISABLE_PHANTOM = core.getBooleanInput("disable_phantom");
+  const PHANTOM_DEPENDENCIES = core.getBooleanInput("phantom_dependencies");
 
   const ADDITION_OPTIONS = ADDITIONAL_ARGS.split(" ");
   const SARIF_FILE = core.getInput("sarif_file");
@@ -41,8 +41,8 @@ function get_scan_options(options: any[]): void {
   if (SCAN_SECRETS) {
     options.push(`--secrets=true`);
   }
-  if (!DISABLE_PHANTOM) {
-    options.push(`--disable-phantom=false`);
+  if (PHANTOM_DEPENDENCIES) {
+    options.push(`--phantom-dependencies=true`);
   }
 
   if (USE_BAZEL) {

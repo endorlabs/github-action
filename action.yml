@@ -143,8 +143,8 @@ inputs:
       description: >-
         "Specify a Bazel query to determine with Bazel targets to scan. Ignored if `bazel_targets_include` is set."
   # Scan for phantom dependencies
-  disable_phantom:
-    default: true
+  phantom_dependencies:
+    default: false
     description: >-
       "Enable phantom dependency analysis to identify dependencies used, but not declared in the manifest file."
 runs:
