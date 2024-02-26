@@ -10,7 +10,7 @@ function get_sign_options(options: any[]): void {
 
   if (!ARTIFACT_NAME) {
     core.setFailed(
-      "artifact_name is required for the sign command and must be passed as an input from the workflow"
+      "artifact_name is required for the sign command and must be passed as an input from the workflow",
     );
     return;
   }
@@ -20,11 +20,11 @@ function get_sign_options(options: any[]): void {
   const SOURCE_REPO_REF = core.getInput("source-repository-ref");
   if (!SOURCE_REPO_REF) {
     core.setFailed(
-      "source-repository-ref is required for the sign command and must be passed as an input from the workflow"
+      "source-repository-ref is required for the sign command and must be passed as an input from the workflow",
     );
     return;
   }
-  
+
   options.push(`--source-repository-ref=${SOURCE_REPO_REF}`);
 }
 
@@ -41,10 +41,10 @@ async function run() {
     const API_KEY = core.getInput("api_key");
     const API_SECRET = core.getInput("api_secret");
     const GCP_CREDENTIALS_SERVICE_ACCOUNT = core.getInput(
-      "gcp_service_account"
+      "gcp_service_account",
     );
     const ENABLE_GITHUB_ACTION_TOKEN = core.getBooleanInput(
-      "enable_github_action_token"
+      "enable_github_action_token",
     );
     const NAMESPACE = core.getInput("namespace");
     const ENDORCTL_VERSION = core.getInput("endorctl_version");
@@ -57,7 +57,7 @@ async function run() {
 
     if (!NAMESPACE) {
       core.setFailed(
-        "namespace is required and must be passed as an input from the workflow"
+        "namespace is required and must be passed as an input from the workflow",
       );
       return;
     }
@@ -68,7 +68,7 @@ async function run() {
       !GCP_CREDENTIALS_SERVICE_ACCOUNT
     ) {
       core.setFailed(
-        "Authentication info not found. Either set enable_github_action_token: true or provide one of gcp_service_account or api_key and api_secret combination"
+        "Authentication info not found. Either set enable_github_action_token: true or provide one of gcp_service_account or api_key and api_secret combination",
       );
       return;
     }

@@ -31,7 +31,7 @@ function get_scan_options(options: any[]): void {
 
   if (!SCAN_DEPENDENCIES && !SCAN_SECRETS) {
     core.error(
-      "At least one of `scan_dependencies` or `scan_secrets` must be enabled"
+      "At least one of `scan_dependencies` or `scan_secrets` must be enabled",
     );
   }
   if (SCAN_DEPENDENCIES) {
@@ -58,7 +58,7 @@ function get_scan_options(options: any[]): void {
   if (SCAN_GIT_LOGS) {
     if (!SCAN_SECRETS) {
       core.error(
-        "Please also enable `scan_secrets` to scan Git logs for secrets"
+        "Please also enable `scan_secrets` to scan Git logs for secrets",
       );
     } else {
       options.push(`--git-logs=true`);
@@ -68,11 +68,11 @@ function get_scan_options(options: any[]): void {
   if (ENABLE_PR_COMMENTS && GITHUB_PR_ID) {
     if (!SCAN_PR) {
       core.error(
-        "The `pr` option must be enabled for PR comments. Either set `pr: true` or disable PR comments"
+        "The `pr` option must be enabled for PR comments. Either set `pr: true` or disable PR comments",
       );
     } else if (!CI_RUN) {
       core.error(
-        "The `ci-run` option has been renamed to `pr` and must be enabled for PR comments. Remove the `ci-run` configuration or disable PR comments"
+        "The `ci-run` option has been renamed to `pr` and must be enabled for PR comments. Remove the `ci-run` configuration or disable PR comments",
       );
     } else if (!GITHUB_TOKEN) {
       core.error("`github_token` is required to enable PR comments");
@@ -80,7 +80,7 @@ function get_scan_options(options: any[]): void {
       options.push(
         `--enable-pr-comments=true`,
         `--github-pr-id=${GITHUB_PR_ID}`,
-        `--github-token=${GITHUB_TOKEN}`
+        `--github-token=${GITHUB_TOKEN}`,
       );
     }
   }
@@ -92,11 +92,11 @@ function get_scan_options(options: any[]): void {
   if (SCAN_PR_BASELINE) {
     if (!SCAN_PR) {
       core.error(
-        "The `pr` option must also be enabled if `pr_baseline` is set. Either set `pr: true` or remove the PR baseline"
+        "The `pr` option must also be enabled if `pr_baseline` is set. Either set `pr: true` or remove the PR baseline",
       );
     } else if (!CI_RUN) {
       core.error(
-        "The `ci-run` option has been renamed to `pr` and must be enabled if `pr_baseline` is set. Remove the `ci-run` configuration or the PR baseline"
+        "The `ci-run` option has been renamed to `pr` and must be enabled if `pr_baseline` is set. Remove the `ci-run` configuration or the PR baseline",
       );
     } else {
       options.push(`--pr-baseline=${SCAN_PR_BASELINE}`);
@@ -144,10 +144,10 @@ async function run() {
     const API_KEY = core.getInput("api_key");
     const API_SECRET = core.getInput("api_secret");
     const GCP_CREDENTIALS_SERVICE_ACCOUNT = core.getInput(
-      "gcp_service_account"
+      "gcp_service_account",
     );
     const ENABLE_GITHUB_ACTION_TOKEN = core.getBooleanInput(
-      "enable_github_action_token"
+      "enable_github_action_token",
     );
     const NAMESPACE = core.getInput("namespace");
     const ENDORCTL_VERSION = core.getInput("endorctl_version");
@@ -156,7 +156,7 @@ async function run() {
     const LOG_LEVEL = core.getInput("log_level");
     const RUN_STATS = core.getBooleanInput("run_stats");
     const EXPORT_SCAN_RESULT_ARTIFACT = core.getBooleanInput(
-      "export_scan_result_artifact"
+      "export_scan_result_artifact",
     );
     const SCAN_SUMMARY_OUTPUT_TYPE = core.getInput("scan_summary_output_type");
 
@@ -164,7 +164,7 @@ async function run() {
 
     if (!NAMESPACE) {
       core.setFailed(
-        "namespace is required and must be passed as an input from the workflow"
+        "namespace is required and must be passed as an input from the workflow",
       );
       return;
     }
@@ -175,7 +175,7 @@ async function run() {
       !GCP_CREDENTIALS_SERVICE_ACCOUNT
     ) {
       core.setFailed(
-        "Authentication info not found. Either set enable_github_action_token: true or provide one of gcp_service_account or api_key and api_secret combination"
+        "Authentication info not found. Either set enable_github_action_token: true or provide one of gcp_service_account or api_key and api_secret combination",
       );
       return;
     }

@@ -87,7 +87,7 @@ export const getPlatformInfo = () => {
 export const getEndorctlChecksum = (
   clientChecksums: ClientChecksumsType,
   os?: EndorctlAvailableOS,
-  arch?: EndorctlAvailableArch
+  arch?: EndorctlAvailableArch,
 ) => {
   const platformString = `${os}_${arch}`;
   switch (platformString) {
@@ -150,7 +150,7 @@ export const fetchLatestEndorctlVersion = async (api: string) => {
     // eslint-disable-next-line github/no-then
     .catch((error) => {
       throw new Error(
-        `Failed to fetch latest version of endorctl from Endor Labs API: ${error.toString()}`
+        `Failed to fetch latest version of endorctl from Endor Labs API: ${error.toString()}`,
       );
     });
   const body: string = await res.readBody();
@@ -193,7 +193,7 @@ export const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
       endorctlChecksum = getEndorctlChecksum(
         data.ClientChecksums,
         platform.os,
-        platform.arch
+        platform.arch,
       );
     }
 
@@ -207,7 +207,7 @@ export const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
     const hash = await createHashFromFile(downloadPath);
     if (hash !== endorctlChecksum) {
       throw new Error(
-        "The checksum of the downloaded binary does not match the expected value!"
+        "The checksum of the downloaded binary does not match the expected value!",
       );
     } else {
       core.info(`Binary checksum: ${endorctlChecksum}`);
@@ -217,7 +217,7 @@ export const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
     const binPath = ".";
     const endorctlPath = path.join(
       binPath,
-      `endorctl${isWindows ? ".exe" : ""}`
+      `endorctl${isWindows ? ".exe" : ""}`,
     );
     await io.cp(downloadPath, endorctlPath);
     core.addPath(binPath);
@@ -245,7 +245,7 @@ export const uploadArtifact = async (scanResult: string) => {
       artifactName,
       files,
       rootDirectory,
-      options
+      options,
     );
     if (uploadResult.failedItems.length > 0) {
       core.error("Some items failed to export");
