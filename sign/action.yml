@@ -32,7 +32,7 @@ inputs:
   endorctl_version:
     description: >-
       "Set to a version of endorctl to pin this specific version for use. Defaults to the latest version."
-  # Use this to enable/disable the artifact export. Works only with "json" output type. 
+  # Use this to enable/disable the artifact export. Works only with "json" output type.
   # The artifact name will be "endor-scan" and the json output file name will be "result-<RUN_ID>.json"
   export_scan_result_artifact:
     description: >-
@@ -47,7 +47,7 @@ inputs:
   github_token:
     description: >-
       "Set the token used to authenticate with GitHub. Required if `enable_pr_comments` is set to `true`."
-# Use this to provide the name of the image to be signed.
+  # Use this to provide the name of the image to be signed.
   artifact_name:
     description: >-
       "Set the name of the image to sign. It should be the path to the built container followed by the SHA256 digest, e.g 'path/to/image@sha256:digest."
@@ -75,6 +75,10 @@ inputs:
   sarif_file:
     description: >-
       "Set to a location on your GitHub runner to output the findings in SARIF format."
+  # Use this to provide a source repository reference.
+  source-repository-ref:
+    description: >-
+      "Set to a branch, tag, or commit SHA of the repository."
 runs:
   using: "node16"
   main: "../dist/sign/index.js"
