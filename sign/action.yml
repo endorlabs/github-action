@@ -75,6 +75,10 @@ inputs:
   sarif_file:
     description: >-
       "Set to a location on your GitHub runner to output the findings in SARIF format."
+  # Use this to provide a source repository reference.
+  source-repository-ref:
+    description: >-
+      "Set to a branch, tag, or commit SHA of the repository."
 runs:
   using: "node16"
   main: "../dist/sign/index.js"

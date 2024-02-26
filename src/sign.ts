@@ -16,6 +16,16 @@ function get_sign_options(options: any[]): void {
   }
 
   options.push(`--name=${ARTIFACT_NAME}`);
+
+  const SOURCE_REPO_REF = core.getInput("source-repository-ref");
+  if (!SOURCE_REPO_REF) {
+    core.setFailed(
+      "source-repository-ref is required for the sign command and must be passed as an input from the workflow"
+    );
+    return;
+  }
+  
+  options.push(`--source-repository-ref=${SOURCE_REPO_REF}`);
 }
 
 async function run() {
