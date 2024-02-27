@@ -114,6 +114,7 @@ The following input parameters are also supported for the Endor Labs GitHub acti
 | Flags | Description |
 | :-- | :-- |
 | `additional_args` | Use additional_args to add custom arguments to the endorctl scan command. |
+| `phantom_dependencies` | Set to `true` to enable phantom dependency analysis. (Default: `false`) |
 | `enable_pr_comments` | Set to `true` to publish new findings as review comments. Must be set together with `pr` and `github_token`. Additionally, the `issues: write` and `pull-requests: write` permissions must be set in the workflow. (Default: `false`) |
 | `export_scan_result_artifact` | Set to `false` to disable the json scan result artifact export. (Default: `true`) |
 | `github_token` | Set the token used to authenticate with GitHub. Must be provided if `enable_pr_comments` is set to `true` |
