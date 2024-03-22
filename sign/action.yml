@@ -47,10 +47,18 @@ inputs:
   github_token:
     description: >-
       "Set the token used to authenticate with GitHub. Required if `enable_pr_comments` is set to `true`."
-# Use this to provide the name of the image to be signed.
+  # Use this to provide the name of the image to be signed.
   artifact_name:
     description: >-
       "Set the name of the image to sign. It should be the path to the built container followed by the SHA256 digest, e.g 'path/to/image@sha256:digest."
+  # Use this to provide the certificate's OIDC issuer.
+  certificate_oidc_issuer:
+    description: >-
+      "Set the certificate's OIDC issuer (not needed if `enable_github_action_token` is set to `true`)."
+  # Use this to provide the source repository ref.
+  source_repository_ref:
+    description: >-
+      "Set the source repository ref (not needed if `enable_github_action_token` is set to `true`)."
   # Use this for endorctl troubleshooting.
   log_level:
     description: >-
