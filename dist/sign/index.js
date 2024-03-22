@@ -15097,11 +15097,19 @@ function get_sign_options(options) {
         return;
     }
     options.push(`--name=${ARTIFACT_NAME}`);
-    if (!ENABLE_GITHUB_ACTION_TOKEN &&
-        !(CERTIFICATE_OIDC_ISSUER && SOURCE_REPOSITORY_REF)) {
+    // If --enable-github-action-token is set, then we get all provenance metadata
+    // from the token's claims.
+    if (ENABLE_GITHUB_ACTION_TOKEN) {
+        return;
+    }
+    // Otherwise, we need these two: the certificate-oidc-issuer to verify
+    // and the source-repository-ref to revoke.
+    if (!(CERTIFICATE_OIDC_ISSUER && SOURCE_REPOSITORY_REF)) {
         core.setFailed("Required information not found. Either set enable_github_action_token: true or provide certificate_oidc_issuer and source_repository_ref");
         return;
     }
+    options.push(`--certificate-oidc-issuer=${CERTIFICATE_OIDC_ISSUER}`);
+    options.push(`--source-repository-ref=${SOURCE_REPOSITORY_REF}`);
 }
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
