@@ -15323,11 +15323,17 @@ const utils_1 = __nccwpck_require__(1314);
 // Verify options
 function get_verify_options(options) {
     const ARTIFACT_NAME = core.getInput("artifact_name");
+    const CERTIFICATE_OIDC_ISSUER = core.getInput("certificate_oidc_issuer");
     if (!ARTIFACT_NAME) {
         core.setFailed("artifact_name is required for the verify command and must be passed as an input from the workflow");
         return;
     }
     options.push(`--name=${ARTIFACT_NAME}`);
+    if (!CERTIFICATE_OIDC_ISSUER) {
+        core.setFailed("certificate_oidc_issuer is required and must be passed as an input from the workflow");
+        return;
+    }
+    options.push(`--certificate-oidc-issuer=${CERTIFICATE_OIDC_ISSUER}`);
 }
 function run() {
     return __awaiter(this, void 0, void 0, function* () {

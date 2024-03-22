@@ -7,6 +7,7 @@ import { getPlatformInfo, setupEndorctl } from "./utils";
 // Verify options
 function get_verify_options(options: any[]): void {
   const ARTIFACT_NAME = core.getInput("artifact_name");
+  const CERTIFICATE_OIDC_ISSUER = core.getInput("certificate_oidc_issuer");
 
   if (!ARTIFACT_NAME) {
     core.setFailed(
@@ -16,6 +17,15 @@ function get_verify_options(options: any[]): void {
   }
 
   options.push(`--name=${ARTIFACT_NAME}`);
+
+  if (!CERTIFICATE_OIDC_ISSUER) {
+    core.setFailed(
+      "certificate_oidc_issuer is required and must be passed as an input from the workflow"
+    );
+    return;
+  }
+
+  options.push(`--certificate-oidc-issuer=${CERTIFICATE_OIDC_ISSUER}`);
 }
 
 async function run() {

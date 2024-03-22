@@ -15089,11 +15089,27 @@ const utils_1 = __nccwpck_require__(1314);
 // Sign options
 function get_sign_options(options) {
     const ARTIFACT_NAME = core.getInput("artifact_name");
+    const CERTIFICATE_OIDC_ISSUER = core.getInput("certificate_oidc_issuer");
+    const SOURCE_REPOSITORY_REF = core.getInput("source_repository_ref");
+    const ENABLE_GITHUB_ACTION_TOKEN = core.getBooleanInput("enable_github_action_token");
     if (!ARTIFACT_NAME) {
         core.setFailed("artifact_name is required for the sign command and must be passed as an input from the workflow");
         return;
     }
     options.push(`--name=${ARTIFACT_NAME}`);
+    // If --enable-github-action-token is set, then we get all provenance metadata
+    // from the token's claims.
+    if (ENABLE_GITHUB_ACTION_TOKEN) {
+        return;
+    }
+    // Otherwise, we need these two: the certificate-oidc-issuer to verify
+    // and the source-repository-ref to revoke.
+    if (!(CERTIFICATE_OIDC_ISSUER && SOURCE_REPOSITORY_REF)) {
+        core.setFailed("Required information not found. Either set enable_github_action_token: true or provide certificate_oidc_issuer and source_repository_ref");
+        return;
+    }
+    options.push(`--certificate-oidc-issuer=${CERTIFICATE_OIDC_ISSUER}`);
+    options.push(`--source-repository-ref=${SOURCE_REPOSITORY_REF}`);
 }
 function run() {
     return __awaiter(this, void 0, void 0, function* () {

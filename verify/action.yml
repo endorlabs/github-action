@@ -47,10 +47,14 @@ inputs:
   github_token:
     description: >-
       "Set the token used to authenticate with GitHub. Required if `enable_pr_comments` is set to `true`."
-# Use this to provide the name of the image to be verified.
+  # Use this to provide the name of the image to be verified.
   artifact_name:
     description: >-
       "Set the name of the image to verify. It should be the path to the built container followed by the SHA256 digest, e.g 'path/to/image@sha256:digest."
+  # Use this to provide the certificate's OIDC issuer.
+  certificate_oidc_issuer:
+    description: >-
+      "Set the certificate's OIDC issuer."
   # Use this for endorctl troubleshooting.
   log_level:
     description: >-

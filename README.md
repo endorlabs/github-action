@@ -133,13 +133,26 @@ The following input parameters are also supported for the Endor Labs GitHub acti
 | `bazel_include_targets` | Specify a list of Bazel targets to scan. If `bazel_targets_include` is not set the `bazel_targets_query` value is used to determine with bazel targets to scan. |
 | `bazel_targets_query` | Specify a bazel query to determine with Bazel targets to scan. Ignored if `bazel_targets_include` is set. |
 
-### Image Signing parameters
+### Artifact Signing parameters
 
-The following input parameters are also supported for the Endor Labs GitHub action when used for image signing. The new "sign" action should be used: endorlabs/github-action/sign@version
+The following input parameters are also supported for the Endor Labs GitHub action when used for build artifact signing. The new "sign" action should be used: endorlabs/github-action/sign@version.
 
-| Flags | Description |
-| :-- | :-- |
-| `artifact_name` | Set to the name of the image to be signed |
+| Flags | Required | Description |
+| :-- | :-- | :-- |
+| `artifact_name` | Mandatory | Set to the name of the artifact to be signed |
+| `source_repository_ref` | Optional | Set to the repository ref that the build run was based upon, e.g. `ref/tags/v1.0.1`|
+| `certificate_oidc_issuer` | Optional | Set to the OIDC issuer of the token expected in the certificate, e.g. `https://token.actions.githubusercontent.com` |
+
+Note that the above optional parameters are required only if `enable_github_action_token` is explicitly set to false. If set to true, which is the default value, both optional parameters as well as many others, are automatically populated by GitHub and are given to Endor Labs in the form of token claims.
+
+### Artifact Verifying parameters
+
+The following input parameters are also supported for the Endor Labs GitHub action when used for build artifact verification. The new "verify" action should be used: endorlabs/github-action/verify@version
+
+| Flags | Required | Description |
+| :-- | :-- | :-- |
+| `artifact_name` | Mandatory | Set to the name of the artifact to be verified |
+| `certificate_oidc_issuer` | Mandatory | Set to the OIDC issuer of the token expected in the certificate, e.g. `https://token.actions.githubusercontent.com` |
 
 ## Alternative Authentication Methods
 
