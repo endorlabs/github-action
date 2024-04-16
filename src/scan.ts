@@ -19,8 +19,8 @@ function get_scan_options(options: any[]): void {
   const SCAN_PATH = core.getInput("scan_path");
   const ADDITIONAL_ARGS = core.getInput("additional_args");
   const PHANTOM_DEPENDENCIES = core.getBooleanInput("phantom_dependencies");
-  const SCAN_PROJECT_NAME = core.getInput("project_name")
-  const SCAN_IMAGE_NAME = core.getInput("image")
+  const SCAN_PROJECT_NAME = core.getInput("project_name");
+  const SCAN_IMAGE_NAME = core.getInput("image");
 
   const ADDITION_OPTIONS = ADDITIONAL_ARGS.split(" ");
   const SARIF_FILE = core.getInput("sarif_file");
@@ -39,9 +39,7 @@ function get_scan_options(options: any[]): void {
     );
   }
   if (SCAN_CONTAINER && SCAN_DEPENDENCIES) { 
-    core.error(
-      "Container scan and dependency scan cannot be set at the same time"
-    ); 
+    core.error("Container scan and dependency scan cannot be set at the same time"); 
   }
   if (SCAN_DEPENDENCIES) {
     options.push(`--dependencies=true`);

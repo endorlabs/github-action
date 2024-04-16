@@ -47,9 +47,9 @@
   "engines": {
     "node": ">=16.13.2",
     "npm": "Please use yarn instead of npm to install dependencies",
-    "yarn": "1.22.21"
+    "yarn": "1.22.19"
   },
-  "packageManager": "yarn@1.22.21",
+  "packageManager": "yarn@1.22.19",
   "resolutions": {
     "semver": ">=7.5.2"
   }
