@@ -114,15 +114,12 @@ The following input parameters are also supported for the Endor Labs GitHub acti
 | Flags | Description |
 | :-- | :-- |
 | `additional_args` | Use additional_args to add custom arguments to the endorctl scan command. |
-| `bazel_exclude_targets` | Specify a a list of Bazel targets to exclude from scan. |
-| `bazel_include_targets` | Specify a list of Bazel targets to scan. If `bazel_targets_include` is not set the `bazel_targets_query` value is used to determine with bazel targets to scan. |
-| `bazel_targets_query` | Specify a bazel query to determine with Bazel targets to scan. Ignored if `bazel_targets_include` is set. |
+| `phantom_dependencies` | Set to `true` to enable phantom dependency analysis. (Default: `false`) |
 | `enable_pr_comments` | Set to `true` to publish new findings as review comments. Must be set together with `pr` and `github_token`. Additionally, the `issues: write` and `pull-requests: write` permissions must be set in the workflow. (Default: `false`) |
 | `export_scan_result_artifact` | Set to `false` to disable the json scan result artifact export. (Default: `true`) |
 | `github_token` | Set the token used to authenticate with GitHub. Must be provided if `enable_pr_comments` is set to `true` |
-| `phantom_dependencies` | Set to `true` to enable phantom dependency analysis. (Default: `false`) |
-| `pr_baseline` | Set to the git reference that you are merging to, such as the default branch. Enables endorctl to compare findings so developers are only alerted to issues un the current changeset. Example: `pr_baseline: "main"`. Note: Not needed if `enable_pr_comments` is set to `true`. |
 | `pr` | Set to `false` to track this scan as a monitored version within Endor Labs, as opposed to a point in time policy and finding test for a PR. (Default: `true`) |
+| `pr_baseline` | Set to the git reference that you are merging to, such as the default branch. Enables endorctl to compare findings so developers are only alerted to issues un the current changeset. Example: `pr_baseline: "main"`. Note: Not needed if `enable_pr_comments` is set to `true`. |
 | `run_stats` | Set to `false` to disable reporting of CPU/RAM/time scan statistics via `time -v` (may be required on Windows runners). (Default: `true`) |
 | `sarif_file` | Set to a location on your GitHub runner to output the findings in SARIF format. |
 | `scan_dependencies` | Scan git commits and generate findings for all dependencies. (Default: `true`) |
@@ -130,9 +127,11 @@ The following input parameters are also supported for the Endor Labs GitHub acti
 | `scan_path` | Set the path to the directory to scan. (Default: `.`) |
 | `scan_secrets` | Scan source code repository and generate findings for secrets. See also `scan_git_logs`. (Default: `false`) |
 | `scan_summary_output_type` | Set the desired output format to `table`, `json`, `yaml`, or `summary`. (Default: `json`) |
-| `scan_tools` | Scan source code repository for CI/CD tools. (Default: `false`) |
 | `tags` | Specify a list of user-defined tags to add to this scan. Tags can be used to search and filter scans later. |
 | `use-bazel` | Enable the usage of Bazel for the scan. (Default: `false`)|
+| `bazel_exclude_targets` | Specify a a list of Bazel targets to exclude from scan. |
+| `bazel_include_targets` | Specify a list of Bazel targets to scan. If `bazel_targets_include` is not set the `bazel_targets_query` value is used to determine with bazel targets to scan. |
+| `bazel_targets_query` | Specify a bazel query to determine with Bazel targets to scan. Ignored if `bazel_targets_include` is set. |
 
 ### Artifact Signing parameters
 
