@@ -103,6 +103,11 @@ inputs:
     description: >-
       "Scan git commits and generate findings for all dependencies."
     default: true
+  # Scan tools.
+  scan_tools:
+    description: >-
+      "Discover tools used by the repository."
+    default: true
   # Scan all commits for exposed secrets.
   scan_git_logs:
     description: >-
