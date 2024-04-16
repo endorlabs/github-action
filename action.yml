@@ -106,7 +106,7 @@ inputs:
   # Scan tools.
   scan_tools:
     description: >-
-      "Discover tools used by the repository."
+      "Scan source code repository for CI/CD tools."
     default: true
   # Scan all commits for exposed secrets.
   scan_git_logs:
