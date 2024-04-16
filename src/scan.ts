@@ -19,7 +19,8 @@ function get_scan_options(options: any[]): void {
   const SCAN_PATH = core.getInput("scan_path");
   const ADDITIONAL_ARGS = core.getInput("additional_args");
   const PHANTOM_DEPENDENCIES = core.getBooleanInput("phantom_dependencies");
-  const SCAN_PROJECT_NAME = core.getBooleanInput("project_name")
+  const SCAN_PROJECT_NAME = core.getInput("project_name")
+  const SCAN_IMAGE_NAME = core.getInput("image")
 
   const ADDITION_OPTIONS = ADDITIONAL_ARGS.split(" ");
   const SARIF_FILE = core.getInput("sarif_file");
@@ -52,7 +53,7 @@ function get_scan_options(options: any[]): void {
     if (!SCAN_PROJECT_NAME) {
       core.error("Project name must be provided with scan_container"); 
     }
-    options.push(`--container=true`)
+    options.push(`--container=${SCAN_IMAGE_NAME}`)
     options.push(`--project-name=${SCAN_PROJECT_NAME}`)
   }
   if (PHANTOM_DEPENDENCIES) {
