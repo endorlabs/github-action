@@ -21930,7 +21930,7 @@ function get_scan_options(options) {
     const BAZEL_INCLUDE_TARGETS = core.getInput("bazel_include_targets");
     const BAZEL_TARGETS_QUERY = core.getInput("bazel_targets_query");
     if (!SCAN_DEPENDENCIES && !SCAN_SECRETS && !SCAN_TOOLS) {
-        core.error("At least one of `scan_dependencies` or `scan_secrets` or `scan_tools` must be enabled");
+        core.error("At least one of `scan_dependencies`, `scan_secrets` or `scan_tools` must be enabled");
     }
     if (SCAN_DEPENDENCIES) {
         options.push(`--dependencies=true`);
