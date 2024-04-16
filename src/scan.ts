@@ -33,7 +33,7 @@ function get_scan_options(options: any[]): void {
 
   if (!SCAN_DEPENDENCIES && !SCAN_SECRETS && !SCAN_TOOLS) {
     core.error(
-      "At least one of `scan_dependencies`,`scan_secrets` or `scan_tools` must be enabled"
+      "At least one of `scan_dependencies`, `scan_secrets` or `scan_tools` must be enabled"
     );
   }
   if (SCAN_DEPENDENCIES) {
