@@ -21928,8 +21928,12 @@ function get_scan_options(options) {
     const BAZEL_EXCLUDE_TARGETS = core.getInput("bazel_exclude_targets");
     const BAZEL_INCLUDE_TARGETS = core.getInput("bazel_include_targets");
     const BAZEL_TARGETS_QUERY = core.getInput("bazel_targets_query");
-    if (!SCAN_DEPENDENCIES && !SCAN_SECRETS) {
-        core.error("At least one of `scan_dependencies` or `scan_secrets` must be enabled");
+    const SCAN_PROJECT_NAME = core.getInput("project_name");
+    const SCAN_IMAGE_NAME = core.getInput("image"); 
+    const SCAN_CONTAINER = core.getBooleanInput("scan_container"); 
+
+    if (!SCAN_DEPENDENCIES && !SCAN_SECRETS && !SCAN_CONTAINER) {
+        core.error("At least one of `scan_dependencies`, `scan_secrets`, or `scan_container` must be enabled");
     }
     if (SCAN_DEPENDENCIES) {
         options.push(`--dependencies=true`);
@@ -21937,8 +21941,18 @@ function get_scan_options(options) {
     if (SCAN_SECRETS) {
         options.push(`--secrets=true`);
     }
+    if (SCAN_CONTAINER && SCAN_DEPENDENCIES) { 
+        core.error("Container scan and dependency scan cannot be set at the same time"); 
+    }
     if (PHANTOM_DEPENDENCIES) {
         options.push(`--phantom-dependencies=true`);
+    }
+    if (SCAN_CONTAINER) {
+        if (!SCAN_PROJECT_NAME) {
+          core.error("Project name must be provided with scan_container"); 
+        }
+        options.push(`--container=${SCAN_IMAGE_NAME}`)
+        options.push(`--project-name=${SCAN_PROJECT_NAME}`)
     }
     if (USE_BAZEL) {
         options.push(`--use-bazel=true`);
