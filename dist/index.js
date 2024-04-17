@@ -21914,6 +21914,7 @@ function get_scan_options(options) {
     const SCAN_PR_BASELINE = core.getInput("pr_baseline");
     const SCAN_TAGS = core.getInput("tags");
     const SCAN_DEPENDENCIES = core.getBooleanInput("scan_dependencies");
+    const SCAN_TOOLS = core.getBooleanInput("scan_tools");
     const SCAN_SECRETS = core.getBooleanInput("scan_secrets");
     const SCAN_GIT_LOGS = core.getBooleanInput("scan_git_logs");
     const SCAN_PATH = core.getInput("scan_path");
@@ -21932,11 +21933,14 @@ function get_scan_options(options) {
     const SCAN_IMAGE_NAME = core.getInput("image"); 
     const SCAN_CONTAINER = core.getBooleanInput("scan_container"); 
 
-    if (!SCAN_DEPENDENCIES && !SCAN_SECRETS && !SCAN_CONTAINER) {
-        core.error("At least one of `scan_dependencies`, `scan_secrets`, or `scan_container` must be enabled");
+    if (!SCAN_DEPENDENCIES && !SCAN_SECRETS && !SCAN_CONTAINER && !SCAN_TOOLS) {
+        core.error("At least one of `scan_dependencies`, `scan_secrets`, `scan_tools`, or `scan_container` must be enabled");
     }
     if (SCAN_DEPENDENCIES) {
         options.push(`--dependencies=true`);
+    }
+    if (SCAN_TOOLS) {
+        options.push(`--tools=true`);
     }
     if (SCAN_SECRETS) {
         options.push(`--secrets=true`);
