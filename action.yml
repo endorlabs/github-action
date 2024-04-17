@@ -107,7 +107,7 @@ inputs:
   scan_tools:
     description: >-
       "Scan source code repository for CI/CD tools."
-    default: true
+    default: false
   # Scan all commits for exposed secrets.
   scan_git_logs:
     description: >-
