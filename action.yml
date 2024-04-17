@@ -103,6 +103,11 @@ inputs:
     description: >-
       "Scan git commits and generate findings for all dependencies."
     default: true
+  # Scan container images
+  scan_container:
+    description: >-
+      "Scan a specified container image. The image must be set with `image` and a project must be defined with `project`."
+    default: false
   # Scan tools.
   scan_tools:
     description: >-
@@ -152,6 +157,12 @@ inputs:
     default: false
     description: >-
       "Enable phantom dependency analysis to identify dependencies used, but not declared in the manifest file."
+  image:
+    description: >-
+      "Specify a container image to scan."
+  project_name:
+    description: >-
+      "Specify a project name for a container image scan."
 runs:
   using: "node16"
   main: "dist/index.js"
