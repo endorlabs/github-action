@@ -15,7 +15,7 @@ function get_scan_options(options: any[]): void {
   const SCAN_DEPENDENCIES = core.getBooleanInput("scan_dependencies");
   const SCAN_TOOLS = core.getBooleanInput("scan_tools");
   const SCAN_SECRETS = core.getBooleanInput("scan_secrets");
-  const SCAN_CONTAINER = core.getBooleanInput("scan_container"); 
+  const SCAN_CONTAINER = core.getBooleanInput("scan_container");
   const SCAN_GIT_LOGS = core.getBooleanInput("scan_git_logs");
   const SCAN_PATH = core.getInput("scan_path");
   const ADDITIONAL_ARGS = core.getInput("additional_args");
@@ -34,13 +34,15 @@ function get_scan_options(options: any[]): void {
   const BAZEL_INCLUDE_TARGETS = core.getInput("bazel_include_targets");
   const BAZEL_TARGETS_QUERY = core.getInput("bazel_targets_query");
 
-  if (!SCAN_DEPENDENCIES && !SCAN_SECRETS && !SCAN_CONTAINER && !SCAN_TOOLS ) {
+  if (!SCAN_DEPENDENCIES && !SCAN_SECRETS && !SCAN_CONTAINER && !SCAN_TOOLS) {
     core.error(
       "At least one of `scan_dependencies`, `scan_secrets`, `scan_tools`, or `scan_container` must be enabled"
     );
   }
-  if (SCAN_CONTAINER && SCAN_DEPENDENCIES) { 
-    core.error("Container scan and dependency scan cannot be set at the same time"); 
+  if (SCAN_CONTAINER && SCAN_DEPENDENCIES) {
+    core.error(
+      "Container scan and dependency scan cannot be set at the same time"
+    );
   }
   if (SCAN_DEPENDENCIES) {
     options.push(`--dependencies=true`);
@@ -53,10 +55,10 @@ function get_scan_options(options: any[]): void {
   }
   if (SCAN_CONTAINER) {
     if (!SCAN_PROJECT_NAME) {
-      core.error("Project name must be provided with scan_container"); 
+      core.error("Project name must be provided with scan_container");
     }
-    options.push(`--container=${SCAN_IMAGE_NAME}`)
-    options.push(`--project-name=${SCAN_PROJECT_NAME}`)
+    options.push(`--container=${SCAN_IMAGE_NAME}`);
+    options.push(`--project-name=${SCAN_PROJECT_NAME}`);
   }
   if (PHANTOM_DEPENDENCIES) {
     options.push(`--phantom-dependencies=true`);

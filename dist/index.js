@@ -21916,10 +21916,13 @@ function get_scan_options(options) {
     const SCAN_DEPENDENCIES = core.getBooleanInput("scan_dependencies");
     const SCAN_TOOLS = core.getBooleanInput("scan_tools");
     const SCAN_SECRETS = core.getBooleanInput("scan_secrets");
+    const SCAN_CONTAINER = core.getBooleanInput("scan_container");
     const SCAN_GIT_LOGS = core.getBooleanInput("scan_git_logs");
     const SCAN_PATH = core.getInput("scan_path");
     const ADDITIONAL_ARGS = core.getInput("additional_args");
     const PHANTOM_DEPENDENCIES = core.getBooleanInput("phantom_dependencies");
+    const SCAN_PROJECT_NAME = core.getInput("project_name");
+    const SCAN_IMAGE_NAME = core.getInput("image");
     const ADDITION_OPTIONS = ADDITIONAL_ARGS.split(" ");
     const SARIF_FILE = core.getInput("sarif_file");
     const ENABLE_PR_COMMENTS = core.getBooleanInput("enable_pr_comments");
@@ -21929,12 +21932,11 @@ function get_scan_options(options) {
     const BAZEL_EXCLUDE_TARGETS = core.getInput("bazel_exclude_targets");
     const BAZEL_INCLUDE_TARGETS = core.getInput("bazel_include_targets");
     const BAZEL_TARGETS_QUERY = core.getInput("bazel_targets_query");
-    const SCAN_PROJECT_NAME = core.getInput("project_name");
-    const SCAN_IMAGE_NAME = core.getInput("image"); 
-    const SCAN_CONTAINER = core.getBooleanInput("scan_container"); 
-
     if (!SCAN_DEPENDENCIES && !SCAN_SECRETS && !SCAN_CONTAINER && !SCAN_TOOLS) {
         core.error("At least one of `scan_dependencies`, `scan_secrets`, `scan_tools`, or `scan_container` must be enabled");
+    }
+    if (SCAN_CONTAINER && SCAN_DEPENDENCIES) {
+        core.error("Container scan and dependency scan cannot be set at the same time");
     }
     if (SCAN_DEPENDENCIES) {
         options.push(`--dependencies=true`);
@@ -21945,18 +21947,15 @@ function get_scan_options(options) {
     if (SCAN_SECRETS) {
         options.push(`--secrets=true`);
     }
-    if (SCAN_CONTAINER && SCAN_DEPENDENCIES) { 
-        core.error("Container scan and dependency scan cannot be set at the same time"); 
+    if (SCAN_CONTAINER) {
+        if (!SCAN_PROJECT_NAME) {
+            core.error("Project name must be provided with scan_container");
+        }
+        options.push(`--container=${SCAN_IMAGE_NAME}`);
+        options.push(`--project-name=${SCAN_PROJECT_NAME}`);
     }
     if (PHANTOM_DEPENDENCIES) {
         options.push(`--phantom-dependencies=true`);
-    }
-    if (SCAN_CONTAINER) {
-        if (!SCAN_PROJECT_NAME) {
-          core.error("Project name must be provided with scan_container"); 
-        }
-        options.push(`--container=${SCAN_IMAGE_NAME}`)
-        options.push(`--project-name=${SCAN_PROJECT_NAME}`)
     }
     if (USE_BAZEL) {
         options.push(`--use-bazel=true`);
