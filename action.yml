@@ -108,6 +108,13 @@ inputs:
     description: >-
       "Scan a specified container image. The image must be set with `image` and a project must be defined with `project`."
     default: false
+    # Container scan configuration. Image sets the image to scan and the project name defines the project for the scan.
+  image:
+    description: >-
+      "Specify a container image to scan."
+  project_name:
+    description: >-
+      "Specify a project name for a container image scan."
   # Scan tools.
   scan_tools:
     description: >-
@@ -157,12 +164,6 @@ inputs:
     default: false
     description: >-
       "Enable phantom dependency analysis to identify dependencies used, but not declared in the manifest file."
-  image:
-    description: >-
-      "Specify a container image to scan."
-  project_name:
-    description: >-
-      "Specify a project name for a container image scan."
 runs:
   using: "node16"
   main: "dist/index.js"
