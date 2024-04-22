@@ -10,7 +10,7 @@
     "format:fix": "prettier --write '**/*.{js,json,ts}'",
     "lint": "eslint --quiet .",
     "lint:fix": "eslint --fix .",
-    "package": "ncc build src/scan.ts --source-map --license licenses.txt && ncc build -o dist/sign src/sign.ts --source-map --license licenses.txt && ncc build -o dist/verify src/verify.ts --source-map --license licenses.txt",
+    "package": "ncc build src/scan.ts --source-map --license licenses.txt && ncc build -o dist/sign src/sign.ts --source-map --license licenses.txt && ncc build -o dist/verify src/verify.ts --source-map --license licenses.txt && ncc build -o dist/setup src/setup.ts --source-map --license licenses.txt",
     "test": "jest --reporters=default --verbose",
     "test:ci": "jest --ci --coverage"
   },
