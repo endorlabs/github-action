@@ -15097,7 +15097,9 @@ const writeEndorctlConfiguration = (configString) => __awaiter(void 0, void 0, v
         }
         core.info(home);
         const fileName = `config.yaml`;
-        const filePath = path.resolve(home || "", ".endorctl", fileName);
+        const folderPath = path.resolve(home || "", ".endorctl");
+        const filePath = path.resolve(folderPath, fileName);
+        yield fspromises.mkdir(folderPath, { recursive: true });
         yield fspromises.writeFile(filePath, configString, "utf8");
         return { fileName, filePath };
     }
