@@ -15167,11 +15167,11 @@ ENDOR_GCP_CREDENTIALS_SERVICE_ACCOUNT: ${GCP_CREDENTIALS_SERVICE_ACCOUNT}`;
                 core.setFailed(`Endorctl setup failed`);
                 return;
             }
-            // Try to get oss to check if the auth did work.
+            // Try to count project to check if the auth did work.
             options.unshift(`get`);
             options.unshift(`api`);
-            options.push(`--resource=tenant`);
-            options.push(`--name=oss`);
+            options.push(`--resource=project`);
+            options.push(`--count=true`);
             let endorctl_command = `endorctl`;
             if (RUN_STATS) {
                 // Wrap scan commmand in `time -v` to get stats
