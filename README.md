@@ -83,10 +83,35 @@ jobs:
         run: KO_DOCKER_REPO=ghcr.io/endorlabs/hello-sign ko publish --bare github.com/endorlabs/hello-sign
 
       - name: Sign with Endor Labs
-        uses: endorlabs/github-action/sign@version
+        uses: endorlabs/github-action/sign@<version>
         with:
            artifact_name: ghcr.io/endorlabs/hello-sign@sha256:8d6e969186b7f8b6ece93c353b1f0030428540de5305405e643611911f7bd34a
            namespace: "example"
+```
+
+Below is an example workflow to setup Endorctl within your github actions:
+
+```yaml
+on: [push, workflow_dispatch]
+name: build
+jobs:
+  use-endorctl:
+    name: Usage of Endorctl
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      packages: write
+      contents: read
+    steps:
+      - name: Setup with Endor Labs
+        uses: endorlabs/github-action/setup@<version>
+        with:
+          namespace: "example"
+          enable_github_action_token: true
+
+      - name: Use Endorctl
+        run: |
+          endoctl api list -r Project
 ```
 
 ## Supported Configuration Parameters
