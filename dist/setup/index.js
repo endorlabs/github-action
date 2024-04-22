@@ -15168,7 +15168,7 @@ ENDOR_GCP_CREDENTIALS_SERVICE_ACCOUNT: ${GCP_CREDENTIALS_SERVICE_ACCOUNT}`;
                 return;
             }
             // Try to count project to check if the auth did work.
-            options.unshift(`get`);
+            options.unshift(`list`);
             options.unshift(`api`);
             options.push(`--resource=project`);
             options.push(`--count=true`);
