@@ -18,6 +18,11 @@ export const writeEndorctlConfiguration = async (configString: string) => {
     const filePath = path.resolve(folderPath, fileName);
     await fspromises.mkdir(folderPath, { recursive: true });
     await fspromises.writeFile(filePath, configString, "utf8");
+
+    core.info("tes this a test");
+    const fileContent = await fspromises.readFile(filePath, "utf8");
+    core.info(fileContent);
+
     return { fileName, filePath };
   } catch (e) {
     return { error: e as Error };
@@ -123,13 +128,11 @@ ENDOR_GCP_CREDENTIALS_SERVICE_ACCOUNT=${GCP_CREDENTIALS_SERVICE_ACCOUNT}`;
         core.info("Timing not supported on this OS");
       }
     }
-    core.info(`couocu`);
     // Run the command
     await exec.exec(endorctl_command, options);
 
     core.info(`Endorctl setup sucess`);
   } catch {
-    core.info(`We are here`);
     core.setFailed(`Endorctl setup failed`);
   }
 }
