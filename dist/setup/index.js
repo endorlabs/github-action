@@ -15091,9 +15091,12 @@ const constants_1 = __nccwpck_require__(9042);
 const utils_1 = __nccwpck_require__(1314);
 const writeEndorctlConfiguration = (configString) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { RUNNER_TEMP } = process.env;
+        const home = process.env["HOME"];
+        if (!home) {
+            throw new Error("HOME not found in process.env");
+        }
         const fileName = `config.yaml`;
-        const filePath = path.resolve(RUNNER_TEMP !== null && RUNNER_TEMP !== void 0 ? RUNNER_TEMP : __dirname, fileName);
+        const filePath = path.resolve(home || "", ".endorctl", fileName);
         yield fspromises.writeFile(filePath, configString, "utf8");
         return { fileName, filePath };
     }

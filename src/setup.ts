@@ -8,9 +8,12 @@ import { getPlatformInfo, setupEndorctl } from "./utils";
 
 export const writeEndorctlConfiguration = async (configString: string) => {
   try {
-    const { RUNNER_TEMP } = process.env;
+    const home = process.env["HOME"];
+    if (!home) {
+      throw new Error("HOME not found in process.env");
+    }
     const fileName = `config.yaml`;
-    const filePath = path.resolve(RUNNER_TEMP ?? __dirname, fileName);
+    const filePath = path.resolve(home || "", ".endorctl", fileName);
     await fspromises.writeFile(filePath, configString, "utf8");
     return { fileName, filePath };
   } catch (e) {
