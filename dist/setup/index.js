@@ -15095,15 +15095,11 @@ const writeEndorctlConfiguration = (configString) => __awaiter(void 0, void 0, v
         if (!home) {
             throw new Error("HOME not found in process.env");
         }
-        core.info(home);
         const fileName = `config.yaml`;
         const folderPath = path.resolve(home || "", ".endorctl");
         const filePath = path.resolve(folderPath, fileName);
         yield fspromises.mkdir(folderPath, { recursive: true });
         yield fspromises.writeFile(filePath, configString, "utf8");
-        core.info("tes this a test");
-        const fileContent = yield fspromises.readFile(filePath, "utf8");
-        core.info(fileContent);
         return { fileName, filePath };
     }
     catch (e) {
@@ -15148,27 +15144,27 @@ function run() {
             });
             // Common options.
             const options = [`--verbose=${LOG_VERBOSE}`, `--log-level=${LOG_LEVEL}`];
-            let config = `ENDOR_NAMESPACE=${NAMESPACE}`;
+            let config = `ENDOR_NAMESPACE: ${NAMESPACE}`;
             if (API) {
                 config += `
-ENDOR_API=${API}`;
+ENDOR_API: ${API}`;
             }
             if (ENABLE_GITHUB_ACTION_TOKEN) {
                 config += `
-ENDOR_GITHUB_ACTION_TOKEN_ENABLE=true`;
+ENDOR_GITHUB_ACTION_TOKEN_ENABLE: true`;
             }
             else if (API_KEY && API_SECRET) {
                 config += `
-ENDOR_API_CREDENTIALS_KEY=${API_KEY}
-ENDOR_API_CREDENTIALS_SECRET=${API_SECRET}`;
+ENDOR_API_CREDENTIALS_KEY: ${API_KEY}
+ENDOR_API_CREDENTIALS_SECRET: ${API_SECRET}`;
             }
             else if (GCP_CREDENTIALS_SERVICE_ACCOUNT) {
                 config += `
-ENDOR_GCP_CREDENTIALS_SERVICE_ACCOUNT=${GCP_CREDENTIALS_SERVICE_ACCOUNT}`;
+ENDOR_GCP_CREDENTIALS_SERVICE_ACCOUNT: ${GCP_CREDENTIALS_SERVICE_ACCOUNT}`;
             }
             const { error } = yield (0, exports.writeEndorctlConfiguration)(config);
             if (error) {
-                core.setFailed(error);
+                core.setFailed(`Endorctl setup failed`);
                 return;
             }
             // Try to get oss to check if the auth did work.
