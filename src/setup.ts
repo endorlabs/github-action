@@ -14,7 +14,9 @@ export const writeEndorctlConfiguration = async (configString: string) => {
     }
     core.info(home);
     const fileName = `config.yaml`;
-    const filePath = path.resolve(home || "", ".endorctl", fileName);
+    const folderPath = path.resolve(home || "", ".endorctl");
+    const filePath = path.resolve(folderPath, fileName);
+    await fspromises.mkdir(folderPath, { recursive: true });
     await fspromises.writeFile(filePath, configString, "utf8");
     return { fileName, filePath };
   } catch (e) {
