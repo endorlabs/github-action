@@ -15163,8 +15163,8 @@ ENDOR_GCP_CREDENTIALS_SERVICE_ACCOUNT=${GCP_CREDENTIALS_SERVICE_ACCOUNT}`;
                 return;
             }
             // Try to get oss to check if the auth did work.
-            options.unshift(`api`);
             options.unshift(`get`);
+            options.unshift(`api`);
             options.push(`--resource=tenant`);
             options.push(`--name=oss`);
             let endorctl_command = `endorctl`;
