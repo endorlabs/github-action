@@ -95,7 +95,7 @@ ENDOR_GCP_CREDENTIALS_SERVICE_ACCOUNT=${GCP_CREDENTIALS_SERVICE_ACCOUNT}`;
 
     const { error } = await writeEndorctlConfiguration(config);
     if (error) {
-      core.setFailed(`Endorctl setup failed`);
+      core.setFailed(error);
       return;
     }
 
@@ -120,12 +120,13 @@ ENDOR_GCP_CREDENTIALS_SERVICE_ACCOUNT=${GCP_CREDENTIALS_SERVICE_ACCOUNT}`;
         core.info("Timing not supported on this OS");
       }
     }
-
+    core.info(`couocu`);
     // Run the command
     await exec.exec(endorctl_command, options);
 
     core.info(`Endorctl setup sucess`);
   } catch {
+    core.info(`We are here`);
     core.setFailed(`Endorctl setup failed`);
   }
 }
