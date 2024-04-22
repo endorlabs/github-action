@@ -12,6 +12,7 @@ export const writeEndorctlConfiguration = async (configString: string) => {
     if (!home) {
       throw new Error("HOME not found in process.env");
     }
+    core.info(home);
     const fileName = `config.yaml`;
     const filePath = path.resolve(home || "", ".endorctl", fileName);
     await fspromises.writeFile(filePath, configString, "utf8");

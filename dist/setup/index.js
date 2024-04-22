@@ -15095,6 +15095,7 @@ const writeEndorctlConfiguration = (configString) => __awaiter(void 0, void 0, v
         if (!home) {
             throw new Error("HOME not found in process.env");
         }
+        core.info(home);
         const fileName = `config.yaml`;
         const filePath = path.resolve(home || "", ".endorctl", fileName);
         yield fspromises.writeFile(filePath, configString, "utf8");
@@ -15162,7 +15163,7 @@ ENDOR_GCP_CREDENTIALS_SERVICE_ACCOUNT=${GCP_CREDENTIALS_SERVICE_ACCOUNT}`;
             }
             const { error } = yield (0, exports.writeEndorctlConfiguration)(config);
             if (error) {
-                core.setFailed(`Endorctl setup failed`);
+                core.setFailed(error);
                 return;
             }
             // Try to get oss to check if the auth did work.
@@ -15188,11 +15189,13 @@ ENDOR_GCP_CREDENTIALS_SERVICE_ACCOUNT=${GCP_CREDENTIALS_SERVICE_ACCOUNT}`;
                     core.info("Timing not supported on this OS");
                 }
             }
+            core.info(`couocu`);
             // Run the command
             yield exec.exec(endorctl_command, options);
             core.info(`Endorctl setup sucess`);
         }
         catch (_a) {
+            core.info(`We are here`);
             core.setFailed(`Endorctl setup failed`);
         }
     });
