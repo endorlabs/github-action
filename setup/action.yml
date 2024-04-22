@@ -58,4 +58,4 @@ inputs:
     default: true
 runs:
   using: "node16"
-  main: "../dist/sign/setup.js"
+  main: "../dist/setup.js"
