@@ -21900,6 +21900,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+const fs = __importStar(__nccwpck_require__(7147));
 const core = __importStar(__nccwpck_require__(2186));
 const exec = __importStar(__nccwpck_require__(1514));
 const github = __importStar(__nccwpck_require__(5438));
@@ -22039,6 +22040,7 @@ function run() {
             const RUN_STATS = core.getBooleanInput("run_stats");
             const EXPORT_SCAN_RESULT_ARTIFACT = core.getBooleanInput("export_scan_result_artifact");
             const SCAN_SUMMARY_OUTPUT_TYPE = core.getInput("scan_summary_output_type");
+            const SCAN_OUTPUT_FILE = core.getInput("output_file");
             core.info(`Endor Namespace: ${NAMESPACE}`);
             if (!NAMESPACE) {
                 core.setFailed("namespace is required and must be passed as an input from the workflow");
@@ -22105,6 +22107,12 @@ function run() {
                 SCAN_SUMMARY_OUTPUT_TYPE === "json" &&
                 scanResult) {
                 yield (0, utils_1.uploadArtifact)(scanResult);
+            }
+            if (SCAN_OUTPUT_FILE && scanResult) {
+                core.info(`Writing scan results to ${SCAN_OUTPUT_FILE}`);
+                fs.writeFileSync(SCAN_OUTPUT_FILE, scanResult);
+                core.info(`Writing to ${SCAN_OUTPUT_FILE} complete`);
+                core.setOutput("results_file", SCAN_OUTPUT_FILE);
             }
         }
         catch (_a) {
