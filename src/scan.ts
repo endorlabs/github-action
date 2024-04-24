@@ -257,7 +257,7 @@ async function run() {
       core.info(`Writing scan results to ${SCAN_OUTPUT_FILE}`);
       fs.writeFileSync(SCAN_OUTPUT_FILE, scanResult);
       core.info(`Writing to ${SCAN_OUTPUT_FILE} complete`);
-      core.setOutput("results_file", SCAN_OUTPUT_FILE);
+      core.setOutput("results", SCAN_OUTPUT_FILE);
     }
   } catch {
     core.setFailed(`Endorctl scan failed`);
