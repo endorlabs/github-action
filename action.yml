@@ -97,8 +97,8 @@ inputs:
   # Use this to control if `time -v` wraps runs.
   run_stats:
     description: >-
-      "Set to `false` to disable reporting of CPU/RAM/time scan statistics via `time -v`."
-    default: true
+      "Set to `true` to report of CPU/RAM/time scan statistics via `time -v`; Linux runners only."
+    default: false
   # Use this to export a summary of the findings to a SARIF file.
   sarif_file:
     description: >-
