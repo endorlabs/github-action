@@ -1,3 +1,4 @@
+import * as fs from "fs";
 import * as core from "@actions/core";
 import * as exec from "@actions/exec";
 import * as github from "@actions/github";
@@ -167,6 +168,7 @@ async function run() {
       "export_scan_result_artifact"
     );
     const SCAN_SUMMARY_OUTPUT_TYPE = core.getInput("scan_summary_output_type");
+    const SCAN_OUTPUT_FILE = core.getInput("output_file");
 
     core.info(`Endor Namespace: ${NAMESPACE}`);
 
@@ -249,6 +251,13 @@ async function run() {
       scanResult
     ) {
       await uploadArtifact(scanResult);
+    }
+
+    if (SCAN_OUTPUT_FILE && scanResult) {
+      core.info(`Writing scan results to ${SCAN_OUTPUT_FILE}`);
+      fs.writeFileSync(SCAN_OUTPUT_FILE, scanResult);
+      core.info(`Writing to ${SCAN_OUTPUT_FILE} complete`);
+      core.setOutput("results", SCAN_OUTPUT_FILE);
     }
   } catch {
     core.setFailed(`Endorctl scan failed`);

@@ -77,6 +77,11 @@ inputs:
     description: >-
       "Set to the namespace of the project that you are working with."
     required: true
+  # Use this to save the scan results output to a file instead of printing to the log
+  output_file:
+    description: >-
+      "Set to the name of a file to save results to. File name will be in the `results` output item. Default just writes to STDOUT."
+    required: false
   # Use this for PRs.
   pr:
     description: >-
@@ -92,8 +97,8 @@ inputs:
   # Use this to control if `time -v` wraps runs.
   run_stats:
     description: >-
-      "Set to `false` to disable reporting of CPU/RAM/time scan statistics via `time -v`."
-    default: true
+      "Set to `true` to report of CPU/RAM/time scan statistics via `time -v`; Linux runners only."
+    default: false
   # Use this to export a summary of the findings to a SARIF file.
   sarif_file:
     description: >-
