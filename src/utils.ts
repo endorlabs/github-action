@@ -254,3 +254,16 @@ export const uploadArtifact = async (scanResult: string) => {
     }
   }
 };
+
+export const doYouHaveTheTime = async (cmd: string): Promise<boolean> => {
+  const options: exec.ExecOptions = {
+    silent: true, // Optionally set silent true to avoid additional logs
+  };
+
+  try {
+    await exec.exec(cmd, ["true"], options);
+    return true; // `time true` executed successfully, return true
+  } catch (error) {
+    return false; // An error occurred, return false
+  }
+};

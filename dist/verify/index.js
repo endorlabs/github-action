@@ -17714,7 +17714,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.uploadArtifact = exports.setupEndorctl = exports.fetchLatestEndorctlVersion = exports.isVersionResponse = exports.isObject = exports.writeJsonToFile = exports.getEndorctlChecksum = exports.getPlatformInfo = exports.createHashFromFile = void 0;
+exports.doYouHaveTheTime = exports.uploadArtifact = exports.setupEndorctl = exports.fetchLatestEndorctlVersion = exports.isVersionResponse = exports.isObject = exports.writeJsonToFile = exports.getEndorctlChecksum = exports.getPlatformInfo = exports.createHashFromFile = void 0;
 const artifact = __importStar(__nccwpck_require__(2605));
 const core = __importStar(__nccwpck_require__(2186));
 const crypto = __importStar(__nccwpck_require__(6113));
@@ -17906,6 +17906,19 @@ const uploadArtifact = (scanResult) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.uploadArtifact = uploadArtifact;
+const doYouHaveTheTime = (cmd) => __awaiter(void 0, void 0, void 0, function* () {
+    const options = {
+        silent: true, // Optionally set silent true to avoid additional logs
+    };
+    try {
+        yield exec.exec(cmd, ["true"], options);
+        return true; // `time true` executed successfully, return true
+    }
+    catch (error) {
+        return false; // An error occurred, return false
+    }
+});
+exports.doYouHaveTheTime = doYouHaveTheTime;
 
 
 /***/ }),
