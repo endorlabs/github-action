@@ -24714,19 +24714,28 @@ function run() {
             let endorctl_command = `endorctl`;
             if (RUN_STATS) {
                 // Wrap scan commmand in `time -v` to get stats
+                let time_command = "";
                 if (platform.os === constants_1.EndorctlAvailableOS.Windows) {
                     core.info("Timing is not supported on Windows runners");
                 }
                 else if (platform.os === constants_1.EndorctlAvailableOS.Macos) {
-                    options.unshift("-l", endorctl_command);
-                    endorctl_command = `/usr/bin/time`;
+                    time_command = `/usr/bin/time`;
                 }
                 else if (platform.os === constants_1.EndorctlAvailableOS.Linux) {
-                    options.unshift("-v", endorctl_command);
-                    endorctl_command = `time`;
+                    time_command = `time`;
                 }
                 else {
                     core.info("Timing not supported on this OS");
+                }
+                if (time_command.length > 0) {
+                    const have_time = yield (0, utils_1.doYouHaveTheTime)(time_command);
+                    if (have_time) {
+                        options.unshift("-v", endorctl_command);
+                        endorctl_command = time_command;
+                    }
+                    else {
+                        core.warning(`run_stats requested but couldn't find ${time_command}`);
+                    }
                 }
             }
             // Run the command
@@ -24747,7 +24756,10 @@ function run() {
                 core.setOutput("results", SCAN_OUTPUT_FILE);
             }
         }
-        catch (_a) {
+        catch (e) {
+            if (e instanceof Error) {
+                core.error(e);
+            }
             core.setFailed(`Endorctl scan failed`);
         }
     });
@@ -24795,7 +24807,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.uploadArtifact = exports.setupEndorctl = exports.fetchLatestEndorctlVersion = exports.isVersionResponse = exports.isObject = exports.writeJsonToFile = exports.getEndorctlChecksum = exports.getPlatformInfo = exports.createHashFromFile = void 0;
+exports.doYouHaveTheTime = exports.uploadArtifact = exports.setupEndorctl = exports.fetchLatestEndorctlVersion = exports.isVersionResponse = exports.isObject = exports.writeJsonToFile = exports.getEndorctlChecksum = exports.getPlatformInfo = exports.createHashFromFile = void 0;
 const artifact = __importStar(__nccwpck_require__(2605));
 const core = __importStar(__nccwpck_require__(2186));
 const crypto = __importStar(__nccwpck_require__(6113));
@@ -24987,6 +24999,19 @@ const uploadArtifact = (scanResult) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.uploadArtifact = uploadArtifact;
+const doYouHaveTheTime = (cmd) => __awaiter(void 0, void 0, void 0, function* () {
+    const options = {
+        silent: true, // Optionally set silent true to avoid additional logs
+    };
+    try {
+        yield exec.exec(cmd, ["true"], options);
+        return true; // `time true` executed successfully, return true
+    }
+    catch (error) {
+        return false; // An error occurred, return false
+    }
+});
+exports.doYouHaveTheTime = doYouHaveTheTime;
 
 
 /***/ }),

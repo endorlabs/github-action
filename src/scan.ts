@@ -4,7 +4,12 @@ import * as exec from "@actions/exec";
 import * as github from "@actions/github";
 
 import { EndorctlAvailableOS } from "./constants";
-import { getPlatformInfo, setupEndorctl, uploadArtifact } from "./utils";
+import {
+  doYouHaveTheTime,
+  getPlatformInfo,
+  setupEndorctl,
+  uploadArtifact,
+} from "./utils";
 
 // Scan options
 function get_scan_options(options: any[]): void {
@@ -223,16 +228,24 @@ async function run() {
     let endorctl_command = `endorctl`;
     if (RUN_STATS) {
       // Wrap scan commmand in `time -v` to get stats
+      let time_command = "";
       if (platform.os === EndorctlAvailableOS.Windows) {
         core.info("Timing is not supported on Windows runners");
       } else if (platform.os === EndorctlAvailableOS.Macos) {
-        options.unshift("-l", endorctl_command);
-        endorctl_command = `/usr/bin/time`;
+        time_command = `/usr/bin/time`;
       } else if (platform.os === EndorctlAvailableOS.Linux) {
-        options.unshift("-v", endorctl_command);
-        endorctl_command = `time`;
+        time_command = `time`;
       } else {
         core.info("Timing not supported on this OS");
+      }
+      if (time_command.length > 0) {
+        const have_time = await doYouHaveTheTime(time_command);
+        if (have_time) {
+          options.unshift("-v", endorctl_command);
+          endorctl_command = time_command;
+        } else {
+          core.warning(`run_stats requested but couldn't find ${time_command}`);
+        }
       }
     }
 
@@ -259,7 +272,10 @@ async function run() {
       core.info(`Writing to ${SCAN_OUTPUT_FILE} complete`);
       core.setOutput("results", SCAN_OUTPUT_FILE);
     }
-  } catch {
+  } catch (e) {
+    if (e instanceof Error) {
+      core.error(e);
+    }
     core.setFailed(`Endorctl scan failed`);
   }
 }
