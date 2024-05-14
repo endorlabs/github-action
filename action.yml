@@ -158,5 +158,5 @@ inputs:
     description: >-
       "Enable phantom dependency analysis to identify dependencies used, but not declared in the manifest file."
 runs:
-  using: "node16"
+  using: "node20"
   main: "dist/index.js"
