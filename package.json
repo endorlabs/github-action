@@ -10,7 +10,7 @@
     "format:fix": "prettier --write '**/*.{js,json,ts}'",
     "lint": "eslint --quiet .",
     "lint:fix": "eslint --fix .",
-    "package": "ncc build src/scan.ts --source-map --license licenses.txt && ncc build -o dist/sign src/sign.ts --source-map --license licenses.txt && ncc build -o dist/verify src/verify.ts --source-map --license licenses.txt",
+    "package": "ncc build src/scan.ts --source-map --license licenses.txt && ncc build -o dist/sign src/sign.ts --source-map --license licenses.txt && ncc build -o dist/verify src/verify.ts --source-map --license licenses.txt && ncc build -o dist/setup src/setup.ts --source-map --license licenses.txt",
     "test": "jest --reporters=default --verbose",
     "test:ci": "jest --ci --coverage"
   },
@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@actions/artifact": "^1.1.1",
-    "@actions/core": "^1.10.0",
+    "@actions/core": "^1.10.1",
     "@actions/exec": "^1.1.1",
     "@actions/github": "^5.1.1",
     "@actions/http-client": "^2.0.1",
@@ -45,7 +45,7 @@
     "typescript": "4.9.5"
   },
   "engines": {
-    "node": ">=16.13.2",
+    "node": ">=20",
     "npm": "Please use yarn instead of npm to install dependencies",
     "yarn": "1.22.19"
   },

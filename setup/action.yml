@@ -1,0 +1,61 @@
+name: "Endor Labs Endorctl Setup"
+description: "Endor Labs Endorctl setup"
+author: "Endor Labs"
+inputs:
+  # Custom arguments to the endorctl binary. See the endorctl documentation for command flags.
+  additional_args:
+    description: >-
+      "Use this to setup endorctl in GitHub Action."
+  # Use this to define the base api path.
+  api:
+    description: >-
+      "Set to the Endor Labs API to use."
+    default: "https://api.endorlabs.com"
+  # Use this to define your api key.
+  api_key:
+    description: >-
+      "Set the API key used to authenticate with Endor Labs".
+  # Use this to define your api secret.
+  api_secret:
+    description: >-
+      "Set the secret corresponding to the API key used to authenticate with Endor Labs."
+  # User must enable `id-token: write` permissions in their github action.
+  enable_github_action_token:
+    description: >-
+      "Set to `false` if you prefer to use another form of authentication over GitHub action OIDC tokens."
+    default: true
+  # Use this to set the endorctl checksum.
+  endorctl_checksum:
+    description: >-
+      "Set to the checksum associated with a pinned version of endorctl."
+  # Use this to pin the endorctl version.
+  endorctl_version:
+    description: >-
+      "Set to a version of endorctl to pin this specific version for use. Defaults to the latest version."
+  # Use this to define your gcp service account.
+  gcp_service_account:
+    description: >-
+      "Set the target service account for GCP based authentication. GCP authentication is only enabled if this flag is set. 
+      Cannot be used with `api_key`."
+  log_level:
+    description: >-
+      "Set the endorctl log level, see also `log_verbose`."
+    default: "info"
+  # Use this for endorctl troubleshooting.
+  log_verbose:
+    description: >-
+      "Set to `true` to enable verbose logging."
+    default: false
+  # Use this to define your Endor Labs tenant namespace.
+  namespace:
+    description: >-
+      "Set to the namespace of the project that you are working with."
+    required: true
+  # Use this to control if `time -v` wraps runs.
+  run_stats:
+    description: >-
+      "Set to `false` to disable reporting of CPU/RAM/time scan statistics via `time -v`."
+    default: true
+runs:
+  using: "node16"
+  main: "../dist/setup/index.js"

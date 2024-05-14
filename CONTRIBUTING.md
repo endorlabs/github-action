@@ -17,10 +17,10 @@ We have prepared a short guide so that the process of making your contribution i
 
 ## Prerequisites for Local Development
 
-Before you start, ensure that you have the necesary dependencies for developing and building the action. Without the required dependencies, building or testing the action locally will fail.
+Before you start, ensure that you have the necessary dependencies for developing and building the action. Without the required dependencies, building or testing the action locally will fail.
 
 - [node](https://nodejs.org/en): JavaScript runtime environment used for the GitHub action development
-  - Recommended version ">=16.13.2"
+  - Recommended version ">=20"
   - Download and install from https://nodejs.org/en/download
   - Alternative: install and manage node versions with [`nvm`](https://github.com/nvm-sh/nvm)
 - [yarn](https://yarnpkg.com):
@@ -33,7 +33,7 @@ Before you start, ensure that you have the necesary dependencies for developing 
 
 ## Development and Testing
 
-To develop the action locally, clone the repo and install the dependendencies.
+To develop the action locally, clone the repo and install the dependencies.
 
 ```sh
 git clone https://github.com/endorlabs/github-action.git
@@ -45,18 +45,18 @@ You're ready to start developing!
 
 ### Code Structure
 
-The source code and suporting resources for the action are laid out with the following structure:
+The source code and supporting resources for the action are laid out with the following structure:
 
 - `__tests__/`: Unit tests for the action logic and related test fixtures.
 - `.github/`: CI workflows to run tests and other code quality checks for PRs.
-- `.licenses/`: Cached OSS depdendency licenses are stored here, and used by `licensed` to detect license changes.
+- `.licenses/`: Cached OSS dependency licenses are stored here, and used by `licensed` to detect license changes.
 - `dist/`: The packaged source code + dependency code for the action. Typically build output is not tracked in source code for JavaScript projects, but the action dependencies must be packaged with the source code as the action does not run an install step when executing.
 - `src/`: The source code for the action.
 
 ### Common tasks
 
 - `yarn run all`: This runs _all_ of the tasks below. It is recommended to run this command before committing changes.
-- `yarn run build`: This transpiles the TypeScript source code to JavaScript
+- `yarn run build`: This transpile the TypeScript source code to JavaScript
 - `yarn run format`: This formats source files with [Prettier](https://prettier.io), to ensure consistent formatting
   - `yarn run format:fix`: This applies recommended fixes for formatting issues from Prettier.
 - `yarn run lint`: This lints the source code with [ESLint](https://eslint.org), to catch syntax errors and ensure code ensure a consistent code style

@@ -83,10 +83,35 @@ jobs:
         run: KO_DOCKER_REPO=ghcr.io/endorlabs/hello-sign ko publish --bare github.com/endorlabs/hello-sign
 
       - name: Sign with Endor Labs
-        uses: endorlabs/github-action/sign@version
+        uses: endorlabs/github-action/sign@<version>
         with:
            artifact_name: ghcr.io/endorlabs/hello-sign@sha256:8d6e969186b7f8b6ece93c353b1f0030428540de5305405e643611911f7bd34a
            namespace: "example"
+```
+
+Below is an example workflow to setup Endorctl within your github actions:
+
+```yaml
+on: [push, workflow_dispatch]
+name: build
+jobs:
+  use-endorctl:
+    name: Usage of Endorctl
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      packages: write
+      contents: read
+    steps:
+      - name: Setup with Endor Labs
+        uses: endorlabs/github-action/setup@<version>
+        with:
+          namespace: "example"
+          enable_github_action_token: true
+
+      - name: Use Endorctl
+        run: |
+          endoctl api list -r Project
 ```
 
 ## Supported Configuration Parameters
@@ -121,6 +146,7 @@ The following input parameters are also supported for the Endor Labs GitHub acti
 | `export_scan_result_artifact` | Set to `false` to disable the json scan result artifact export. (Default: `true`) |
 | `github_token` | Set the token used to authenticate with GitHub. Must be provided if `enable_pr_comments` is set to `true` |
 | `phantom_dependencies` | Set to `true` to enable phantom dependency analysis. (Default: `false`) |
+| `output_file` | Set a file to save the scan results to; use this in lieu of `export_scan_result_artifact` to save any scan results data to a file in the workspace for processing by others steps in the same job, instead of the workflow run log. |
 | `pr_baseline` | Set to the git reference that you are merging to, such as the default branch. Enables endorctl to compare findings so developers are only alerted to issues un the current changeset. Example: `pr_baseline: "main"`. Note: Not needed if `enable_pr_comments` is set to `true`. |
 | `pr` | Set to `false` to track this scan as a monitored version within Endor Labs, as opposed to a point in time policy and finding test for a PR. (Default: `true`) |
 | `run_stats` | Set to `false` to disable reporting of CPU/RAM/time scan statistics via `time -v` (may be required on Windows runners). (Default: `true`) |
