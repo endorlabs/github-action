@@ -138,7 +138,7 @@ inputs:
   scan_github_actions:
     default: false
     description: >-
-      "Scan github source code repository for github actions used in workflow files to analyze vulnerabilities and malware."
+      "Scan source code repository for github actions used in workflow files to analyze vulnerabilities and malware."
   # Use this to provide searchable tags for your scans.
   tags:
     description: >-
