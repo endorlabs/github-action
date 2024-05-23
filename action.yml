@@ -134,6 +134,11 @@ inputs:
     description: >-
       "Set the desired output format to one of: `table`, `json`, `yaml`, or `summary`."
     default: "json"
+  # Scan github action workflow files
+  scan_github_actions:
+    default: false
+    description: >-
+      "Scan github source code repository for github actions used in workflow files to analyze vulnerabilities and malware."
   # Use this to provide searchable tags for your scans.
   tags:
     description: >-

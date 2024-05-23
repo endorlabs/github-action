@@ -157,6 +157,7 @@ The following input parameters are also supported for the Endor Labs GitHub acti
 | `scan_secrets` | Scan source code repository and generate findings for secrets. See also `scan_git_logs`. (Default: `false`) |
 | `scan_summary_output_type` | Set the desired output format to `table`, `json`, `yaml`, or `summary`. (Default: `json`) |
 | `scan_tools` | Scan source code repository for CI/CD tools. (Default: `false`) |
+| `scan_github_actions` | Scan github source code repository for github actions used in workflow files to analyze vulnerabilities and malware. (Default: `false`) |
 | `tags` | Specify a list of user-defined tags to add to this scan. Tags can be used to search and filter scans later. |
 | `use-bazel` | Enable the usage of Bazel for the scan. (Default: `false`)|
 
