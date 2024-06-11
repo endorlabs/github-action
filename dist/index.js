@@ -21954,11 +21954,10 @@ function get_scan_options(options) {
         options.push(`--secrets=true`);
     }
     if (SCAN_CONTAINER) {
-        if (!SCAN_PROJECT_NAME) {
-            core.error("Project name must be provided with scan_container");
-        }
         options.push(`--container=${SCAN_IMAGE_NAME}`);
-        options.push(`--project-name=${SCAN_PROJECT_NAME}`);
+        if (SCAN_PROJECT_NAME) {
+            options.push(`--project-name=${SCAN_PROJECT_NAME}`);
+        }
     }
     if (PHANTOM_DEPENDENCIES) {
         options.push(`--phantom-dependencies=true`);
@@ -22097,7 +22096,18 @@ function run() {
             else if (GCP_CREDENTIALS_SERVICE_ACCOUNT) {
                 options.push(`--gcp-service-account=${GCP_CREDENTIALS_SERVICE_ACCOUNT}`);
             }
-            core.info(`Scanning repository ${repoName}`);
+            const SCAN_CONTAINER = core.getBooleanInput("scan_container");
+            if (SCAN_CONTAINER) {
+                const SCAN_IMAGE_NAME = core.getInput("image");
+                if (!SCAN_IMAGE_NAME) {
+                    core.setFailed("image is required to scan container and must be passed as an input from the workflow via an image parameter");
+                    return;
+                }
+                core.info(`Scanning container image: ${SCAN_IMAGE_NAME}`);
+            }
+            else {
+                core.info(`Scanning repository ${repoName}`);
+            }
             options.unshift(`scan`);
             get_scan_options(options);
             let endorctl_command = `endorctl`;

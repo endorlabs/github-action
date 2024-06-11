@@ -111,7 +111,7 @@ inputs:
   # Scan container images
   scan_container:
     description: >-
-      "Scan a specified container image. The image must be set with `image` and a project must be defined with `project`."
+      "Scan a specified container image. The image must be set with `image` and a project can be defined with `project`."
     default: false
     # Container scan configuration. Image sets the image to scan and the project name defines the project for the scan.
   image:
