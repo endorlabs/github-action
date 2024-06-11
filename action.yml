@@ -131,6 +131,11 @@ inputs:
       "Perform a more complete and detailed scan of secrets in the repository history. 
       Must be used together with `scan_secrets`."
     default: false
+  # Scan github action workflow files
+  scan_github_actions:
+    default: false
+    description: >-
+      "Scan source code repository for github actions used in workflow files to analyze vulnerabilities and malware."
   # Source Code Path To Scan.
   scan_path:
     description: >-

@@ -34,15 +34,22 @@ function get_scan_options(options: any[]): void {
   const ENABLE_PR_COMMENTS = core.getBooleanInput("enable_pr_comments");
   const GITHUB_TOKEN = core.getInput("github_token");
   const GITHUB_PR_ID = github.context.payload.pull_request?.number;
+  const SCAN_GITHUB_ACTIONS = core.getBooleanInput("scan_github_actions");
 
   const USE_BAZEL = core.getBooleanInput("use_bazel");
   const BAZEL_EXCLUDE_TARGETS = core.getInput("bazel_exclude_targets");
   const BAZEL_INCLUDE_TARGETS = core.getInput("bazel_include_targets");
   const BAZEL_TARGETS_QUERY = core.getInput("bazel_targets_query");
 
-  if (!SCAN_DEPENDENCIES && !SCAN_SECRETS && !SCAN_CONTAINER && !SCAN_TOOLS) {
+  if (
+    !SCAN_DEPENDENCIES &&
+    !SCAN_SECRETS &&
+    !SCAN_CONTAINER &&
+    !SCAN_TOOLS &&
+    !SCAN_GITHUB_ACTIONS
+  ) {
     core.error(
-      "At least one of `scan_dependencies`, `scan_secrets`, `scan_tools`, or `scan_container` must be enabled"
+      "At least one of `scan_dependencies`, `scan_secrets`, `scan_tools`, `scan_container` or `scan_github_actions` must be enabled"
     );
   }
   if (SCAN_CONTAINER && SCAN_DEPENDENCIES) {
@@ -68,6 +75,9 @@ function get_scan_options(options: any[]): void {
   }
   if (PHANTOM_DEPENDENCIES) {
     options.push(`--phantom-dependencies=true`);
+  }
+  if (SCAN_GITHUB_ACTIONS) {
+    options.push(`--ghactions=true`);
   }
 
   if (USE_BAZEL) {
