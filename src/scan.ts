@@ -21,10 +21,13 @@ function get_scan_options(options: any[]): void {
   const SCAN_DEPENDENCIES = core.getBooleanInput("scan_dependencies");
   const SCAN_TOOLS = core.getBooleanInput("scan_tools");
   const SCAN_SECRETS = core.getBooleanInput("scan_secrets");
+  const SCAN_CONTAINER = core.getBooleanInput("scan_container");
   const SCAN_GIT_LOGS = core.getBooleanInput("scan_git_logs");
   const SCAN_PATH = core.getInput("scan_path");
   const ADDITIONAL_ARGS = core.getInput("additional_args");
   const PHANTOM_DEPENDENCIES = core.getBooleanInput("phantom_dependencies");
+  const SCAN_PROJECT_NAME = core.getInput("project_name");
+  const SCAN_IMAGE_NAME = core.getInput("image");
 
   const ADDITION_OPTIONS = ADDITIONAL_ARGS.split(" ");
   const SARIF_FILE = core.getInput("sarif_file");
@@ -41,11 +44,17 @@ function get_scan_options(options: any[]): void {
   if (
     !SCAN_DEPENDENCIES &&
     !SCAN_SECRETS &&
+    !SCAN_CONTAINER &&
     !SCAN_TOOLS &&
     !SCAN_GITHUB_ACTIONS
   ) {
     core.error(
-      "At least one of `scan_dependencies`, `scan_secrets`, `scan_tools` or `scan_github_actions` must be enabled"
+      "At least one of `scan_dependencies`, `scan_secrets`, `scan_tools`, `scan_container` or `scan_github_actions` must be enabled"
+    );
+  }
+  if (SCAN_CONTAINER && SCAN_DEPENDENCIES) {
+    core.error(
+      "Container scan and dependency scan cannot be set at the same time"
     );
   }
   if (SCAN_DEPENDENCIES) {
@@ -56,6 +65,12 @@ function get_scan_options(options: any[]): void {
   }
   if (SCAN_SECRETS) {
     options.push(`--secrets=true`);
+  }
+  if (SCAN_CONTAINER) {
+    options.push(`--container=${SCAN_IMAGE_NAME}`);
+    if (SCAN_PROJECT_NAME) {
+      options.push(`--project-name=${SCAN_PROJECT_NAME}`);
+    }
   }
   if (PHANTOM_DEPENDENCIES) {
     options.push(`--phantom-dependencies=true`);
@@ -230,7 +245,19 @@ async function run() {
       options.push(`--gcp-service-account=${GCP_CREDENTIALS_SERVICE_ACCOUNT}`);
     }
 
-    core.info(`Scanning repository ${repoName}`);
+    const SCAN_CONTAINER = core.getBooleanInput("scan_container");
+    if (SCAN_CONTAINER) {
+      const SCAN_IMAGE_NAME = core.getInput("image");
+      if (!SCAN_IMAGE_NAME) {
+        core.setFailed(
+          "image is required to scan container and must be passed as an input from the workflow via an image parameter"
+        );
+        return;
+      }
+      core.info(`Scanning container image: ${SCAN_IMAGE_NAME}`);
+    } else {
+      core.info(`Scanning repository ${repoName}`);
+    }
     options.unshift(`scan`);
     get_scan_options(options);
 

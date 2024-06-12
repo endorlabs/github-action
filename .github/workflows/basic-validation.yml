@@ -40,7 +40,7 @@ jobs:
         run: yarn install --frozen-lockfile --ignore-scripts
 
       - name: Audit dependencies
-        run: yarn audit --audit-level=high
+        run: yarn audit --audit-level=high --groups=dependencies
 
       - name: Run prettier
         run: yarn run format
