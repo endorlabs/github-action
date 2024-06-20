@@ -24549,6 +24549,7 @@ function get_scan_options(options) {
     const SCAN_DEPENDENCIES = core.getBooleanInput("scan_dependencies");
     const SCAN_TOOLS = core.getBooleanInput("scan_tools");
     const SCAN_SECRETS = core.getBooleanInput("scan_secrets");
+    const SCAN_PACKAGE = core.getBooleanInput("scan_package");
     const SCAN_CONTAINER = core.getBooleanInput("scan_container");
     const SCAN_GIT_LOGS = core.getBooleanInput("scan_git_logs");
     const SCAN_PATH = core.getInput("scan_path");
@@ -24570,11 +24571,23 @@ function get_scan_options(options) {
         !SCAN_SECRETS &&
         !SCAN_CONTAINER &&
         !SCAN_TOOLS &&
+        !SCAN_PACKAGE &&
         !SCAN_GITHUB_ACTIONS) {
-        core.error("At least one of `scan_dependencies`, `scan_secrets`, `scan_tools`, `scan_container` or `scan_github_actions` must be enabled");
+        core.error("At least one of `scan_dependencies`, `scan_secrets`, `scan_tools`, `scan_container` or `scan_github_actions` or `scan_package` must be enabled");
     }
     if (SCAN_CONTAINER && SCAN_DEPENDENCIES) {
         core.error("Container scan and dependency scan cannot be set at the same time");
+    }
+    if (SCAN_PACKAGE) {
+        if (SCAN_CONTAINER) {
+            core.error("Container scan and Package scan cannot be set at the same time");
+        }
+        if (!SCAN_PROJECT_NAME) {
+            core.error("Please provide project name via project_name parameter");
+        }
+        if (!SCAN_PATH) {
+            core.error("Please provide path to the package to scan via scan_path parameter");
+        }
     }
     if (SCAN_DEPENDENCIES) {
         options.push(`--dependencies=true`);
@@ -24587,6 +24600,12 @@ function get_scan_options(options) {
     }
     if (SCAN_CONTAINER) {
         options.push(`--container=${SCAN_IMAGE_NAME}`);
+        if (SCAN_PROJECT_NAME) {
+            options.push(`--project-name=${SCAN_PROJECT_NAME}`);
+        }
+    }
+    if (SCAN_PACKAGE) {
+        options.push(`--package=true`);
         if (SCAN_PROJECT_NAME) {
             options.push(`--project-name=${SCAN_PROJECT_NAME}`);
         }
@@ -24729,6 +24748,7 @@ function run() {
                 options.push(`--gcp-service-account=${GCP_CREDENTIALS_SERVICE_ACCOUNT}`);
             }
             const SCAN_CONTAINER = core.getBooleanInput("scan_container");
+            const SCAN_PACKAGE = core.getBooleanInput("scan_package");
             if (SCAN_CONTAINER) {
                 const SCAN_IMAGE_NAME = core.getInput("image");
                 if (!SCAN_IMAGE_NAME) {
@@ -24736,6 +24756,10 @@ function run() {
                     return;
                 }
                 core.info(`Scanning container image: ${SCAN_IMAGE_NAME}`);
+            }
+            else if (SCAN_PACKAGE) {
+                const SCAN_PATH = core.getInput("scan_path");
+                core.info(`Scanning an artifact: ${SCAN_PATH}`);
             }
             else {
                 core.info(`Scanning repository ${repoName}`);

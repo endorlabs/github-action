@@ -66,9 +66,7 @@ function get_scan_options(options: any[]): void {
       );
     }
     if (!SCAN_PROJECT_NAME) {
-      core.error(
-        "Please provide project name via project_name parameter"
-      );
+      core.error("Please provide project name via project_name parameter");
     }
     if (!SCAN_PATH) {
       core.error(
@@ -93,7 +91,7 @@ function get_scan_options(options: any[]): void {
     }
   }
   if (SCAN_PACKAGE) {
-    options.push(`--package=${SCAN_IMAGE_NAME}`);
+    options.push(`--package=true`);
     if (SCAN_PROJECT_NAME) {
       options.push(`--project-name=${SCAN_PROJECT_NAME}`);
     }
