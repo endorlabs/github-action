@@ -62,7 +62,17 @@ function get_scan_options(options: any[]): void {
   if (SCAN_PACKAGE) {
     if (SCAN_CONTAINER) {
       core.error(
-        "Container scan and Package scan cannot be set at the same time"
+        "Package scan and Container scan cannot be set at the same time"
+      );
+    }
+    if (SCAN_DEPENDENCIES) {
+      core.error(
+        "Package scan and Dependency scan cannot be set at the same time"
+      );
+    }
+    if (SCAN_SECRETS) {
+      core.error(
+        "Package scan and Secrets scan cannot be set at the same time"
       );
     }
     if (!SCAN_PROJECT_NAME) {
