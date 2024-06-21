@@ -120,6 +120,11 @@ inputs:
   project_name:
     description: >-
       "Specify a project name for a container image scan."
+  # Scan container images
+  scan_package:
+    description: >-
+      "Scan a specified artifact or a package. The path to an artifact must be set with `scan_path`."
+    default: false
   # Scan tools.
   scan_tools:
     description: >-
