@@ -160,6 +160,10 @@ The following input parameters are also supported for the Endor Labs GitHub acti
 | `scan_tools` | Scan source code repository for CI/CD tools. (Default: `false`) |
 | `tags` | Specify a list of user-defined tags to add to this scan. Tags can be used to search and filter scans later. |
 | `use-bazel` | Enable the usage of Bazel for the scan. (Default: `false`)|
+| `scan_package` | Scan a specified artifact or a package. The path to an artifact must be set with `scan_path`. (Default: `false`)|
+| `scan_container` | Scan a specified container image. The image must be set with `image` and a project can be defined with `project_name`. (Default: `false`)|
+| `project_name` | Specify a project name for a container image scan or for a package scan.|
+| `image` | Specify a container image to scan.|
 
 ### Artifact Signing parameters
 
