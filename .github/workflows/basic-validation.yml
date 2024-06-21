@@ -12,13 +12,9 @@ name: Basic validation
 
 on:
   pull_request:
-    paths-ignore:
-      - "**.md"
   push:
     branches:
       - main
-    paths-ignore:
-      - "**.md"
 
 jobs:
   basic-validation:
