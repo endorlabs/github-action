@@ -26,6 +26,8 @@ The following pre-requisites are required for the Endor Labs GitHub action to su
 4. Build your code
 5. Scan or Sign with Endor Labs
 
+### Example: scan a Java Application (keyless auth)
+
 Below is an example workflow to scan with Endor Labs for a Java application using the recommended keyless authentication for GitHub actions:
 
 ```yaml
@@ -52,6 +54,8 @@ jobs:
         with:
           namespace: "example"
 ```
+
+### Example: sign a container image
 
 Below is an example workflow to sign with Endor Labs:
 
@@ -89,6 +93,8 @@ jobs:
            namespace: "example"
 ```
 
+### Example: deploy `endorctl` and use it in a shell script
+
 Below is an example workflow to setup Endorctl within your github actions:
 
 ```yaml
@@ -111,7 +117,7 @@ jobs:
 
       - name: Use Endorctl
         run: |
-          endoctl api list -r Project
+          endorctl api list -r Project
 ```
 
 ## Supported Configuration Parameters
