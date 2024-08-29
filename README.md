@@ -148,7 +148,7 @@ The following input parameters are also supported for the Endor Labs GitHub acti
 | `bazel_exclude_targets` | Specify a a list of Bazel targets to exclude from scan. |
 | `bazel_include_targets` | Specify a list of Bazel targets to scan. If `bazel_targets_include` is not set the `bazel_targets_query` value is used to determine with bazel targets to scan. |
 | `bazel_targets_query` | Specify a bazel query to determine with Bazel targets to scan. Ignored if `bazel_targets_include` is set. |
-| `enable_pr_comments` | Set to `true` to publish new findings as review comments. Must be set together with `pr` and `github_token`. Additionally, the `issues: write` and `pull-requests: write` permissions must be set in the workflow. (Default: `false`) |
+| `enable_pr_comments` | Set to `true` to publish new findings as review comments. Must be set together with `pr` and `github_token`. Additionally, the `pull-requests: write` permissions must be set in the workflow. (Default: `false`) |
 | `export_scan_result_artifact` | Set to `false` to disable the json scan result artifact export. (Default: `true`) |
 | `github_token` | Set the token used to authenticate with GitHub. Must be provided if `enable_pr_comments` is set to `true` |
 | `phantom_dependencies` | Set to `true` to enable phantom dependency analysis. (Default: `false`) |
@@ -185,7 +185,7 @@ Note that the above optional parameters are required only if `enable_github_acti
 
 ### Artifact Verifying parameters
 
-The following input parameters are also supported for the Endor Labs GitHub action when used for build artifact verification. The new "verify" action should be used: endorlabs/github-action/verify@version
+The following input parameters are also supported for the Endor Labs GitHub action when used for build artifact verification. The new `verify` action should be used: endorlabs/github-action/verify@version
 
 | Flags | Required | Description |
 | :-- | :-- | :-- |
@@ -236,7 +236,6 @@ jobs:
       id-token: write # Required for requesting the JWT
       contents: read  # Required by actions/checkout@v3 to checkout a private repository
       pull-requests: write # Required for endorctl to write pr comments
-      issues: write        # Required for endorctl to write pr comments
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
