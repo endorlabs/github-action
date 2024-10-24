@@ -151,6 +151,11 @@ inputs:
     description: >-
       "Scan source code repository and generate findings for secrets. See also `scan_git_logs`."
     default: false
+  # Scan source code for SAST.
+  scan_sast:
+    description: >-
+      "Scan source code repository and generate findings for SAST."
+    default: false
   # Set the endorctl output format.
   scan_summary_output_type:
     description: >-
