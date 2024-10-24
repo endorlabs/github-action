@@ -21943,7 +21943,7 @@ function get_scan_options(options) {
         !SCAN_TOOLS &&
         !SCAN_PACKAGE &&
         !SCAN_GITHUB_ACTIONS) {
-        core.error("At least one of `scan_dependencies`, `scan_secrets`, `scan_tools`, `scan_container` or `scan_github_actions` or `scan_package` must be enabled");
+        core.error("At least one of `scan_dependencies`, `scan_secrets`, `scan_tools`, `scan_sast`, `scan_container` or `scan_github_actions` or `scan_package` must be enabled");
     }
     if (SCAN_CONTAINER && SCAN_DEPENDENCIES) {
         core.error("Container scan and dependency scan cannot be set at the same time");
