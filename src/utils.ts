@@ -42,10 +42,12 @@ export const commandExists = (command: string) => {
     const platform = getPlatformInfo();
     const cmd = platform.os === EndorctlAvailableOS.Windows ? `where ${command}` : `which ${command}`;
 
+    core.info(`Checking command` + cmd);
     execSync(cmd, { stdio: "ignore"});
-
+    core.info(`returning true`);
     return true;
   } catch (error) {
+    core.info(`returning false`);
     return false;
   }
 }
@@ -240,8 +242,10 @@ export const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
 
     // Check to see if tsserver is installed -- if not install it (needed for javascript callgraphs)
     let command = "tsserver"
+    core.info(`Checking for tsserver`);
     if (!commandExists(command)) {
       // Install it
+      core.info(`Installing tsserver`);
       await exec.exec('npm', ['install', '-g', 'typescript']);
     }
   } catch (error: any) {
