@@ -8,6 +8,7 @@ import * as httpm from "@actions/http-client";
 import * as io from "@actions/io";
 import * as tc from "@actions/tool-cache";
 import * as path from "path";
+import { execSync } from 'child_process';
 
 import {
   EndorctlAvailableArch,
@@ -35,6 +36,19 @@ export const createHashFromFile = (filePath: string) =>
       .on("data", (data) => hash.update(data))
       .on("end", () => resolve(hash.digest("hex")));
   });
+
+export const commandExists = (command: string) => {
+  try {
+    const platform = getPlatformInfo();
+    const cmd = platform.os === EndorctlAvailableOS.Windows ? `where ${command}` : `which ${command}`;
+
+    execSync(cmd, { stdio: "ignore"});
+
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
 
 /**
  * Returns the OS and Architecture to be used for downloading endorctl binary,
@@ -223,6 +237,13 @@ export const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
     core.addPath(binPath);
 
     core.info(`Endorctl downloaded and added to the path`);
+
+    // Check to see if tsserver is installed -- if not install it (needed for javascript callgraphs)
+    let command = "tsserver"
+    if (!commandExists(command)) {
+      // Install it
+      await exec.exec('npm', ['install', '-g', 'typescript']);
+    }
   } catch (error: any) {
     core.setFailed(error);
   }
