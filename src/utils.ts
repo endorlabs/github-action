@@ -8,7 +8,7 @@ import * as httpm from "@actions/http-client";
 import * as io from "@actions/io";
 import * as tc from "@actions/tool-cache";
 import * as path from "path";
-import { execSync } from 'child_process';
+import { execSync } from "child_process";
 
 import {
   EndorctlAvailableArch,
@@ -40,17 +40,20 @@ export const createHashFromFile = (filePath: string) =>
 export const commandExists = (command: string) => {
   try {
     const platform = getPlatformInfo();
-    const cmd = platform.os === EndorctlAvailableOS.Windows ? `where ${command}` : `which ${command}`;
+    const cmd =
+      platform.os === EndorctlAvailableOS.Windows
+        ? `where ${command}`
+        : `which ${command}`;
 
-    core.info(`Checking command` + cmd);
-    execSync(cmd, { stdio: "ignore"});
+    core.info(`Checking command`);
+    execSync(cmd, { stdio: "ignore" });
     core.info(`returning true`);
     return true;
   } catch (error) {
     core.info(`returning false`);
     return false;
   }
-}
+};
 
 /**
  * Returns the OS and Architecture to be used for downloading endorctl binary,
@@ -241,12 +244,12 @@ export const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
     core.info(`Endorctl downloaded and added to the path`);
 
     // Check to see if tsserver is installed -- if not install it (needed for javascript callgraphs)
-    let command = "tsserver"
+    const command = "tsserver";
     core.info(`Checking for tsserver`);
     if (!commandExists(command)) {
       // Install it
       core.info(`Installing tsserver`);
-      await exec.exec('npm', ['install', '-g', 'typescript']);
+      await exec.exec("npm", ["install", "-g", "typescript"]);
     }
   } catch (error: any) {
     core.setFailed(error);
