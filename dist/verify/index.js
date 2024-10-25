@@ -17743,13 +17743,10 @@ const commandExists = (command) => {
         const cmd = platform.os === constants_1.EndorctlAvailableOS.Windows
             ? `where ${command}`
             : `which ${command}`;
-        core.info(`Checking command`);
         (0, child_process_1.execSync)(cmd, { stdio: "ignore" });
-        core.info(`returning true`);
         return true;
     }
     catch (error) {
-        core.info(`returning false`);
         return false;
     }
 };
