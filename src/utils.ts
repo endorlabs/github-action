@@ -45,12 +45,9 @@ export const commandExists = (command: string) => {
         ? `where ${command}`
         : `which ${command}`;
 
-    core.info(`Checking command`);
     execSync(cmd, { stdio: "ignore" });
-    core.info(`returning true`);
     return true;
   } catch (error) {
-    core.info(`returning false`);
     return false;
   }
 };
