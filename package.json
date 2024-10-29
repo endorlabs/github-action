@@ -4,10 +4,12 @@
   "private": true,
   "description": "TypeScript action",
   "scripts": {
-    "all": "yarn run build && yarn run format && yarn run lint && yarn run package && yarn test",
+    "all": "yarn run build && yarn run format && yarn run lint && yarn run package && yarn test && yarn run license",
     "build": "tsc",
     "format": "prettier --check '**/*.{js,json,ts}'",
     "format:fix": "prettier --write '**/*.{js,json,ts}'",
+    "license": "licensed status",
+    "license:fix": "licensed cache",
     "lint": "eslint --quiet .",
     "lint:fix": "eslint --fix .",
     "package": "ncc build src/scan.ts --source-map --license licenses.txt && ncc build -o dist/sign src/sign.ts --source-map --license licenses.txt && ncc build -o dist/verify src/verify.ts --source-map --license licenses.txt && ncc build -o dist/setup src/setup.ts --source-map --license licenses.txt",

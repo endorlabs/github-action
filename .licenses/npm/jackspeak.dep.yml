@@ -4,7 +4,7 @@ version: 3.4.3
 type: npm
 summary: A very strict and proper argument parser.
 homepage:
-license: other
+license: blueoak
 licenses:
 - sources: LICENSE.md
   text: |

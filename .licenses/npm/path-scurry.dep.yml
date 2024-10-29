@@ -4,7 +4,7 @@ version: 1.11.1
 type: npm
 summary: walk paths fast and efficiently
 homepage:
-license: blueoak
+license: blue-oak-model-license
 licenses:
 - sources: LICENSE.md
   text: |
