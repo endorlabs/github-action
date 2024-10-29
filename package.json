@@ -45,11 +45,11 @@
     "typescript": "4.9.5"
   },
   "engines": {
-    "node": ">=20",
+    "node": ">=20.18.0",
     "npm": "Please use yarn instead of npm to install dependencies",
-    "yarn": "1.22.19"
+    "yarn": "1.22.22"
   },
-  "packageManager": "yarn@1.22.19",
+  "packageManager": "yarn@1.22.22",
   "resolutions": {
     "semver": ">=7.5.2"
   }

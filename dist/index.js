@@ -24557,6 +24557,7 @@ function get_scan_options(options) {
     const PHANTOM_DEPENDENCIES = core.getBooleanInput("phantom_dependencies");
     const SCAN_PROJECT_NAME = core.getInput("project_name");
     const SCAN_IMAGE_NAME = core.getInput("image");
+    const SCAN_SAST = core.getBooleanInput("scan_sast");
     const ADDITION_OPTIONS = ADDITIONAL_ARGS.split(" ");
     const SARIF_FILE = core.getInput("sarif_file");
     const ENABLE_PR_COMMENTS = core.getBooleanInput("enable_pr_comments");
@@ -24569,11 +24570,12 @@ function get_scan_options(options) {
     const BAZEL_TARGETS_QUERY = core.getInput("bazel_targets_query");
     if (!SCAN_DEPENDENCIES &&
         !SCAN_SECRETS &&
+        !SCAN_SAST &&
         !SCAN_CONTAINER &&
         !SCAN_TOOLS &&
         !SCAN_PACKAGE &&
         !SCAN_GITHUB_ACTIONS) {
-        core.error("At least one of `scan_dependencies`, `scan_secrets`, `scan_tools`, `scan_container` or `scan_github_actions` or `scan_package` must be enabled");
+        core.error("At least one of `scan_dependencies`, `scan_secrets`, `scan_tools`, `scan_sast`, `scan_container` or `scan_github_actions` or `scan_package` must be enabled");
     }
     if (SCAN_CONTAINER && SCAN_DEPENDENCIES) {
         core.error("Container scan and dependency scan cannot be set at the same time");
@@ -24587,6 +24589,9 @@ function get_scan_options(options) {
         }
         if (SCAN_SECRETS) {
             core.error("Package scan and Secrets scan cannot be set at the same time");
+        }
+        if (SCAN_SAST) {
+            core.error("Package scan and SAST scan cannot be set at the same time");
         }
         if (!SCAN_PROJECT_NAME) {
             core.error("Please provide project name via project_name parameter");
@@ -24603,6 +24608,9 @@ function get_scan_options(options) {
     }
     if (SCAN_SECRETS) {
         options.push(`--secrets=true`);
+    }
+    if (SCAN_SAST) {
+        options.push(`--sast=true`);
     }
     if (SCAN_CONTAINER) {
         options.push(`--container=${SCAN_IMAGE_NAME}`);

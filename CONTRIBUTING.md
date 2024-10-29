@@ -20,11 +20,11 @@ We have prepared a short guide so that the process of making your contribution i
 Before you start, ensure that you have the necessary dependencies for developing and building the action. Without the required dependencies, building or testing the action locally will fail.
 
 - [node](https://nodejs.org/en): JavaScript runtime environment used for the GitHub action development
-  - Recommended version ">=20"
+  - Recommended version ">=20.18"
   - Download and install from https://nodejs.org/en/download
   - Alternative: install and manage node versions with [`nvm`](https://github.com/nvm-sh/nvm)
 - [yarn](https://yarnpkg.com):
-  - Recommended version: "Classic Stable: v1.22.19"
+  - Recommended version: "Classic Stable: v1.22.22"
   - Install and manage yarn through Corepack (requires node > "v16.9.x0")
     - `corepack enable yarn` ([Reference](https://github.com/nodejs/corepack#corepack-enable--name))
   - Alternative: install from [classic.yarnpkg.com](https://classic.yarnpkg.com/en/docs/install)
