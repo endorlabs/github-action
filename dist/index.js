@@ -24557,6 +24557,7 @@ function get_scan_options(options) {
     const PHANTOM_DEPENDENCIES = core.getBooleanInput("phantom_dependencies");
     const SCAN_PROJECT_NAME = core.getInput("project_name");
     const SCAN_IMAGE_NAME = core.getInput("image");
+    const SCAN_SAST = core.getBooleanInput("scan_sast");
     const ADDITION_OPTIONS = ADDITIONAL_ARGS.split(" ");
     const SARIF_FILE = core.getInput("sarif_file");
     const ENABLE_PR_COMMENTS = core.getBooleanInput("enable_pr_comments");
@@ -24569,11 +24570,12 @@ function get_scan_options(options) {
     const BAZEL_TARGETS_QUERY = core.getInput("bazel_targets_query");
     if (!SCAN_DEPENDENCIES &&
         !SCAN_SECRETS &&
+        !SCAN_SAST &&
         !SCAN_CONTAINER &&
         !SCAN_TOOLS &&
         !SCAN_PACKAGE &&
         !SCAN_GITHUB_ACTIONS) {
-        core.error("At least one of `scan_dependencies`, `scan_secrets`, `scan_tools`, `scan_container` or `scan_github_actions` or `scan_package` must be enabled");
+        core.error("At least one of `scan_dependencies`, `scan_secrets`, `scan_tools`, `scan_sast`, `scan_container` or `scan_github_actions` or `scan_package` must be enabled");
     }
     if (SCAN_CONTAINER && SCAN_DEPENDENCIES) {
         core.error("Container scan and dependency scan cannot be set at the same time");
@@ -24587,6 +24589,9 @@ function get_scan_options(options) {
         }
         if (SCAN_SECRETS) {
             core.error("Package scan and Secrets scan cannot be set at the same time");
+        }
+        if (SCAN_SAST) {
+            core.error("Package scan and SAST scan cannot be set at the same time");
         }
         if (!SCAN_PROJECT_NAME) {
             core.error("Please provide project name via project_name parameter");
@@ -24603,6 +24608,9 @@ function get_scan_options(options) {
     }
     if (SCAN_SECRETS) {
         options.push(`--secrets=true`);
+    }
+    if (SCAN_SAST) {
+        options.push(`--sast=true`);
     }
     if (SCAN_CONTAINER) {
         options.push(`--container=${SCAN_IMAGE_NAME}`);
@@ -24868,7 +24876,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.doYouHaveTheTime = exports.uploadArtifact = exports.setupEndorctl = exports.fetchLatestEndorctlVersion = exports.isVersionResponse = exports.isObject = exports.writeJsonToFile = exports.getEndorctlChecksum = exports.getPlatformInfo = exports.createHashFromFile = void 0;
+exports.doYouHaveTheTime = exports.uploadArtifact = exports.setupEndorctl = exports.fetchLatestEndorctlVersion = exports.isVersionResponse = exports.isObject = exports.writeJsonToFile = exports.getEndorctlChecksum = exports.getPlatformInfo = exports.commandExists = exports.createHashFromFile = void 0;
 const artifact = __importStar(__nccwpck_require__(2605));
 const core = __importStar(__nccwpck_require__(2186));
 const crypto = __importStar(__nccwpck_require__(6113));
@@ -24879,6 +24887,7 @@ const httpm = __importStar(__nccwpck_require__(6255));
 const io = __importStar(__nccwpck_require__(7436));
 const tc = __importStar(__nccwpck_require__(7784));
 const path = __importStar(__nccwpck_require__(1017));
+const child_process_1 = __nccwpck_require__(2081);
 const constants_1 = __nccwpck_require__(9042);
 const execOptionSilent = {
     silent: true,
@@ -24890,6 +24899,20 @@ const createHashFromFile = (filePath) => new Promise((resolve) => {
         .on("end", () => resolve(hash.digest("hex")));
 });
 exports.createHashFromFile = createHashFromFile;
+const commandExists = (command) => {
+    try {
+        const platform = (0, exports.getPlatformInfo)();
+        const cmd = platform.os === constants_1.EndorctlAvailableOS.Windows
+            ? `where ${command}`
+            : `which ${command}`;
+        (0, child_process_1.execSync)(cmd, { stdio: "ignore" });
+        return true;
+    }
+    catch (error) {
+        return false;
+    }
+};
+exports.commandExists = commandExists;
 /**
  * Returns the OS and Architecture to be used for downloading endorctl binary,
  * based on the current runner OS and Architecture. Returns the error if runner
@@ -25031,6 +25054,14 @@ const setupEndorctl = ({ version, checksum, api }) => __awaiter(void 0, void 0, 
         yield io.cp(downloadPath, endorctlPath);
         core.addPath(binPath);
         core.info(`Endorctl downloaded and added to the path`);
+        // Check to see if tsserver is installed -- if not install it (needed for javascript callgraphs)
+        const command = "tsserver";
+        core.info(`Checking for tsserver`);
+        if (!(0, exports.commandExists)(command)) {
+            // Install it
+            core.info(`Installing tsserver`);
+            yield exec.exec("npm", ["install", "-g", "typescript"]);
+        }
     }
     catch (error) {
         core.setFailed(error);
