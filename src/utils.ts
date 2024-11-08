@@ -244,9 +244,19 @@ export const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
     const command = "tsserver";
     core.info(`Checking for tsserver`);
     if (!commandExists(command)) {
-      // Install it
-      core.info(`Installing tsserver`);
-      await exec.exec("npm", ["install", "-g", "typescript"]);
+      const requiredVersion = 14.17;
+      const nodeVersionString = process.version.replace(/^v/, "");
+      const currentVersion = parseFloat(nodeVersionString);
+
+      if (currentVersion >= requiredVersion) {
+        // Install it
+        core.info(`Installing tsserver`);
+        await exec.exec("npm", ["install", "-g", "typescript"]);
+      } else {
+        core.warning(
+          `Unable to install typescript server (node >= ${requiredVersion} is required).`
+        );
+      }
     }
   } catch (error: any) {
     core.setFailed(error);
