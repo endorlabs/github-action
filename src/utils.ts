@@ -251,10 +251,18 @@ export const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
       // If you only need the major version as a number:
       const majorVersion = parseFloat(nodeVersion);
       core.info(`replaced: ${majorVersion}`);
+      const requiredVersion = 14.17;
 
-      // Install it
-      core.info(`Installing tsserver`);
-      await exec.exec("npm", ["install", "-g", "typescript"]);
+      if (majorVersion >= requiredVersion) {
+        // Install it
+        core.info(`Installing tsserver`);
+        await exec.exec("npm", ["install", "-g", "typescript"]);
+        core.info(`Installed!`);
+      } else {
+        core.warning(
+          `Unable to install typescript server (node >= ${requiredVersion} is required).`
+        );
+      }
     }
   } catch (error: any) {
     core.setFailed(error);
