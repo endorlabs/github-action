@@ -244,6 +244,14 @@ export const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
     const command = "tsserver";
     core.info(`Checking for tsserver`);
     if (!commandExists(command)) {
+      core.info(`Current version: ${process.version}`);
+      const nodeVersion = process.version.replace(/^v/, ""); // Remove the "v" prefix
+      core.info(`replaced: ${nodeVersion}`);
+
+      // If you only need the major version as a number:
+      const majorVersion = parseFloat(nodeVersion);
+      core.info(`replaced: ${majorVersion}`);
+
       // Install it
       core.info(`Installing tsserver`);
       await exec.exec("npm", ["install", "-g", "typescript"]);
