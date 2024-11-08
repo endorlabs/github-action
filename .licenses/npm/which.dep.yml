@@ -1,8 +1,9 @@
 ---
-name: rimraf
-version: 3.0.2
+name: which
+version: 2.0.2
 type: npm
-summary: A deep deletion module for node (like `rm -rf`)
+summary: Like which(1) unix command. Find the first instance of an executable in the
+  PATH.
 homepage:
 license: isc
 licenses:

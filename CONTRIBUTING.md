@@ -28,7 +28,7 @@ Before you start, ensure that you have the necessary dependencies for developing
   - Install and manage yarn through Corepack (requires node > "v16.9.x0")
     - `corepack enable yarn` ([Reference](https://github.com/nodejs/corepack#corepack-enable--name))
   - Alternative: install from [classic.yarnpkg.com](https://classic.yarnpkg.com/en/docs/install)
-- (optional) [licensed](https://github.com/github/licensed): Used to check licenses of open source dependencies.
+- [licensed](https://github.com/github/licensed): Used to check licenses of open source dependencies.
   - Installation guide at https://github.com/github/licensed
 
 ## Development and Testing
@@ -59,6 +59,8 @@ The source code and supporting resources for the action are laid out with the fo
 - `yarn run build`: This transpile the TypeScript source code to JavaScript
 - `yarn run format`: This formats source files with [Prettier](https://prettier.io), to ensure consistent formatting
   - `yarn run format:fix`: This applies recommended fixes for formatting issues from Prettier.
+- `yarn run license`: This validates the current expected dependency licenses with [licensed](https://github.com/github/licensed)
+  - `yarn run license:fix`: This updates the currently cached list of licenses, to allow for manual review.
 - `yarn run lint`: This lints the source code with [ESLint](https://eslint.org), to catch syntax errors and ensure code ensure a consistent code style
   - `yarn run format:fix`: This applies recommended fixes for linting issues from ESlint.
 - `yarn run package`: This packages the action source code and dependency code together under `dist/`

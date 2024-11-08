@@ -10,6 +10,11 @@ allowed:
   - mit
   - cc0-1.0
   - unlicense
+  - blueoak-1.0.0
 
-reviewed:
+ignored:
   npm:
+    # The source repository for this package has been deleted: http://github.com/substack/node-buffers.git
+    - buffers
+    # The source repository for this package has been deleted: http://github.com/substack/node-chainsaw.git
+    - chainsaw
