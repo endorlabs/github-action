@@ -239,15 +239,6 @@ export const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
     core.addPath(binPath);
 
     core.info(`Endorctl downloaded and added to the path`);
-
-    // Check to see if tsserver is installed -- if not install it (needed for javascript callgraphs)
-    const command = "tsserver";
-    core.info(`Checking for tsserver`);
-    if (!commandExists(command)) {
-      // Install it
-      core.info(`Installing tsserver`);
-      await exec.exec("npm", ["install", "-g", "typescript"]);
-    }
   } catch (error: any) {
     core.setFailed(error);
   }
