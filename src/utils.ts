@@ -272,11 +272,13 @@ export const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
         try {
           await exec.exec("npm", ["install", "-g", typescriptPackage]);
         } catch (error: any) {
-          core.warning(`Unable to install ${typescriptPackage}`);
+          core.warning(
+            `Unable to install ${typescriptPackage}. JavaScript call graphs will not be generated`
+          );
         }
       } else {
         core.warning(
-          `Unable to install >=typescript@4.7 (node >= ${requiredVersion} is required).`
+          `Unable to install >=typescript@4.7 (node >= ${requiredVersion} is required). JavaScript call graphs will not be generated.`
         );
       }
     }
