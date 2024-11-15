@@ -239,6 +239,47 @@ export const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
     core.addPath(binPath);
 
     core.info(`Endorctl downloaded and added to the path`);
+    // Check to see if tsserver is installed -- if not install it (needed for javascript callgraphs)
+    const command = "tsserver";
+    core.info(`Checking for tsserver`);
+    if (!commandExists(command)) {
+      const requiredVersion = 4.2;
+      const nodeVersionString = process.version.replace(/^v/, "");
+      const parts = nodeVersionString.split(".");
+      let currentVersion;
+      if (parts.length > 2) {
+        const nodeVersionStringParts = parts.slice(0, 2).join(".");
+        currentVersion = parseFloat(nodeVersionStringParts);
+      } else {
+        currentVersion = parseFloat(nodeVersionString);
+      }
+
+      if (currentVersion >= requiredVersion) {
+        core.info(`Installing tsserver`);
+        // Determine the correct version based on the current version of node
+        let typescriptVersion;
+        if (currentVersion < 12.2) {
+          typescriptVersion = 4.9;
+        } else if (currentVersion < 14.17) {
+          typescriptVersion = 5.0;
+        }
+
+        let typescriptPackage = "typescript";
+        if (typescriptVersion != null) {
+          typescriptPackage = `${typescriptPackage}@${typescriptVersion}`;
+        }
+
+        try {
+          await exec.exec("npm", ["install", "-g", typescriptPackage]);
+        } catch (error: any) {
+          core.warning(`Unable to install ${typescriptPackage}`);
+        }
+      } else {
+        core.warning(
+          `Unable to install >=typescript@4.7 (node >= ${requiredVersion} is required).`
+        );
+      }
+    }
   } catch (error: any) {
     core.setFailed(error);
   }
