@@ -305,8 +305,12 @@ export const uploadArtifact = async (scanResult: string) => {
         {}
       );
       core.info(`Scan result exported to artifact ${id}, size ${size}`);
-    } catch (Error) {
-      core.error("Some items failed to export");
+    } catch (e) {
+      if (e instanceof Error) {
+        core.error(`Some items failed to export: ${e.message}`);
+      } else {
+        core.error(`Some items failed to export: ${e}`);
+      }
     }
   }
 };
