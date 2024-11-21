@@ -289,8 +289,32 @@ export const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
 
 export const uploadArtifact = async (scanResult: string) => {
   const artifactClient = new artifact.DefaultArtifactClient();
-  const artifactName = "endor-scan";
+  const maxExistingChecks = 8;
+  let artifactName = "endor-scan";
   // TODO - list artifacts and add a random identifier if artifact already exists
+  let artifactExists = true;
+  let checkCount = 0;
+  while (artifactExists && checkCount < maxExistingChecks) {
+    checkCount += 1;
+    try {
+      artifactClient.getArtifact(artifactName);
+      artifactExists = false; // stops the loop
+    } catch (e) {
+      // the artifact exists: add a random letter and try again
+      core.info(`Found existing artifact '${artifactName}'`);
+      const lowercaseAsciiStart = 97;
+      const letterIndex = Math.floor(Math.random() * 26);
+      const letter = String.fromCharCode(lowercaseAsciiStart + letterIndex);
+      artifactName += letter;
+    }
+  } // - while artifactExists...
+
+  if (artifactExists) {
+    core.warning(
+      `Can't find a unique artifact name for scan results after ${checkCount} tries`
+    );
+    return;
+  }
 
   const { filePath, uploadPath, error } = await writeJsonToFile(scanResult);
   if (error) {
@@ -300,6 +324,7 @@ export const uploadArtifact = async (scanResult: string) => {
   } else {
     const files = [filePath];
     const rootDirectory = uploadPath;
+    core.info(`Writing artifact ${artifactName}`);
     try {
       const { id, size } = await artifactClient.uploadArtifact(
         artifactName,
