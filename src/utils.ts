@@ -301,9 +301,9 @@ export const uploadArtifact = async (scanResult: string) => {
         await artifactClient.getArtifact(artifactName);
       artifactExists = true;
       core.info(`Found existing artifact '${artifactResult.artifact.name}'`);
-      const lowercaseAsciiStart = 97;
+      const uppercaseAsciiStart = 65;
       const letterIndex = Math.floor(Math.random() * 26);
-      const letter = String.fromCharCode(lowercaseAsciiStart + letterIndex);
+      const letter = String.fromCharCode(uppercaseAsciiStart + letterIndex);
       artifactName += letter;
     } catch (e) {
       // the artifact exists: add a random letter and try again
