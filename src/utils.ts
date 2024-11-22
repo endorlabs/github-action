@@ -289,14 +289,45 @@ export const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
 
 export const uploadArtifact = async (scanResult: string) => {
   const artifactClient = new artifact.DefaultArtifactClient();
-  const artifactName = "endor-scan";
+  const maxExistingChecks = 8;
+  let artifactName = "endor-scan";
+  // TODO - list artifacts and add a random identifier if artifact already exists
+  let artifactExists = true;
+  let checkCount = 0;
+  while (artifactExists && checkCount < maxExistingChecks) {
+    checkCount += 1;
+    try {
+      const artifactResult: artifact.GetArtifactResponse =
+        await artifactClient.getArtifact(artifactName);
+      artifactExists = true;
+      core.info(`Found existing artifact '${artifactResult.artifact.name}'`);
+      const uppercaseAsciiStart = 65;
+      const letterIndex = Math.floor(Math.random() * 26);
+      const letter = String.fromCharCode(uppercaseAsciiStart + letterIndex);
+      artifactName += letter;
+    } catch (e) {
+      // the artifact exists: add a random letter and try again
+      core.info(`No existing artifact named '${artifactName}'; using that`);
+      artifactExists = false;
+    }
+  } // - while artifactExists...
+
+  if (artifactExists) {
+    core.warning(
+      `Can't find a unique artifact name for scan results after ${checkCount} tries`
+    );
+    return;
+  }
 
   const { filePath, uploadPath, error } = await writeJsonToFile(scanResult);
   if (error) {
-    core.error(error);
+    core.warning(
+      `Unable to write JSON document for scan result to file: ${error}`
+    );
   } else {
     const files = [filePath];
     const rootDirectory = uploadPath;
+    core.info(`Writing artifact ${artifactName}`);
     try {
       const { id, size } = await artifactClient.uploadArtifact(
         artifactName,
@@ -305,11 +336,12 @@ export const uploadArtifact = async (scanResult: string) => {
         {}
       );
       core.info(`Scan result exported to artifact ${id}, size ${size}`);
+      core.setOutput("scan_result", artifactName);
     } catch (e) {
       if (e instanceof Error) {
-        core.error(`Some items failed to export: ${e.message}`);
+        core.warning(`Some items failed to export: ${e.message}`);
       } else {
-        core.error(`Some items failed to export: ${e}`);
+        core.warning(`Some items failed to export: ${e}`);
       }
     }
   }
