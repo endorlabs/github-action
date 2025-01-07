@@ -66,7 +66,11 @@ export const getPlatformInfo = () => {
   const { RUNNER_ARCH, RUNNER_OS } = process.env;
   const allOsList = Object.values(SupportedRunnerOS) as string[];
   const allArchList = Object.values(SupportedRunnerArch) as string[];
-  const armOsList = [SupportedRunnerOS.Macos] as string[];
+  const armOsList = [
+    SupportedRunnerOS.Macos,
+    SupportedRunnerOS.Linux,
+  ] as string[];
+
   if (!RUNNER_OS || !allOsList.includes(RUNNER_OS)) {
     return {
       ...defaultInfo,

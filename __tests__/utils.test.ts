@@ -73,7 +73,7 @@ describe("utils", () => {
         expected: { os: string; arch: string } | { error: true }
       ]
     >([
-      ["Linux", "ARM64", { error: true }],
+      ["Linux", "ARM64", { os: "linux", arch: "arm64" }],
       ["Linux", "X64", { os: "linux", arch: "amd64" }],
       ["Linux", "X86", { error: true }],
       ["macOS", "X64", { os: "macos", arch: "amd64" }],
