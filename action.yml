@@ -153,8 +153,13 @@ inputs:
     default: false
   # Scan source code for SAST.
   scan_sast:
-    description: >-
+   description: >-
       "Scan source code repository and generate findings for SAST."
+    default: false
+  # Scan source code for AI models.
+  scan_ai_models:
+    description: >-
+      "Scan source code repository for AI models."
     default: false
   # Set the endorctl output format.
   scan_summary_output_type:
