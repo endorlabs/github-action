@@ -30,6 +30,7 @@ function get_scan_options(options: any[]): void {
   const SCAN_PROJECT_NAME = core.getInput("project_name");
   const SCAN_IMAGE_NAME = core.getInput("image");
   const SCAN_SAST = core.getBooleanInput("scan_sast");
+  const SCAN_AI_MODELS = core.getBooleanInput("scan_ai_models");
 
   const ADDITION_OPTIONS = ADDITIONAL_ARGS.split(" ");
   const SARIF_FILE = core.getInput("sarif_file");
@@ -80,6 +81,11 @@ function get_scan_options(options: any[]): void {
     if (SCAN_SAST) {
       core.error("Package scan and SAST scan cannot be set at the same time");
     }
+    if (SCAN_AI_MODELS) {
+      core.error(
+        "Package scan and AI models scan cannot be set at the same time"
+      );
+    }
     if (!SCAN_PROJECT_NAME) {
       core.error("Please provide project name via project_name parameter");
     }
@@ -101,6 +107,15 @@ function get_scan_options(options: any[]): void {
   }
   if (SCAN_SAST) {
     options.push(`--sast=true`);
+  }
+  if (SCAN_AI_MODELS) {
+    if (!SCAN_DEPENDENCIES) {
+      core.error(
+        "Please also enable `scan_dependencies` to scan for AI models"
+      );
+    } else {
+      options.push(`--ai-models=true`);
+    }
   }
   if (SCAN_CONTAINER) {
     options.push(`--container=${SCAN_IMAGE_NAME}`);
