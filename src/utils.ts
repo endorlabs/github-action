@@ -113,6 +113,8 @@ export const getEndorctlChecksum = (
   switch (platformString) {
     case `${EndorctlAvailableOS.Linux}_${EndorctlAvailableArch.Amd64}`:
       return clientChecksums.ARCH_TYPE_LINUX_AMD64;
+    case `${EndorctlAvailableOS.Linux}_${EndorctlAvailableArch.Arm64}`:
+      return clientChecksums.ARCH_TYPE_LINUX_ARM64;
     case `${EndorctlAvailableOS.Macos}_${EndorctlAvailableArch.Amd64}`:
       return clientChecksums.ARCH_TYPE_MACOS_AMD64;
     case `${EndorctlAvailableOS.Macos}_${EndorctlAvailableArch.Arm64}`:
