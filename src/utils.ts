@@ -66,7 +66,11 @@ export const getPlatformInfo = () => {
   const { RUNNER_ARCH, RUNNER_OS } = process.env;
   const allOsList = Object.values(SupportedRunnerOS) as string[];
   const allArchList = Object.values(SupportedRunnerArch) as string[];
-  const armOsList = [SupportedRunnerOS.Macos] as string[];
+  const armOsList = [
+    SupportedRunnerOS.Macos,
+    SupportedRunnerOS.Linux,
+  ] as string[];
+
   if (!RUNNER_OS || !allOsList.includes(RUNNER_OS)) {
     return {
       ...defaultInfo,
@@ -109,6 +113,8 @@ export const getEndorctlChecksum = (
   switch (platformString) {
     case `${EndorctlAvailableOS.Linux}_${EndorctlAvailableArch.Amd64}`:
       return clientChecksums.ARCH_TYPE_LINUX_AMD64;
+    case `${EndorctlAvailableOS.Linux}_${EndorctlAvailableArch.Arm64}`:
+      return clientChecksums.ARCH_TYPE_LINUX_ARM64;
     case `${EndorctlAvailableOS.Macos}_${EndorctlAvailableArch.Amd64}`:
       return clientChecksums.ARCH_TYPE_MACOS_AMD64;
     case `${EndorctlAvailableOS.Macos}_${EndorctlAvailableArch.Arm64}`:

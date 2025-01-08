@@ -39,6 +39,7 @@ describe("utils", () => {
 
     it.each<[os: string, arch: string, expected: string]>([
       ["linux", "amd64", "ARCH_TYPE_LINUX_AMD64"],
+      ["linux", "arm64", "ARCH_TYPE_LINUX_ARM64"],
       ["macos", "amd64", "ARCH_TYPE_MACOS_AMD64"],
       ["macos", "arm64", "ARCH_TYPE_MACOS_ARM64"],
       ["windows", "amd64", "ARCH_TYPE_WINDOWS_AMD64"],
@@ -73,7 +74,7 @@ describe("utils", () => {
         expected: { os: string; arch: string } | { error: true }
       ]
     >([
-      ["Linux", "ARM64", { error: true }],
+      ["Linux", "ARM64", { os: "linux", arch: "arm64" }],
       ["Linux", "X64", { os: "linux", arch: "amd64" }],
       ["Linux", "X86", { error: true }],
       ["macOS", "X64", { os: "macos", arch: "amd64" }],
