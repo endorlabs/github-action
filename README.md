@@ -170,7 +170,7 @@ The following input parameters are also supported for the Endor Labs GitHub acti
 | `scan_container` | Scan a specified container image. The image must be set with `image` and a project can be defined with `project_name`. (Default: `false`)|
 | `project_name` | Specify a project name for a container image scan or for a package scan.|
 | `image` | Specify a container image to scan.|
-| `disable_code_storage` | Set to `true` to disable storing or displaying of source code related to a finding. (Default: `false`) |
+| `disable_code_snippet_storage` | Set to `true` to disable storing or displaying of the source code snippet related to a finding. (Default: `false`) |
 
 
 ### Artifact Signing parameters
