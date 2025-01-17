@@ -189,6 +189,10 @@ inputs:
     default: false
     description: >-
       "Enable phantom dependency analysis to identify dependencies used, but not declared in the manifest file."
+  disable_code_snippet_storage:
+    description: >-
+      "Do not store or display the source code related to a finding."
+    default: false
 runs:
   using: "node20"
   main: "dist/index.js"

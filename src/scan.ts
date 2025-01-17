@@ -31,6 +31,9 @@ function get_scan_options(options: any[]): void {
   const SCAN_IMAGE_NAME = core.getInput("image");
   const SCAN_SAST = core.getBooleanInput("scan_sast");
   const SCAN_AI_MODELS = core.getBooleanInput("scan_ai_models");
+  const DISABLE_CODE_SNIPPET_STORAGE = core.getBooleanInput(
+    "disable_code_snippet_storage"
+  );
 
   const ADDITION_OPTIONS = ADDITIONAL_ARGS.split(" ");
   const SARIF_FILE = core.getInput("sarif_file");
@@ -107,6 +110,15 @@ function get_scan_options(options: any[]): void {
   }
   if (SCAN_SAST) {
     options.push(`--sast=true`);
+  }
+  if (DISABLE_CODE_SNIPPET_STORAGE) {
+    if (!SCAN_SAST) {
+      core.error(
+        "Please also enable `scan_sast` with the disable_code_snippet_storage option."
+      );
+    } else {
+      options.push(`--disable-code-snippet-storage=true`);
+    }
   }
   if (SCAN_AI_MODELS) {
     if (!SCAN_DEPENDENCIES) {
