@@ -117,7 +117,7 @@ function get_scan_options(options: any[]): void {
         "Please also enable `scan_sast` with the disable_code_snippet_storage option."
       );
     } else {
-      options.push(`--disable-code-storage=true`);
+      options.push(`--disable-code-snippet-storage=true`);
     }
   }
   if (SCAN_AI_MODELS) {
