@@ -28,7 +28,8 @@
     "@actions/http-client": "^2.0.1",
     "@actions/io": "^1.1.2",
     "@actions/tool-cache": "^2.0.1",
-    "@octokit/webhooks-definitions": "^3.67.3"
+    "@octokit/webhooks-definitions": "^3.67.3",
+    "undici": "5.28.5"
   },
   "devDependencies": {
     "@types/jest": "^29.4.0",
@@ -54,6 +55,7 @@
   "packageManager": "yarn@1.22.22",
   "resolutions": {
     "semver": ">=7.5.2",
-    "cross-spawn": "^7.0.5"
+    "cross-spawn": "^7.0.5",
+    "undici": "^5.28.5"
   }
 }
