@@ -2,7 +2,7 @@
 
 Endor Labs helps developers spend less time dealing with security issues and more time accelerating development through safe Open Source Software (OSS) adoption. Our Dependency Lifecycle Management™ Solution helps organizations maximize software reuse by enabling security and development teams to select, secure, and maintain OSS at scale.
 
-The Endor Labs GitHub action may be used to repeatably integrate Endor Labs scanning or signing jobs into your CI pipelines.
+The Endor Labs GitHub action may be used to integrate Endor Labs scanning or signing jobs into your CI pipelines.
 
 ## Required Parameters and Pre-requisites
 
