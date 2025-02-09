@@ -125,7 +125,7 @@ ENDOR_GCP_CREDENTIALS_SERVICE_ACCOUNT: ${GCP_CREDENTIALS_SERVICE_ACCOUNT}`;
     // Run the command
     await exec.exec(endorctl_command, options);
 
-    core.info(`Endorctl setup sucess`);
+    core.info(`Endorctl setup succeeded`);
   } catch {
     core.setFailed(`Endorctl setup failed`);
   }
