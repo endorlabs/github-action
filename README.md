@@ -71,7 +71,7 @@ jobs:
       packages: write
       contents: read
     steps:
-      - uses: actions/setup-go@v4
+      - uses: actions/setup-go@v5
         with:
           go-version: '1.20.x'
       - uses: actions/checkout@v4
