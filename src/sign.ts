@@ -118,7 +118,7 @@ async function run() {
 
     let endorctl_command = `endorctl`;
     if (RUN_STATS) {
-      // Wrap scan commmand in `time -v` to get stats
+      // Wrap scan command in `time -v` to get stats
       if (platform.os === EndorctlAvailableOS.Windows) {
         core.info("Timing is not supported on Windows runners");
       } else if (platform.os === EndorctlAvailableOS.Macos) {

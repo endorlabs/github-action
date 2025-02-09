@@ -177,7 +177,7 @@ inputs:
       "Enable the usage of Bazel for the scan."
   bazel_exclude_targets:
       description: >-
-        "Specify a a list of Bazel targets to exclude from scan."
+        "Specify a list of Bazel targets to exclude from scan."
   bazel_include_targets:
       description: >-
         "Specify a list of Bazel targets to scan. If `bazel_targets_include` is not set the `bazel_targets_query` value is used to determine with bazel targets to scan."

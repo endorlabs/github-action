@@ -2,11 +2,11 @@
 
 Endor Labs helps developers spend less time dealing with security issues and more time accelerating development through safe Open Source Software (OSS) adoption. Our Dependency Lifecycle Management™ Solution helps organizations maximize software reuse by enabling security and development teams to select, secure, and maintain OSS at scale.
 
-The Endor Labs GitHub action may be used to repeatably integrate Endor Labs scanning or signing jobs into your CI pipelines.
+The Endor Labs GitHub action may be used to integrate Endor Labs scanning or signing jobs into your CI pipelines.
 
-## Required Parameters and Pre-requisites
+## Required Parameters and Prerequisites
 
-The following pre-requisites are required for the Endor Labs GitHub action to successfully run:
+The following prerequisites are required for the Endor Labs GitHub action to successfully run:
 
 - The GitHub action must be able to authenticate to the Endor Labs API. It may authenticate through either:
   - A GitHub organization or repository name used for keyless authentication (Default)
@@ -37,20 +37,20 @@ jobs:
   build-and-scan:
     permissions:
       id-token: write # Write permission is required to request a json web token (JWT) to perform keyless authentication
-      contents: read  # Required by actions/checkout@v3 to checkout a private repository
+      contents: read  # Required by actions/checkout@v4 to checkout a private repository
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'microsoft'
           java-version: '17'
       - name: Compile Package
         run: mvn clean install
       - name: Scan with Endor Labs
-        uses: endorlabs/github-action@v1.1.4
+        uses: endorlabs/github-action@v1.1.7
         with:
           namespace: "example"
 ```
@@ -71,11 +71,11 @@ jobs:
       packages: write
       contents: read
     steps:
-      - uses: actions/setup-go@v4
+      - uses: actions/setup-go@v5
         with:
           go-version: '1.20.x'
-      - uses: actions/checkout@v3
-      - uses: ko-build/setup-ko@v0.6
+      - uses: actions/checkout@v4
+      - uses: ko-build/setup-ko@v0.7
       - run: ko build
       - name: Login to the GitHub Container Registry
         uses: docker/login-action@v3
@@ -87,7 +87,7 @@ jobs:
         run: KO_DOCKER_REPO=ghcr.io/endorlabs/hello-sign ko publish --bare github.com/endorlabs/hello-sign
 
       - name: Sign with Endor Labs
-        uses: endorlabs/github-action/sign@1.1.4
+        uses: endorlabs/github-action/sign@1.1.7
         with:
            artifact_name: ghcr.io/endorlabs/hello-sign@sha256:8d6e969186b7f8b6ece93c353b1f0030428540de5305405e643611911f7bd34a
            namespace: "example"
@@ -110,7 +110,7 @@ jobs:
       contents: read
     steps:
       - name: Setup with Endor Labs
-        uses: endorlabs/github-action/setup@1.1.4
+        uses: endorlabs/github-action/setup@1.1.7
         with:
           namespace: "example"
           enable_github_action_token: true
@@ -145,7 +145,7 @@ The following input parameters are also supported for the Endor Labs GitHub acti
 | Flags | Description |
 | :-- | :-- |
 | `additional_args` | Use additional_args to add custom arguments to the endorctl scan command. |
-| `bazel_exclude_targets` | Specify a a list of Bazel targets to exclude from scan. |
+| `bazel_exclude_targets` | Specify a list of Bazel targets to exclude from scan. |
 | `bazel_include_targets` | Specify a list of Bazel targets to scan. If `bazel_targets_include` is not set the `bazel_targets_query` value is used to determine with bazel targets to scan. |
 | `bazel_targets_query` | Specify a bazel query to determine with Bazel targets to scan. Ignored if `bazel_targets_include` is set. |
 | `enable_pr_comments` | Set to `true` to publish new findings as review comments. Must be set together with `pr` and `github_token`. Additionally, the `pull-requests: write` permissions must be set in the workflow. (Default: `false`) |
@@ -203,7 +203,7 @@ Below is an example configuration using an Endor Labs API key:
 
 ```yaml
       - name: Scan with Endor Labs
-        uses: endorlabs/github-action@v1.1.4
+        uses: endorlabs/github-action@v1.1.7
         with:
           namespace: "example"
           api_key: ${{ secrets.ENDOR_API_CREDENTIALS_KEY }}
@@ -215,7 +215,7 @@ Below is an example configuration using a GCP service account for keyless authen
 
 ```yaml
       - name: Scan with Endor Labs
-        uses: endorlabs/github-action@v1.1.4
+        uses: endorlabs/github-action@v1.1.7
         with:
           namespace: "example"
           gcp_service_account: "<Insert_Your_Service_Account>@<Insert_Your_Project>.iam.gserviceaccount.com"
@@ -237,20 +237,20 @@ jobs:
   ci-commons-demo-scan:
     permissions:
       id-token: write # Required for requesting the JWT
-      contents: read  # Required by actions/checkout@v3 to checkout a private repository
+      contents: read  # Required by actions/checkout@v4 to checkout a private repository
       pull-requests: write # Required for endorctl to write pr comments
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'microsoft'
           java-version: '17'
       - name: Endor Labs Scan Pull Request
         if: github.event_name == 'pull_request'
-        uses: endorlabs/github-action@v1.1.4
+        uses: endorlabs/github-action@v1.1.7
         with:
           namespace: "example" # Replace with your Endor Labs tenant namespace
           enable_pr_comments: true # Enable endorctl to write pr comments
