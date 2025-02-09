@@ -145,7 +145,7 @@ The following input parameters are also supported for the Endor Labs GitHub acti
 | Flags | Description |
 | :-- | :-- |
 | `additional_args` | Use additional_args to add custom arguments to the endorctl scan command. |
-| `bazel_exclude_targets` | Specify a a list of Bazel targets to exclude from scan. |
+| `bazel_exclude_targets` | Specify a list of Bazel targets to exclude from scan. |
 | `bazel_include_targets` | Specify a list of Bazel targets to scan. If `bazel_targets_include` is not set the `bazel_targets_query` value is used to determine with bazel targets to scan. |
 | `bazel_targets_query` | Specify a bazel query to determine with Bazel targets to scan. Ignored if `bazel_targets_include` is set. |
 | `enable_pr_comments` | Set to `true` to publish new findings as review comments. Must be set together with `pr` and `github_token`. Additionally, the `pull-requests: write` permissions must be set in the workflow. (Default: `false`) |
