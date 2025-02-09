@@ -75,7 +75,7 @@ jobs:
         with:
           go-version: '1.20.x'
       - uses: actions/checkout@v4
-      - uses: ko-build/setup-ko@v0.6
+      - uses: ko-build/setup-ko@v0.7
       - run: ko build
       - name: Login to the GitHub Container Registry
         uses: docker/login-action@v3
