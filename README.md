@@ -37,11 +37,11 @@ jobs:
   build-and-scan:
     permissions:
       id-token: write # Write permission is required to request a json web token (JWT) to perform keyless authentication
-      contents: read  # Required by actions/checkout@v3 to checkout a private repository
+      contents: read  # Required by actions/checkout@v4 to checkout a private repository
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
@@ -74,7 +74,7 @@ jobs:
       - uses: actions/setup-go@v4
         with:
           go-version: '1.20.x'
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ko-build/setup-ko@v0.6
       - run: ko build
       - name: Login to the GitHub Container Registry
@@ -237,12 +237,12 @@ jobs:
   ci-commons-demo-scan:
     permissions:
       id-token: write # Required for requesting the JWT
-      contents: read  # Required by actions/checkout@v3 to checkout a private repository
+      contents: read  # Required by actions/checkout@v4 to checkout a private repository
       pull-requests: write # Required for endorctl to write pr comments
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
