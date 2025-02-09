@@ -4,9 +4,9 @@ Endor Labs helps developers spend less time dealing with security issues and mor
 
 The Endor Labs GitHub action may be used to integrate Endor Labs scanning or signing jobs into your CI pipelines.
 
-## Required Parameters and Pre-requisites
+## Required Parameters and Prerequisites
 
-The following pre-requisites are required for the Endor Labs GitHub action to successfully run:
+The following prerequisites are required for the Endor Labs GitHub action to successfully run:
 
 - The GitHub action must be able to authenticate to the Endor Labs API. It may authenticate through either:
   - A GitHub organization or repository name used for keyless authentication (Default)
