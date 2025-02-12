@@ -176,7 +176,7 @@ The following input parameters are also supported for the Endor Labs GitHub acti
 
 ### Environmental Variables
 
-The following environmental variables are potentially relevant for the Endor Labs GitHut action:
+The following environmental variables are potentially relevant for the Endor Labs GitHub action:
 
 | Environmental Variable | Description |
 | :-- | :-- |
