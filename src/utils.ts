@@ -245,6 +245,11 @@ export const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
     core.addPath(binPath);
 
     core.info(`Endorctl downloaded and added to the path`);
+
+    const tsserverEnabled = process.env["ENDOR_JS_ENABLE_TSSERVER"];
+    if (tsserverEnabled === "false") {
+      return;
+    }
     // Check to see if tsserver is installed -- if not install it (needed for javascript callgraphs)
     const command = "tsserver";
     core.info(`Checking for tsserver`);
