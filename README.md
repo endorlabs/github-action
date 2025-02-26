@@ -174,6 +174,14 @@ The following input parameters are also supported for the Endor Labs GitHub acti
 | `disable_code_snippet_storage` | Set to `true` to disable storing or displaying of the source code snippet related to a finding. (Default: `false`) |
 
 
+### Environmental Variables
+
+The following environmental variables are potentially relevant for the Endor Labs GitHub action:
+
+| Environmental Variable | Description |
+| :-- | :-- |
+| `ENDOR_JS_ENABLE_TSSERVER` | Set to `false` to avoid installing tsserver when JavaScript/TypeScript call graphs are not needed. |
+
 ### Artifact Signing parameters
 
 The following input parameters are also supported for the Endor Labs GitHub action when used for build artifact signing. The new "sign" action should be used: endorlabs/github-action/sign@version.
