@@ -151,28 +151,27 @@ The following input parameters are also supported for the Endor Labs GitHub acti
 | `enable_pr_comments` | Set to `true` to publish new findings as review comments. Must be set together with `pr` and `github_token`. Additionally, the `pull-requests: write` permissions must be set in the workflow. (Default: `false`) |
 | `export_scan_result_artifact` | Set to `false` to disable the json scan result artifact export. (Default: `true`). Artifact name appears in step output named `scan_result` |
 | `github_token` | Set the token used to authenticate with GitHub. Must be provided if `enable_pr_comments` is set to `true` |
-| `phantom_dependencies` | Set to `true` to enable phantom dependency analysis. (Default: `false`) |
+| `image` | Specify a container image to scan.|
 | `output_file` | Set a file to save the scan results to; use this in lieu of `export_scan_result_artifact` to save any scan results data to a file in the workspace for processing by others steps in the same job, instead of the workflow run log. |
+| `phantom_dependencies` | Set to `true` to enable phantom dependency analysis. (Default: `false`) |
 | `pr_baseline` | Set to the git reference that you are merging to, such as the default branch. Enables endorctl to compare findings so developers are only alerted to issues un the current changeset. Example: `pr_baseline: "main"`. Note: Not needed if `enable_pr_comments` is set to `true`. |
+| `pr_incremental` | Set to `true` to only scan files, or packages with dependencies that have changed compared to the baseline scan. |
 | `pr` | Set to `false` to track this scan as a monitored version within Endor Labs, as opposed to a point in time policy and finding test for a PR. (Default: `true`) |
+| `project_name` | Specify a project name for a container image scan or for a package scan.|
 | `run_stats` | Set to `false` to disable reporting of CPU/RAM/time scan statistics via `time -v` (may be required on Windows runners). (Default: `true`) |
 | `sarif_file` | Set to a location on your GitHub runner to output the findings in SARIF format. |
+| `scan_container` | Scan a specified container image. The image must be set with `image` and a project can be defined with `project_name`. (Default: `false`)|
 | `scan_dependencies` | Scan git commits and generate findings for all dependencies. (Default: `true`) |
 | `scan_git_logs` | Perform a more complete and detailed scan of secrets in the repository history. Must be used together with `scan_secrets`. (Default: `false`) |
 | `scan_github_actions` | Scan source code repository for github actions used in workflow files to analyze vulnerabilities and malware. (Default: `false`) |
+| `scan_package` | Scan a specified artifact or a package. The path to an artifact must be set with `scan_path`. (Default: `false`)|
 | `scan_path` | Set the path to the directory to scan. (Default: `.`) |
-| `scan_secrets` | Scan source code repository and generate findings for secrets. See also `scan_git_logs`. (Default: `false`) |
 | `scan_sast` | Scan source code repository and generate SAST findings. (Default: `false`) |
+| `scan_secrets` | Scan source code repository and generate findings for secrets. See also `scan_git_logs`. (Default: `false`) |
 | `scan_summary_output_type` | Set the desired output format to `table`, `json`, `yaml`, or `summary`. (Default: `json`) |
 | `scan_tools` | Scan source code repository for CI/CD tools. (Default: `false`) |
 | `tags` | Specify a list of user-defined tags to add to this scan. Tags can be used to search and filter scans later. |
 | `use-bazel` | Enable the usage of Bazel for the scan. (Default: `false`)|
-| `scan_package` | Scan a specified artifact or a package. The path to an artifact must be set with `scan_path`. (Default: `false`)|
-| `scan_container` | Scan a specified container image. The image must be set with `image` and a project can be defined with `project_name`. (Default: `false`)|
-| `project_name` | Specify a project name for a container image scan or for a package scan.|
-| `image` | Specify a container image to scan.|
-| `disable_code_snippet_storage` | Set to `true` to disable storing or displaying of the source code snippet related to a finding. (Default: `false`) |
-
 
 ### Environmental Variables
 
@@ -266,6 +265,7 @@ jobs:
           scan_dependencies: true
           scan_secrets: true
           pr: true
+          pr_incremental: true # Only only scan baseline diff
           scan_summary_output_type: "table"
           tags: "actor=${{ github.actor }},run-id=${{ github.run_id }}"
 ```

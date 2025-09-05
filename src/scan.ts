@@ -17,6 +17,7 @@ function get_scan_options(options: any[]): void {
   const CI_RUN_TAGS = core.getInput("ci_run_tags"); // deprecated
   const SCAN_PR = core.getBooleanInput("pr");
   const SCAN_PR_BASELINE = core.getInput("pr_baseline");
+  const SCAN_PR_INCREMENTAL = core.getBooleanInput("pr_incremental");
   const SCAN_TAGS = core.getInput("tags");
   const SCAN_DEPENDENCIES = core.getBooleanInput("scan_dependencies");
   const SCAN_TOOLS = core.getBooleanInput("scan_tools");
@@ -195,6 +196,9 @@ function get_scan_options(options: any[]): void {
   if (CI_RUN && SCAN_PR) {
     // Both are enabled by default so only set this flag if neither option has been disabled
     options.push(`--pr=true`);
+  }
+  if (SCAN_PR_INCREMENTAL) {
+    options.push(`--pr-incremental=true`);
   }
   if (SCAN_PR_BASELINE) {
     if (!SCAN_PR) {
