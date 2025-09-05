@@ -150,8 +150,8 @@ The following input parameters are also supported for the Endor Labs GitHub acti
 | `bazel_targets_query` | Specify a bazel query to determine with Bazel targets to scan. Ignored if `bazel_targets_include` is set. |
 | `enable_pr_comments` | Set to `true` to publish new findings as review comments. Must be set together with `pr` and `github_token`. Additionally, the `pull-requests: write` permissions must be set in the workflow. (Default: `false`) |
 | `export_scan_result_artifact` | Set to `false` to disable the json scan result artifact export. (Default: `true`). Artifact name appears in step output named `scan_result` |
-| `github_token` | Set the token used to authenticate with GitHub. Must be provided if `enable_pr_comments` is set to `true` |
-| `image` | Specify a container image to scan.|
+| `github_token` | Set the token used to authenticate with GitHub. Must be provided if `enable_pr_comments` is set to `true`. |
+| `image` | Specify a container image to scan. |
 | `output_file` | Set a file to save the scan results to; use this in lieu of `export_scan_result_artifact` to save any scan results data to a file in the workspace for processing by others steps in the same job, instead of the workflow run log. |
 | `phantom_dependencies` | Set to `true` to enable phantom dependency analysis. (Default: `false`) |
 | `pr_baseline` | Set to the git reference that you are merging to, such as the default branch. Enables endorctl to compare findings so developers are only alerted to issues un the current changeset. Example: `pr_baseline: "main"`. Note: Not needed if `enable_pr_comments` is set to `true`. |
