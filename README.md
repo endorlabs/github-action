@@ -265,7 +265,7 @@ jobs:
           scan_dependencies: true
           scan_secrets: true
           pr: true
-          pr_incremental: true # Only only scan baseline diff
+          pr_incremental: true # Only scan baseline diff
           scan_summary_output_type: "table"
           tags: "actor=${{ github.actor }},run-id=${{ github.run_id }}"
 ```
