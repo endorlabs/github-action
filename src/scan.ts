@@ -198,7 +198,7 @@ function get_scan_options(options: any[]): void {
   if (SCAN_PR_INCREMENTAL) {
     if (!GITHUB_PR_ID && !SCAN_PR_BASELINE) {
       core.error(
-        "The GitHub PR ID must be available for `pr_incremental` to work"
+        "The GitHub PR ID or PR baseline must be available for `pr_incremental` to work"
       );
     } else {
       options.push(`--pr-incremental=true`);
