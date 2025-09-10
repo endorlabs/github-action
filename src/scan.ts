@@ -174,13 +174,10 @@ function get_scan_options(options: any[]): void {
   }
 
   if (ENABLE_PR_COMMENTS && GITHUB_PR_ID) {
-    if (!SCAN_PR) {
+    if (!SCAN_PR && !CI_RUN) {
       options.push(`--pr=true`);
-    } else if (!CI_RUN) {
-      core.error(
-        "The `ci-run` option has been renamed to `pr` and must be enabled for PR comments. Remove the `ci-run` configuration or disable PR comments"
-      );
-    } else if (!GITHUB_TOKEN) {
+    }
+    if (!GITHUB_TOKEN) {
       core.error("`github_token` is required to enable PR comments");
     } else {
       options.push(
@@ -205,15 +202,10 @@ function get_scan_options(options: any[]): void {
     }
   }
   if (SCAN_PR_BASELINE) {
-    if (!SCAN_PR) {
+    if (!SCAN_PR && !CI_RUN) {
       options.push(`--pr=true`);
-    } else if (!CI_RUN) {
-      core.error(
-        "The `ci-run` option has been renamed to `pr` and must be enabled if `pr_baseline` is set. Remove the `ci-run` configuration or the PR baseline"
-      );
-    } else {
-      options.push(`--pr-baseline=${SCAN_PR_BASELINE}`);
     }
+    options.push(`--pr-baseline=${SCAN_PR_BASELINE}`);
   }
 
   // Deprecated
