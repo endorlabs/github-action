@@ -174,9 +174,7 @@ function get_scan_options(options: any[]): void {
   }
 
   if (ENABLE_PR_COMMENTS && GITHUB_PR_ID) {
-    if (!SCAN_PR && !CI_RUN) {
-      options.push(`--pr=true`);
-    }
+    options.push(`--pr=true`);
     if (!GITHUB_TOKEN) {
       core.error("`github_token` is required to enable PR comments");
     } else {
@@ -198,13 +196,12 @@ function get_scan_options(options: any[]): void {
         "The GitHub PR ID or PR baseline must be available for `pr_incremental` to work"
       );
     } else {
+      options.push(`--pr=true`);
       options.push(`--pr-incremental=true`);
     }
   }
   if (SCAN_PR_BASELINE) {
-    if (!SCAN_PR && !CI_RUN) {
-      options.push(`--pr=true`);
-    }
+    options.push(`--pr=true`);
     options.push(`--pr-baseline=${SCAN_PR_BASELINE}`);
   }
 
