@@ -17,6 +17,7 @@ function get_scan_options(options: any[]): void {
   const CI_RUN_TAGS = core.getInput("ci_run_tags"); // deprecated
   const SCAN_PR = core.getBooleanInput("pr");
   const SCAN_PR_BASELINE = core.getInput("pr_baseline");
+  const SCAN_PR_INCREMENTAL = core.getBooleanInput("pr_incremental");
   const SCAN_TAGS = core.getInput("tags");
   const SCAN_DEPENDENCIES = core.getBooleanInput("scan_dependencies");
   const SCAN_TOOLS = core.getBooleanInput("scan_tools");
@@ -40,6 +41,7 @@ function get_scan_options(options: any[]): void {
   const ENABLE_PR_COMMENTS = core.getBooleanInput("enable_pr_comments");
   const GITHUB_TOKEN = core.getInput("github_token");
   const GITHUB_PR_ID = github.context.payload.pull_request?.number;
+  const GITHUB_BASE_REF = github.context.payload.pull_request?.base.ref;
   const SCAN_GITHUB_ACTIONS = core.getBooleanInput("scan_github_actions");
 
   const USE_BAZEL = core.getBooleanInput("use_bazel");
@@ -173,18 +175,11 @@ function get_scan_options(options: any[]): void {
   }
 
   if (ENABLE_PR_COMMENTS && GITHUB_PR_ID) {
-    if (!SCAN_PR) {
-      core.error(
-        "The `pr` option must be enabled for PR comments. Either set `pr: true` or disable PR comments"
-      );
-    } else if (!CI_RUN) {
-      core.error(
-        "The `ci-run` option has been renamed to `pr` and must be enabled for PR comments. Remove the `ci-run` configuration or disable PR comments"
-      );
-    } else if (!GITHUB_TOKEN) {
+    if (!GITHUB_TOKEN) {
       core.error("`github_token` is required to enable PR comments");
     } else {
       options.push(
+        `--pr=true`,
         `--enable-pr-comments=true`,
         `--github-pr-id=${GITHUB_PR_ID}`,
         `--github-token=${GITHUB_TOKEN}`
@@ -196,18 +191,23 @@ function get_scan_options(options: any[]): void {
     // Both are enabled by default so only set this flag if neither option has been disabled
     options.push(`--pr=true`);
   }
-  if (SCAN_PR_BASELINE) {
-    if (!SCAN_PR) {
+  if (SCAN_PR_INCREMENTAL) {
+    if (!GITHUB_PR_ID && !SCAN_PR_BASELINE) {
       core.error(
-        "The `pr` option must also be enabled if `pr_baseline` is set. Either set `pr: true` or remove the PR baseline"
-      );
-    } else if (!CI_RUN) {
-      core.error(
-        "The `ci-run` option has been renamed to `pr` and must be enabled if `pr_baseline` is set. Remove the `ci-run` configuration or the PR baseline"
+        "The GitHub PR ID or PR baseline must be available for `pr_incremental` to work"
       );
     } else {
-      options.push(`--pr-baseline=${SCAN_PR_BASELINE}`);
+      options.push(`--pr=true`);
+      options.push(`--pr-incremental=true`);
+      if (!SCAN_PR_BASELINE && !ENABLE_PR_COMMENTS) {
+        // For backwards compatibility with older endorctl versions
+        options.push(`--pr-baseline=${GITHUB_BASE_REF}`);
+      }
     }
+  }
+  if (SCAN_PR_BASELINE) {
+    options.push(`--pr=true`);
+    options.push(`--pr-baseline=${SCAN_PR_BASELINE}`);
   }
 
   // Deprecated

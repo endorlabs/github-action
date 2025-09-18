@@ -36,7 +36,7 @@ inputs:
   # Use this to enable PR comments from endorctl. This is only applicable when a workflow is triggered by a PR.
   enable_pr_comments:
     description: >-
-      "Set to `true` to publish new findings as review comments. Must be used together with `pr` and `github_token`. 
+      "Set to `true` to publish new findings as review comments. Must be used together with `pr` and `github_token`.
       Additionally, the `issues: write` and `pull-requests: write` permissions must be set in the workflow."
     default: false
   # Use this to set the endorctl checksum.
@@ -47,7 +47,7 @@ inputs:
   endorctl_version:
     description: >-
       "Set to a version of endorctl to pin this specific version for use. Defaults to the latest version."
-  # Use this to enable/disable the artifact export. Works only with "json" output type. 
+  # Use this to enable/disable the artifact export. Works only with "json" output type.
   # The artifact name will be "endor-scan" and the json output file name will be "result-<RUN_ID>.json"
   export_scan_result_artifact:
     description: >-
@@ -56,7 +56,7 @@ inputs:
   # Use this to define your gcp service account.
   gcp_service_account:
     description: >-
-      "Set the target service account for GCP based authentication. GCP authentication is only enabled if this flag is set. 
+      "Set the target service account for GCP based authentication. GCP authentication is only enabled if this flag is set.
       Cannot be used with `api_key`."
   # Use this to provide the github token for your repo.
   github_token:
@@ -92,8 +92,13 @@ inputs:
   # Note that the findings are still created, but they will not block the commit unless they are new.
   pr_baseline:
     description: >-
-      'Set the baseline branch to enable action policies to only act on new findings. 
+      'Set the baseline branch to enable action policies to only act on new findings.
       Must be used together with `pr` Example: `pr_baseline: "main"`.'
+  pr_incremental:
+    description: >-
+      "Set to `true` to only scan files, or packages with dependencies that have changed compared to the baseline scan.
+      The GitHub PR ID or PR baseline must be available in order to use this option."
+    default: false
   # Use this to control if `time -v` wraps runs.
   run_stats:
     description: >-
@@ -133,7 +138,7 @@ inputs:
   # Scan all commits for exposed secrets.
   scan_git_logs:
     description: >-
-      "Perform a more complete and detailed scan of secrets in the repository history. 
+      "Perform a more complete and detailed scan of secrets in the repository history.
       Must be used together with `scan_secrets`."
     default: false
   # Scan github action workflow files
@@ -176,14 +181,14 @@ inputs:
     description: >-
       "Enable the usage of Bazel for the scan."
   bazel_exclude_targets:
-      description: >-
-        "Specify a a list of Bazel targets to exclude from scan."
+    description: >-
+      "Specify a a list of Bazel targets to exclude from scan."
   bazel_include_targets:
-      description: >-
-        "Specify a list of Bazel targets to scan. If `bazel_targets_include` is not set the `bazel_targets_query` value is used to determine with bazel targets to scan."
+    description: >-
+      "Specify a list of Bazel targets to scan. If `bazel_targets_include` is not set the `bazel_targets_query` value is used to determine with bazel targets to scan."
   bazel_targets_query:
-      description: >-
-        "Specify a Bazel query to determine with Bazel targets to scan. Ignored if `bazel_targets_include` is set."
+    description: >-
+      "Specify a Bazel query to determine with Bazel targets to scan. Ignored if `bazel_targets_include` is set."
   # Scan for phantom dependencies
   phantom_dependencies:
     default: false

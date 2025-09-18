@@ -40,8 +40,8 @@ jobs:
       - name: Compare the expected and actual dist/ directories
         run: |
           if [ "$(git diff --ignore-space-at-eol dist/ | wc -l)" -gt "0" ]; then
-            echo "Detected uncommitted changes after build.  See status below:"
-            git diff
+            echo "Detected uncommitted changes after a rebuild.  See changed files below:"
+            git diff --stat dist/
             exit 1
           fi
         id: diff
