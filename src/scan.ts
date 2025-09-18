@@ -174,11 +174,11 @@ function get_scan_options(options: any[]): void {
   }
 
   if (ENABLE_PR_COMMENTS && GITHUB_PR_ID) {
-    options.push(`--pr=true`);
     if (!GITHUB_TOKEN) {
       core.error("`github_token` is required to enable PR comments");
     } else {
       options.push(
+        `--pr=true`,
         `--enable-pr-comments=true`,
         `--github-pr-id=${GITHUB_PR_ID}`,
         `--github-token=${GITHUB_TOKEN}`
