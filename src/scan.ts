@@ -41,6 +41,7 @@ function get_scan_options(options: any[]): void {
   const ENABLE_PR_COMMENTS = core.getBooleanInput("enable_pr_comments");
   const GITHUB_TOKEN = core.getInput("github_token");
   const GITHUB_PR_ID = github.context.payload.pull_request?.number;
+  const GITHUB_BASE_REF = github.context.payload.pull_request?.base.ref;
   const SCAN_GITHUB_ACTIONS = core.getBooleanInput("scan_github_actions");
 
   const USE_BAZEL = core.getBooleanInput("use_bazel");
@@ -198,6 +199,10 @@ function get_scan_options(options: any[]): void {
     } else {
       options.push(`--pr=true`);
       options.push(`--pr-incremental=true`);
+      if (!SCAN_PR_BASELINE && !ENABLE_PR_COMMENTS) {
+        // For backwards compatibility with older endorctl versions
+        options.push(`--pr-baseline=${GITHUB_BASE_REF}`);
+      }
     }
   }
   if (SCAN_PR_BASELINE) {
