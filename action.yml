@@ -199,5 +199,5 @@ inputs:
       "Do not store or display the source code related to a finding."
     default: false
 runs:
-  using: "node20"
+  using: "node24"
   main: "dist/index.js"
