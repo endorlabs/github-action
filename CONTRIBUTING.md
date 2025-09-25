@@ -20,8 +20,8 @@ We have prepared a short guide so that the process of making your contribution i
 Before you start, ensure that you have the necessary dependencies for developing and building the action. Without the required dependencies, building or testing the action locally will fail.
 
 - [node](https://nodejs.org/en): JavaScript runtime environment used for the GitHub action development
-  - Recommended version ">=20.18"
-  - Download and install from https://nodejs.org/en/download
+  - Recommended version ">=24"
+  - Download and install from <https://nodejs.org/en/download>
   - Alternative: install and manage node versions with [`nvm`](https://github.com/nvm-sh/nvm)
 - [yarn](https://yarnpkg.com):
   - Recommended version: "Classic Stable: v1.22.22"
@@ -29,7 +29,7 @@ Before you start, ensure that you have the necessary dependencies for developing
     - `corepack enable yarn` ([Reference](https://github.com/nodejs/corepack#corepack-enable--name))
   - Alternative: install from [classic.yarnpkg.com](https://classic.yarnpkg.com/en/docs/install)
 - [licensed](https://github.com/github/licensed): Used to check licenses of open source dependencies.
-  - Installation guide at https://github.com/github/licensed
+  - Installation guide at <https://github.com/github/licensed>
 
 ## Development and Testing
 
@@ -65,4 +65,3 @@ The source code and supporting resources for the action are laid out with the fo
   - `yarn run format:fix`: This applies recommended fixes for linting issues from ESlint.
 - `yarn run package`: This packages the action source code and dependency code together under `dist/`
 - `yarn test`: This runs the unit test suites defined with [Jest](https://jestjs.io)
-
