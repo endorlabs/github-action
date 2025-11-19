@@ -18,3 +18,5 @@ ignored:
     - buffers
     # The source repository for this package has been deleted: http://github.com/substack/node-chainsaw.git
     - chainsaw
+    - "@bufbuild/protobuf"
+    - "@actions/http-client"
