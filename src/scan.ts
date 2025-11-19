@@ -30,6 +30,11 @@ function get_scan_options(options: any[]): void {
   const PHANTOM_DEPENDENCIES = core.getBooleanInput("phantom_dependencies");
   const SCAN_PROJECT_NAME = core.getInput("project_name");
   const SCAN_IMAGE_NAME = core.getInput("image");
+  const SCAN_IMAGE_TAR = core.getInput("image_tar");
+  const SCAN_AS_REF = core.getBooleanInput("as_ref");
+  const SCAN_ENABLE_OS_REACHABILITY = core.getBooleanInput(
+    "enable_os_reachability"
+  );
   const SCAN_SAST = core.getBooleanInput("scan_sast");
   const SCAN_AI_MODELS = core.getBooleanInput("scan_ai_models");
   const DISABLE_CODE_SNIPPET_STORAGE = core.getBooleanInput(
@@ -61,6 +66,18 @@ function get_scan_options(options: any[]): void {
     core.error(
       "At least one of `scan_dependencies`, `scan_secrets`, `scan_tools`, `scan_sast`, `scan_container` or `scan_github_actions` or `scan_package` must be enabled"
     );
+  }
+  if (SCAN_CONTAINER) {
+    if (!SCAN_IMAGE_NAME && !SCAN_IMAGE_TAR) {
+      core.error(
+        "Either `image` or `image_tar` must be provided when `scan_container` is enabled"
+      );
+    }
+    if (SCAN_IMAGE_NAME && SCAN_IMAGE_TAR) {
+      core.error(
+        "Cannot provide both `image` and `image_tar` at the same time. Please provide only one"
+      );
+    }
   }
   if (SCAN_CONTAINER && SCAN_DEPENDENCIES) {
     core.error(
@@ -129,12 +146,6 @@ function get_scan_options(options: any[]): void {
       );
     } else {
       options.push(`--ai-models=true`);
-    }
-  }
-  if (SCAN_CONTAINER) {
-    options.push(`--container=${SCAN_IMAGE_NAME}`);
-    if (SCAN_PROJECT_NAME) {
-      options.push(`--project-name=${SCAN_PROJECT_NAME}`);
     }
   }
   if (SCAN_PACKAGE) {
@@ -318,21 +329,66 @@ async function run() {
     const SCAN_PACKAGE = core.getBooleanInput("scan_package");
     if (SCAN_CONTAINER) {
       const SCAN_IMAGE_NAME = core.getInput("image");
-      if (!SCAN_IMAGE_NAME) {
+      const SCAN_IMAGE_TAR = core.getInput("image_tar");
+      const SCAN_AS_REF = core.getBooleanInput("as_ref");
+      const SCAN_ENABLE_OS_REACHABILITY = core.getBooleanInput(
+        "enable_os_reachability"
+      );
+      const SCAN_PROJECT_NAME = core.getInput("project_name");
+      const SCAN_PROJECT_TAGS = core.getInput("project_tags");
+      const CONTAINER_SCAN_PATH = core.getInput("container_scan_path");
+      const PROFILING_DATA_DIR = core.getInput("profiling_data_dir");
+
+      if (!SCAN_IMAGE_NAME && !SCAN_IMAGE_TAR) {
         core.setFailed(
-          "image is required to scan container and must be passed as an input from the workflow via an image parameter"
+          "Either image or image_tar is required to scan container and must be passed as an input from the workflow"
         );
         return;
       }
-      core.info(`Scanning container image: ${SCAN_IMAGE_NAME}`);
+
+      // Use the new 'endorctl container scan' command structure
+      options.unshift(`container`, `scan`);
+
+      // Add container-specific options
+      if (SCAN_IMAGE_NAME) {
+        options.push(`--image=${SCAN_IMAGE_NAME}`);
+        core.info(`Scanning container image: ${SCAN_IMAGE_NAME}`);
+      }
+      if (SCAN_IMAGE_TAR) {
+        options.push(`--image-tar=${SCAN_IMAGE_TAR}`);
+        core.info(`Scanning container image tar: ${SCAN_IMAGE_TAR}`);
+      }
+      if (SCAN_AS_REF) {
+        options.push(`--as-ref=true`);
+      }
+      if (SCAN_ENABLE_OS_REACHABILITY) {
+        options.push(`--enable-os-reachability=true`);
+      }
+      if (SCAN_PROJECT_NAME) {
+        options.push(`--project-name=${SCAN_PROJECT_NAME}`);
+      }
+      if (SCAN_PROJECT_TAGS) {
+        options.push(`--project-tags=${SCAN_PROJECT_TAGS}`);
+      }
+      if (CONTAINER_SCAN_PATH) {
+        options.push(`--path=${CONTAINER_SCAN_PATH}`);
+      }
+      if (PROFILING_DATA_DIR) {
+        options.push(`--profiling-data-dir=${PROFILING_DATA_DIR}`);
+      }
+
+      // Note: get_scan_options is not called for container scans
+      // as container scan has its own set of options
     } else if (SCAN_PACKAGE) {
       const SCAN_PATH = core.getInput("scan_path");
       core.info(`Scanning an artifact: ${SCAN_PATH}`);
+      options.unshift(`scan`);
+      get_scan_options(options);
     } else {
       core.info(`Scanning repository ${repoName}`);
+      options.unshift(`scan`);
+      get_scan_options(options);
     }
-    options.unshift(`scan`);
-    get_scan_options(options);
 
     let endorctl_command = `endorctl`;
     if (RUN_STATS) {
