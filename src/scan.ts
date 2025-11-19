@@ -31,10 +31,6 @@ function get_scan_options(options: any[]): void {
   const SCAN_PROJECT_NAME = core.getInput("project_name");
   const SCAN_IMAGE_NAME = core.getInput("image");
   const SCAN_IMAGE_TAR = core.getInput("image_tar");
-  const SCAN_AS_REF = core.getBooleanInput("as_ref");
-  const SCAN_ENABLE_OS_REACHABILITY = core.getBooleanInput(
-    "enable_os_reachability"
-  );
   const SCAN_SAST = core.getBooleanInput("scan_sast");
   const SCAN_AI_MODELS = core.getBooleanInput("scan_ai_models");
   const DISABLE_CODE_SNIPPET_STORAGE = core.getBooleanInput(

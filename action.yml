@@ -116,7 +116,7 @@ inputs:
   # Scan container images
   scan_container:
     description: >-
-      "Scan a specified container image using the new 'endorctl container scan' command. The image must be set with `image` or `image_tar`. Additional options include `project_name`, `project_tags`, `as_ref`, `enable_os_reachability`, `container_scan_path`, and `profiling_data_dir`."
+            "Scan a specified container image. The image must be set with `image` and a project can be defined with `project_name`."
     default: false
     # Container scan configuration. Image sets the image to scan and the project name defines the project for the scan.
   image:
