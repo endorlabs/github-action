@@ -5,7 +5,7 @@ import { EndorctlAvailableOS } from "./constants";
 import { getPlatformInfo, setupEndorctl } from "./utils";
 
 // Verify options
-function get_verify_options(options: any[]): void {
+function get_verify_options(options: string[]): void {
   const ARTIFACT_NAME = core.getInput("artifact_name");
   const CERTIFICATE_OIDC_ISSUER = core.getInput("certificate_oidc_issuer");
 

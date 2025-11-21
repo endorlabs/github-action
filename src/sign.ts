@@ -5,7 +5,7 @@ import { EndorctlAvailableOS } from "./constants";
 import { getPlatformInfo, setupEndorctl } from "./utils";
 
 // Sign options
-function get_sign_options(options: any[]): void {
+function get_sign_options(options: string[]): void {
   const ARTIFACT_NAME = core.getInput("artifact_name");
   const CERTIFICATE_OIDC_ISSUER = core.getInput("certificate_oidc_issuer");
   const SOURCE_REPOSITORY_REF = core.getInput("source_repository_ref");
