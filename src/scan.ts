@@ -12,7 +12,7 @@ import {
 } from "./utils";
 
 // Scan options
-function get_scan_options(options: any[]): void {
+function get_scan_options(options: string[]): void {
   const CI_RUN = core.getBooleanInput("ci_run"); // deprecated
   const CI_RUN_TAGS = core.getInput("ci_run_tags"); // deprecated
   const SCAN_PR = core.getBooleanInput("pr");
