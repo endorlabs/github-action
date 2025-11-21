@@ -1,7 +1,6 @@
 import type { ClientChecksumsType } from "../src/types";
 
 import path from "node:path";
-import { EndorctlAvailableArch, EndorctlAvailableOS } from "../src/constants";
 import {
   createHashFromFile,
   getEndorctlChecksum,
@@ -45,21 +44,13 @@ describe("utils", () => {
       ["macos", "arm64", "ARCH_TYPE_MACOS_ARM64"],
       ["windows", "amd64", "ARCH_TYPE_WINDOWS_AMD64"],
     ])("getEndorctlChecksum for %s is %o", (os, arch, expected) => {
-      const result = getEndorctlChecksum(
-        fakeChecksums,
-        os as EndorctlAvailableOS,
-        arch as EndorctlAvailableArch
-      );
+      const result = getEndorctlChecksum(fakeChecksums, os as any, arch as any);
       expect(result).toEqual(expected);
     });
 
     it.skip("Throws for unexpected os + arch", () => {
       expect(() =>
-        getEndorctlChecksum(
-          fakeChecksums,
-          "foo" as unknown as EndorctlAvailableOS,
-          "bar" as unknown as EndorctlAvailableArch
-        )
+        getEndorctlChecksum(fakeChecksums, "foo" as any, "bar" as any)
       ).toThrow();
     });
   });

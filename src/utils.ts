@@ -282,7 +282,7 @@ export const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
 
         try {
           await exec.exec("npm", ["install", "-g", typescriptPackage]);
-        } catch (error: unknown) {
+        } catch (error: any) {
           core.warning(
             `Unable to install ${typescriptPackage}. JavaScript call graphs will not be generated`
           );
@@ -293,8 +293,8 @@ export const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
         );
       }
     }
-  } catch (error: unknown) {
-    core.setFailed(error as Error);
+  } catch (error: any) {
+    core.setFailed(error);
   }
 };
 
