@@ -33,7 +33,7 @@ export const createHashFromFile = (filePath: string) =>
   new Promise((resolve) => {
     const hash = crypto.createHash("sha256");
     fs.createReadStream(filePath)
-      .on("data", (data) => hash.update(data))
+      .on("data", (data) => hash.update(data as crypto.BinaryLike))
       .on("end", () => resolve(hash.digest("hex")));
   });
 
@@ -282,7 +282,7 @@ export const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
 
         try {
           await exec.exec("npm", ["install", "-g", typescriptPackage]);
-        } catch (error: any) {
+        } catch (error: unknown) {
           core.warning(
             `Unable to install ${typescriptPackage}. JavaScript call graphs will not be generated`
           );
@@ -293,8 +293,12 @@ export const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
         );
       }
     }
-  } catch (error: any) {
-    core.setFailed(error);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      core.setFailed(error);
+    } else {
+      core.setFailed(String(error));
+    }
   }
 };
 
