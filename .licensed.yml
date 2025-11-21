@@ -20,3 +20,4 @@ ignored:
     - chainsaw
     - "@bufbuild/protobuf"
     - "@actions/http-client"
+    - "@protobuf-ts/plugin-framework"
