@@ -57,8 +57,8 @@ describe("utils", () => {
       expect(() =>
         getEndorctlChecksum(
           fakeChecksums,
-          "foo" as unknown as EndorctlAvailableOS,
-          "bar" as unknown as EndorctlAvailableArch
+          "foo" as EndorctlAvailableOS,
+          "bar" as EndorctlAvailableArch
         )
       ).toThrow();
     });

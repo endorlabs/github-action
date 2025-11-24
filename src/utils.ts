@@ -33,7 +33,7 @@ export const createHashFromFile = (filePath: string) =>
   new Promise((resolve) => {
     const hash = crypto.createHash("sha256");
     fs.createReadStream(filePath)
-      .on("data", (data) => hash.update(data))
+      .on("data", (data) => hash.update(data as crypto.BinaryLike))
       .on("end", () => resolve(hash.digest("hex")));
   });
 
@@ -294,7 +294,11 @@ export const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
       }
     }
   } catch (error: unknown) {
-    core.setFailed(error as Error);
+    if (error instanceof Error) {
+      core.setFailed(error);
+    } else {
+      core.setFailed(String(error));
+    }
   }
 };
 
