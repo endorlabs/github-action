@@ -327,9 +327,7 @@ async function run() {
       const SCAN_IMAGE_NAME = core.getInput("image");
       const SCAN_IMAGE_TAR = core.getInput("image_tar");
       const SCAN_AS_REF = core.getBooleanInput("as_ref");
-      const SCAN_OS_REACHABILITY = core.getBooleanInput(
-        "os_reachability"
-      );
+      const SCAN_OS_REACHABILITY = core.getBooleanInput("os_reachability");
       const SCAN_PROJECT_NAME = core.getInput("project_name");
       const SCAN_PROJECT_TAGS = core.getInput("project_tags");
       const CONTAINER_SCAN_PATH = core.getInput("container_scan_path");
