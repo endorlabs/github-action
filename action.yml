@@ -129,7 +129,7 @@ inputs:
     description: >-
       "Scan container in a persistent context and keep the version."
     default: false
-  enable_os_reachability:
+  os_reachability:
     description: >-
       "Enable OS reachability analysis for container scans."
     default: false
