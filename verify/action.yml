@@ -80,5 +80,5 @@ inputs:
     description: >-
       "Set to a location on your GitHub runner to output the findings in SARIF format."
 runs:
-  using: "node16"
+  using: "node24"
   main: "../dist/verify/index.js"
