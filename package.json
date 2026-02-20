@@ -61,6 +61,7 @@
     "undici": ">=6.23.0",
     "lodash": ">=4.17.23",
     "fast-xml-parser": ">=5.3.6",
-    "minimatch": ">=10.2.1"
+    "minimatch": ">=10.2.1",
+    "test-exclude/minimatch": "^9.0.5"
   }
 }
