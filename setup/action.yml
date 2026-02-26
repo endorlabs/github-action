@@ -57,5 +57,5 @@ inputs:
       "Set to `false` to disable reporting of CPU/RAM/time scan statistics via `time -v`."
     default: true
 runs:
-  using: "node16"
+  using: "node24"
   main: "../dist/setup/index.js"
