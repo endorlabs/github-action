@@ -182,6 +182,11 @@ inputs:
     description: >-
       "Scan source code repository and generate findings for SAST."
     default: false
+  # Scan source code for AI SAST.
+  scan_ai_sast:
+    description: >-
+      "Scan source code repository and generate findings for AI SAST."
+    default: false
   # Scan source code for AI models.
   scan_ai_models:
     description: >-

@@ -32,6 +32,7 @@ function get_scan_options(options: string[]): void {
   const SCAN_IMAGE_NAME = core.getInput("image");
   const SCAN_IMAGE_TAR = core.getInput("image_tar");
   const SCAN_SAST = core.getBooleanInput("scan_sast");
+  const SCAN_AI_SAST = core.getBooleanInput("scan_ai_sast");
   const SCAN_AI_MODELS = core.getBooleanInput("scan_ai_models");
   const DISABLE_CODE_SNIPPET_STORAGE = core.getBooleanInput(
     "disable_code_snippet_storage"
@@ -54,13 +55,14 @@ function get_scan_options(options: string[]): void {
     !SCAN_DEPENDENCIES &&
     !SCAN_SECRETS &&
     !SCAN_SAST &&
+    !SCAN_AI_SAST &&
     !SCAN_CONTAINER &&
     !SCAN_TOOLS &&
     !SCAN_PACKAGE &&
     !SCAN_GITHUB_ACTIONS
   ) {
     core.error(
-      "At least one of `scan_dependencies`, `scan_secrets`, `scan_tools`, `scan_sast`, `scan_container` or `scan_github_actions` or `scan_package` must be enabled"
+      "At least one of `scan_dependencies`, `scan_secrets`, `scan_tools`, `scan_sast`, `scan_ai_sast`, `scan_container` or `scan_github_actions` or `scan_package` must be enabled"
     );
   }
   if (SCAN_CONTAINER) {
@@ -99,6 +101,11 @@ function get_scan_options(options: string[]): void {
     if (SCAN_SAST) {
       core.error("Package scan and SAST scan cannot be set at the same time");
     }
+    if (SCAN_AI_SAST) {
+      core.error(
+        "Package scan and AI SAST scan cannot be set at the same time"
+      );
+    }
     if (SCAN_AI_MODELS) {
       core.error(
         "Package scan and AI models scan cannot be set at the same time"
@@ -125,6 +132,9 @@ function get_scan_options(options: string[]): void {
   }
   if (SCAN_SAST) {
     options.push(`--sast=true`);
+  }
+  if (SCAN_AI_SAST) {
+    options.push(`--ai-sast=true`);
   }
   if (DISABLE_CODE_SNIPPET_STORAGE) {
     if (!SCAN_SAST) {
