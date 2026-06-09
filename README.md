@@ -1,8 +1,17 @@
-# Endor Labs Repository GitHub Action
+# Endor Labs GitHub Action
 
-Endor Labs helps developers spend less time dealing with security issues and more time accelerating development through safe Open Source Software (OSS) adoption. Our Dependency Lifecycle Management™ Solution helps organizations maximize software reuse by enabling security and development teams to select, secure, and maintain OSS at scale.
+Catch vulnerabilities, exposed secrets, and risky or malicious dependencies before they reach production. Endor Labs combines agentic reasoning with deterministic program analysis to understand code behavior and patch vulnerabilities. Helps secure:
 
-The Endor Labs GitHub action may be used to repeatably integrate Endor Labs scanning or signing jobs into your CI pipelines.
+- Your code (AI SAST) — Security agents reason over your code graph to find exploitable vulnerabilities and suggested remediation
+- Secrets — Catch leaked API keys, creds, and tokens at the source
+- Third party dependencies — SCA with function-level reachability prioritizes and fixes without breaking code
+- Malware detection — Detect and block malicious code in open source packages
+- AI models — Report and assess AI models and services for risk
+- Container images — Full-stack reachability surfaces vulnerabilities in the OS packages your image uses at runtime
+- GitHub Actions and CI/CD tooling — Detect vulnerabilities, malware, and risky config
+- Repo configuration (RSPM) — GitHub misconfigurations that expose your supply chain
+
+Run it on pull requests for point-in-time policy checks, or on your default branch to monitor findings over time. Surface findings in PR comments, the GitHub Security tab (SARIF), or the Endor Labs UI.
 
 ## Required Parameters and Pre-requisites
 
