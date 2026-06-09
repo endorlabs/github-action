@@ -2,7 +2,7 @@
 
 Catch vulnerabilities, exposed secrets, and risky or malicious dependencies before they reach production. Endor Labs combines agentic reasoning with deterministic program analysis to understand code behavior and patch vulnerabilities. Helps secure:
 
-- Your code (AI SAST) — Security agents reason over your code graph to find exploitable vulnerabilities and suggested remediation
+- Your code (AI SAST) — Security agents reason over your code graph to find exploitable vulnerabilities and suggest fixes
 - Secrets — Catch leaked API keys, creds, and tokens at the source
 - Third party dependencies — SCA with function-level reachability prioritizes and fixes without breaking code
 - Malware detection — Detect and block malicious code in open source packages
