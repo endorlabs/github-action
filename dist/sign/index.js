@@ -90681,6 +90681,9 @@ const setupEndorctl = ({ version, checksum, api }) => __awaiter(void 0, void 0, 
                 else if (currentVersion < 14.17) {
                     typescriptVersion = 5.0;
                 }
+                else {
+                    typescriptVersion = 6;
+                }
                 let typescriptPackage = "typescript";
                 if (typescriptVersion != null) {
                     typescriptPackage = `${typescriptPackage}@${typescriptVersion}`;
