@@ -58,7 +58,7 @@
     "@octokit/request-error": "^5.1.1",
     "@octokit/plugin-paginate-rest": "^9.2.2",
     "@octokit/request": "^8.4.1",
-    "undici": ">=7.24.0",
+    "undici": ">=7.28.0",
     "lodash": ">=4.18.0",
     "fast-xml-parser": ">=5.7.0",
     "brace-expansion": ">=5.0.5",
