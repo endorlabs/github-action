@@ -273,6 +273,8 @@ export const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
           typescriptVersion = 4.9;
         } else if (currentVersion < 14.17) {
           typescriptVersion = 5.0;
+        } else {
+          typescriptVersion = 6;
         }
 
         let typescriptPackage = "typescript";
