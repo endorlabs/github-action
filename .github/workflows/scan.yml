@@ -1,0 +1,47 @@
+name: Endor Labs Scan
+
+# This workflow tests the Endor Labs scan action using the local action code
+# It runs on pull requests to validate changes to the action itself
+
+on:
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  scan:
+    name: Scan with Endor Labs
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # Required for keyless authentication with Endor Labs
+      contents: read  # Required by actions/checkout
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+
+      - name: Setup Yarn
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --ignore-scripts
+
+      - name: Build action
+        run: |
+          yarn run build
+          yarn run package
+
+      - name: Scan with Endor Labs (Local Action)
+        uses: ./
+        with:
+          namespace: "endor-ci"
+          api: "https://api.staging.endorlabs.com"
+          enable_github_action_token: true
+          log_verbose: true
+          log_level: "debug"
+          scan_dependencies: true
+          scan_summary_output_type: "table"
+
