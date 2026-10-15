@@ -205,16 +205,16 @@ inputs:
   use_bazel:
     default: false
     description: >-
-      "Enable the usage of Bazel for the scan."
+      "Set to `true` to enable the usage of Bazel for the scan. Required for the other `bazel_*` inputs to take effect."
   bazel_exclude_targets:
     description: >-
-      "Specify a a list of Bazel targets to exclude from scan."
+      "Specify a comma-separated list of Bazel targets to exclude from the targets that `bazel_targets_query` selects, or from the default query if it is not set. Targets must be explicit labels such as `//foo:bar`, not patterns such as `//...`, `:all`, or `:*`. Cannot be set together with `bazel_include_targets`. Ignored unless `use_bazel` is `true`."
   bazel_include_targets:
     description: >-
-      "Specify a list of Bazel targets to scan. If `bazel_targets_include` is not set the `bazel_targets_query` value is used to determine with bazel targets to scan."
+      "Specify a comma-separated list of Bazel targets to scan. Targets must be explicit labels such as `//foo:bar`, not patterns such as `//...`, `:all`, or `:*`. If not set, `bazel_targets_query` determines which targets to scan. Cannot be set together with `bazel_exclude_targets` or `bazel_targets_query`. Ignored unless `use_bazel` is `true`."
   bazel_targets_query:
     description: >-
-      "Specify a Bazel query to determine with Bazel targets to scan. Ignored if `bazel_targets_include` is set."
+      "Specify a Bazel query to determine which Bazel targets to scan. If not set, endorctl's default query selects `py_binary` and `java_binary` targets. Cannot be set together with `bazel_include_targets`. Ignored unless `use_bazel` is `true`."
   # Scan for phantom dependencies
   phantom_dependencies:
     default: false

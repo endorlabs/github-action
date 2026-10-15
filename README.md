@@ -154,9 +154,9 @@ The following input parameters are also supported for the Endor Labs GitHub acti
 | Flags | Description |
 | :-- | :-- |
 | `additional_args` | Use additional_args to add custom arguments to the endorctl scan command. |
-| `bazel_exclude_targets` | Specify a a list of Bazel targets to exclude from scan. |
-| `bazel_include_targets` | Specify a list of Bazel targets to scan. If `bazel_targets_include` is not set the `bazel_targets_query` value is used to determine with bazel targets to scan. |
-| `bazel_targets_query` | Specify a bazel query to determine with Bazel targets to scan. Ignored if `bazel_targets_include` is set. |
+| `bazel_exclude_targets` | Specify a comma-separated list of Bazel targets to exclude from the targets that `bazel_targets_query` selects, or from the default query if it is not set. Targets must be explicit labels such as `//foo:bar`, not patterns such as `//...`, `:all`, or `:*`. Cannot be set together with `bazel_include_targets`. Ignored unless `use_bazel` is `true`. |
+| `bazel_include_targets` | Specify a comma-separated list of Bazel targets to scan. Targets must be explicit labels such as `//foo:bar`, not patterns such as `//...`, `:all`, or `:*`. If not set, `bazel_targets_query` determines which targets to scan. Cannot be set together with `bazel_exclude_targets` or `bazel_targets_query`. Ignored unless `use_bazel` is `true`. |
+| `bazel_targets_query` | Specify a Bazel query to determine which Bazel targets to scan. If not set, endorctl's default query selects `py_binary` and `java_binary` targets. Cannot be set together with `bazel_include_targets`. Ignored unless `use_bazel` is `true`. |
 | `enable_pr_comments` | Set to `true` to publish new findings as review comments. Must be set together with `pr` and `github_token`. Additionally, the `pull-requests: write` permissions must be set in the workflow. (Default: `false`) |
 | `export_scan_result_artifact` | Set to `false` to disable the json scan result artifact export. (Default: `true`). Artifact name appears in step output named `scan_result` |
 | `github_token` | Set the token used to authenticate with GitHub. Must be provided if `enable_pr_comments` is set to `true`. |
@@ -180,7 +180,7 @@ The following input parameters are also supported for the Endor Labs GitHub acti
 | `scan_summary_output_type` | Set the desired output format to `table`, `json`, `yaml`, or `summary`. (Default: `json`) |
 | `scan_tools` | Scan source code repository for CI/CD tools. (Default: `false`) |
 | `tags` | Specify a list of user-defined tags to add to this scan. Tags can be used to search and filter scans later. |
-| `use-bazel` | Enable the usage of Bazel for the scan. (Default: `false`) |
+| `use_bazel` | Set to `true` to enable the usage of Bazel for the scan. Required for the other `bazel_*` inputs to take effect. (Default: `false`) |
 
 ### Environmental Variables
 
