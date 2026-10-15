@@ -205,7 +205,7 @@ inputs:
   use_bazel:
     default: false
     description: >-
-      "Enable the usage of Bazel for the scan."
+      "Set to `true` to enable the usage of Bazel for the scan. Required for the other `bazel_*` inputs to take effect."
   bazel_exclude_targets:
     description: >-
       "Specify a comma-separated list of Bazel targets to exclude from the targets that `bazel_targets_query` selects, or from the default query if it is not set. Targets must be explicit labels such as `//foo:bar`, not patterns such as `//...`, `:all`, or `:*`. Cannot be set together with `bazel_include_targets`. Ignored unless `use_bazel` is `true`."
