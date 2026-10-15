@@ -220,6 +220,13 @@ inputs:
     default: false
     description: >-
       "Enable phantom dependency analysis to identify dependencies used, but not declared in the manifest file."
+  # Enable Pipenv dependency resolution (exports ENDOR_PYTHON_PIPENV_ENABLED).
+  python_pipenv_enabled:
+    default: false
+    description: >-
+      "Enable Pipenv dependency resolution for Pipfile / Pipfile.lock projects by
+      exporting `ENDOR_PYTHON_PIPENV_ENABLED=true` for endorctl. Requires `pipenv`
+      on the runner PATH."
   disable_code_snippet_storage:
     description: >-
       "Do not store or display the source code related to a finding."

@@ -166,6 +166,7 @@ The following input parameters are also supported for the Endor Labs GitHub acti
 | `pr_baseline` | Set to the git reference that you are merging to, such as the default branch. Enables endorctl to compare findings so developers are only alerted to issues un the current changeset. Example: `pr_baseline: "main"`. Note: Not needed if `enable_pr_comments` is set to `true`. |
 | `pr_incremental` | Set to `true` to only scan files, or packages with dependencies that have changed compared to the baseline scan. (Default: `false`) |
 | `pr` | Set to `false` to track this scan as a monitored version within Endor Labs, as opposed to a point in time policy and finding test for a PR. (Default: `true`) |
+| `python_pipenv_enabled` | Set to `true` to enable Pipenv dependency resolution for `Pipfile` / `Pipfile.lock` projects (exports `ENDOR_PYTHON_PIPENV_ENABLED=true`). Requires `pipenv` on the runner PATH. (Default: `false`) |
 | `project_name` | Specify a project name for a container image scan or for a package scan. |
 | `run_stats` | Set to `false` to disable reporting of CPU/RAM/time scan statistics via `time -v` (may be required on Windows runners). (Default: `true`) |
 | `sarif_file` | Set to a location on your GitHub runner to output the findings in SARIF format. |
@@ -189,6 +190,7 @@ The following environmental variables are potentially relevant for the Endor Lab
 | Environmental Variable | Description |
 | :-- | :-- |
 | `ENDOR_JS_ENABLE_TSSERVER` | Set to `false` to avoid installing tsserver when JavaScript/TypeScript call graphs are not needed. |
+| `ENDOR_PYTHON_PIPENV_ENABLED` | Set by the action when `python_pipenv_enabled` is `true`, so endorctl resolves Pipenv projects. |
 
 ### Artifact Signing parameters
 

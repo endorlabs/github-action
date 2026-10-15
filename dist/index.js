@@ -98393,6 +98393,7 @@ function get_scan_options(options) {
     const BAZEL_EXCLUDE_TARGETS = core.getInput("bazel_exclude_targets");
     const BAZEL_INCLUDE_TARGETS = core.getInput("bazel_include_targets");
     const BAZEL_TARGETS_QUERY = core.getInput("bazel_targets_query");
+    const PYTHON_PIPENV_ENABLED = core.getBooleanInput("python_pipenv_enabled");
     if (!SCAN_DEPENDENCIES &&
         !SCAN_SECRETS &&
         !SCAN_SAST &&
@@ -98494,6 +98495,11 @@ function get_scan_options(options) {
         if (BAZEL_TARGETS_QUERY) {
             options.push(`--bazel-targets-query=${BAZEL_TARGETS_QUERY}`);
         }
+    }
+    // python_pipenv_enabled → ENDOR_PYTHON_PIPENV_ENABLED (in-flight endorctl env).
+    // Leave ambient ENDOR_PYTHON_PIPENV_ENABLED alone when the input is false.
+    if (PYTHON_PIPENV_ENABLED) {
+        core.exportVariable("ENDOR_PYTHON_PIPENV_ENABLED", "true");
     }
     if (SCAN_GIT_LOGS) {
         if (!SCAN_SECRETS) {
