@@ -211,7 +211,7 @@ inputs:
       "Specify a comma-separated list of Bazel targets to exclude from the targets that `bazel_targets_query` selects, or from the default query if it is not set. Targets must be explicit labels such as `//foo:bar`, not patterns such as `//...`, `:all`, or `:*`. Cannot be set together with `bazel_include_targets`. Ignored unless `use_bazel` is `true`."
   bazel_include_targets:
     description: >-
-      "Specify a comma-separated list of Bazel targets to scan. Targets must be explicit labels such as `//foo:bar`, not patterns such as `//...` or `:all`. If not set, `bazel_targets_query` determines which targets to scan. Cannot be set together with `bazel_exclude_targets` or `bazel_targets_query`. Ignored unless `use_bazel` is `true`."
+      "Specify a comma-separated list of Bazel targets to scan. Targets must be explicit labels such as `//foo:bar`, not patterns such as `//...`, `:all`, or `:*`. If not set, `bazel_targets_query` determines which targets to scan. Cannot be set together with `bazel_exclude_targets` or `bazel_targets_query`. Ignored unless `use_bazel` is `true`."
   bazel_targets_query:
     description: >-
       "Specify a Bazel query to determine which Bazel targets to scan. If not set, endorctl's default query selects `py_binary` and `java_binary` targets. Cannot be set together with `bazel_include_targets`. Ignored unless `use_bazel` is `true`."
