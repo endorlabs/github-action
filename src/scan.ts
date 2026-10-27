@@ -1,4 +1,5 @@
 import * as fs from "fs";
+import { Writable } from "stream";
 import * as core from "@actions/core";
 import * as exec from "@actions/exec";
 import * as github from "@actions/github";
@@ -284,6 +285,23 @@ async function run() {
     );
     const SCAN_SUMMARY_OUTPUT_TYPE = core.getInput("scan_summary_output_type");
     const SCAN_OUTPUT_FILE = core.getInput("output_file");
+
+    // The stdout listener still captures the scan result. Discard the echo so
+    // the full JSON does not flood the workflow log when a file is requested.
+    // `silent` is not an option: it also hides progress and errors. The exec
+    // library writes stderr to the same stream, so echo stderr separately.
+    if (SCAN_OUTPUT_FILE) {
+      scanOptions.outStream = new Writable({
+        write(_chunk, _encoding, callback) {
+          callback();
+        },
+      });
+      if (scanOptions.listeners) {
+        scanOptions.listeners.stderr = (data: Buffer) => {
+          process.stderr.write(data);
+        };
+      }
+    }
 
     core.info(`Endor Namespace: ${NAMESPACE}`);
 

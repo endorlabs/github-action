@@ -161,7 +161,7 @@ The following input parameters are also supported for the Endor Labs GitHub acti
 | `export_scan_result_artifact` | Set to `false` to disable the json scan result artifact export. (Default: `true`). Artifact name appears in step output named `scan_result` |
 | `github_token` | Set the token used to authenticate with GitHub. Must be provided if `enable_pr_comments` is set to `true`. |
 | `image` | Specify a container image to scan. |
-| `output_file` | Set a file to save the scan results to; use this in lieu of `export_scan_result_artifact` to save any scan results data to a file in the workspace for processing by others steps in the same job, instead of the workflow run log. |
+| `output_file` | Set a file to save the scan results to; use this in lieu of `export_scan_result_artifact` to save any scan results data to a file in the workspace for processing by others steps in the same job, instead of the workflow run log. When set, the action does not print the scan result to the workflow log. |
 | `phantom_dependencies` | Set to `true` to enable phantom dependency analysis. (Default: `false`) |
 | `pr_baseline` | Set to the git reference that you are merging to, such as the default branch. Enables endorctl to compare findings so developers are only alerted to issues un the current changeset. Example: `pr_baseline: "main"`. Note: Not needed if `enable_pr_comments` is set to `true`. |
 | `pr_incremental` | Set to `true` to only scan files, or packages with dependencies that have changed compared to the baseline scan. (Default: `false`) |

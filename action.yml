@@ -80,7 +80,7 @@ inputs:
   # Use this to save the scan results output to a file instead of printing to the log
   output_file:
     description: >-
-      "Set to the name of a file to save results to. File name will be in the `results` output item. Default just writes to STDOUT."
+      "Set to the name of a file to save results to. File name will be in the `results` output item. When set, the scan result is not echoed to the workflow log. Default writes the result to the workflow log."
     required: false
   # Use this for PRs.
   pr:
