@@ -98352,6 +98352,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const fs = __importStar(__nccwpck_require__(57147));
+const stream_1 = __nccwpck_require__(12781);
 const core = __importStar(__nccwpck_require__(42186));
 const exec = __importStar(__nccwpck_require__(71514));
 const github = __importStar(__nccwpck_require__(95438));
@@ -98579,6 +98580,22 @@ function run() {
             const EXPORT_SCAN_RESULT_ARTIFACT = core.getBooleanInput("export_scan_result_artifact");
             const SCAN_SUMMARY_OUTPUT_TYPE = core.getInput("scan_summary_output_type");
             const SCAN_OUTPUT_FILE = core.getInput("output_file");
+            // The stdout listener still captures the scan result. Discard the echo so
+            // the full JSON does not flood the workflow log when a file is requested.
+            // `silent` is not an option: it also hides progress and errors. The exec
+            // library writes stderr to the same stream, so echo stderr separately.
+            if (SCAN_OUTPUT_FILE) {
+                scanOptions.outStream = new stream_1.Writable({
+                    write(_chunk, _encoding, callback) {
+                        callback();
+                    },
+                });
+                if (scanOptions.listeners) {
+                    scanOptions.listeners.stderr = (data) => {
+                        process.stderr.write(data);
+                    };
+                }
+            }
             core.info(`Endor Namespace: ${NAMESPACE}`);
             if (!NAMESPACE) {
                 core.setFailed("namespace is required and must be passed as an input from the workflow");
