@@ -131,6 +131,10 @@ jobs:
 
 ## Supported Configuration Parameters
 
+### Download of `endorctl`
+
+The action requests a gzip-compressed `endorctl` download when the server offers it, and decompresses it while writing. It verifies the SHA-256 checksum of the decompressed binary. If the server does not compress, the action downloads the raw binary as before.
+
 ### Common parameters
 
 The following input global parameters are supported for the Endor Labs GitHub action:
