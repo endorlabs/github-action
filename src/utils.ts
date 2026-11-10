@@ -6,9 +6,9 @@ import * as fs from "fs";
 import * as fspromises from "fs/promises";
 import * as httpm from "@actions/http-client";
 import * as io from "@actions/io";
-import * as tc from "@actions/tool-cache";
 import * as path from "path";
 import { execSync } from "child_process";
+import { downloadDecoded } from "./download";
 
 import {
   EndorctlAvailableArch,
@@ -30,9 +30,10 @@ const execOptionSilent = {
 };
 
 export const createHashFromFile = (filePath: string) =>
-  new Promise((resolve) => {
+  new Promise((resolve, reject) => {
     const hash = crypto.createHash("sha256");
     fs.createReadStream(filePath)
+      .on("error", reject)
       .on("data", (data) => hash.update(data as crypto.BinaryLike))
       .on("end", () => resolve(hash.digest("hex")));
   });
@@ -219,29 +220,38 @@ export const setupEndorctl = async ({ version, checksum, api }: SetupProps) => {
       );
     }
 
+    const exeName = `endorctl${isWindows ? ".exe" : ""}`;
+    const binPath = ".";
+    const endorctlPath = path.join(binPath, exeName);
+
     core.info(`Downloading endorctl version ${endorctlVersion}`);
     const url = `${api}/download/endorlabs/${endorctlVersion}/binaries/endorctl_${endorctlVersion}_${
       platform.os
     }_${platform.arch}${isWindows ? ".exe" : ""}`;
-    let downloadPath: string | null = null;
 
-    downloadPath = await tc.downloadTool(url);
-    const hash = await createHashFromFile(downloadPath);
+    const downloadPath = await downloadDecoded(url);
+    if (!(await fspromises.lstat(downloadPath)).isFile()) {
+      throw new Error("The downloaded endorctl is not a regular file!");
+    }
+
+    // Copy bytes to a fresh regular file, then hash that file, so the
+    // verified bytes are the executed bytes. rmRF first so a pre-existing
+    // symlink in the workspace is replaced, never written through.
+    await io.rmRF(endorctlPath);
+    await fspromises.copyFile(downloadPath, endorctlPath);
+    if (!(await fspromises.lstat(endorctlPath)).isFile()) {
+      throw new Error("The installed endorctl is not a regular file!");
+    }
+    const hash = await createHashFromFile(endorctlPath);
     if (hash !== endorctlChecksum) {
+      await io.rmRF(endorctlPath);
       throw new Error(
         "The checksum of the downloaded binary does not match the expected value!"
       );
-    } else {
-      core.info(`Binary checksum: ${endorctlChecksum}`);
     }
+    core.info(`Binary checksum: ${endorctlChecksum}`);
 
-    await exec.exec("chmod", ["+x", downloadPath], execOptionSilent);
-    const binPath = ".";
-    const endorctlPath = path.join(
-      binPath,
-      `endorctl${isWindows ? ".exe" : ""}`
-    );
-    await io.cp(downloadPath, endorctlPath);
+    await exec.exec("chmod", ["+x", endorctlPath], execOptionSilent);
     core.addPath(binPath);
 
     core.info(`Endorctl downloaded and added to the path`);
