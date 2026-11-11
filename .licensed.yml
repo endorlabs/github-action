@@ -21,3 +21,9 @@ ignored:
     - "@bufbuild/protobuf"
     - "@actions/http-client"
     - "@protobuf-ts/plugin-framework"
+
+reviewed:
+  npm:
+    # glob >=14 is BlueOak-1.0.0 per package.json, but its LICENSE.md opens with a
+    # preamble about src/ (only glob's own sources) that licensee can't classify.
+    - glob
