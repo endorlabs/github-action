@@ -1,8 +1,9 @@
 ---
-name: "@typescript-eslint/types"
-version: 5.62.0
+name: is-unsafe
+version: 2.0.3
 type: npm
-summary: Types for the TypeScript-ESTree AST spec
+summary: Zero-dependency, DOM-free, pure predicate for detecting unsafe strings across
+  HTML, XML, SVG, SQL, SHELL, and REGEX contexts
 homepage:
 license: mit
 licenses:
@@ -10,7 +11,7 @@ licenses:
   text: |
     MIT License
 
-    Copyright (c) 2019 typescript-eslint and other contributors
+    Copyright (c) 2026 Natural Intelligence
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -29,4 +30,6 @@ licenses:
     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
+- sources: README.md
+  text: MIT
 notices: []

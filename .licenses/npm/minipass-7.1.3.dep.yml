@@ -1,21 +1,13 @@
 ---
-name: package-json-from-dist
-version: 1.0.1
+name: minipass
+version: 7.1.3
 type: npm
-summary: Load the local package.json from either src or dist folder
+summary: minimal implementation of a PassThrough stream
 homepage:
 license: blueoak-1.0.0
 licenses:
 - sources: LICENSE.md
   text: |
-    All packages under `src/` are licensed according to the terms in
-    their respective `LICENSE` or `LICENSE.md` files.
-
-    The remainder of this project is licensed under the Blue Oak
-    Model License, as follows:
-
-    -----
-
     # Blue Oak Model License
 
     Version 1.0.0

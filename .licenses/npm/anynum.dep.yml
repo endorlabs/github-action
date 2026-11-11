@@ -1,14 +1,17 @@
 ---
-name: eastasianwidth
-version: 0.2.0
+name: anynum
+version: 1.0.1
 type: npm
-summary: Get East Asian Width from a character.
+summary: Normalize all Unicode decimal digits (Devanagari, Arabic, Thai, etc.) to
+  ASCII numerals. Zero dependencies, performance-first.
 homepage:
 license: mit
 licenses:
-- sources: Auto-generated MIT license text
+- sources: LICENSE
   text: |
     MIT License
+
+    Copyright (c) 2026 Natural Intelligence
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -27,4 +30,6 @@ licenses:
     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
+- sources: README.md
+  text: MIT
 notices: []
