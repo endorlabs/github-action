@@ -2,39 +2,39 @@
 
 Catch vulnerabilities, exposed secrets, and risky or malicious dependencies before they reach production. Endor Labs combines agentic reasoning with deterministic program analysis to understand code behavior and patch vulnerabilities. Helps secure:
 
-- Your code ([AI SAST](https://docs.endorlabs.com/scan/ai-sast/)) — Security agents reason over your code graph to find exploitable vulnerabilities and suggest fixes
-- [Secrets](https://docs.endorlabs.com/scan/secrets/) — Catch leaked API keys, creds, and tokens at the source
-- [Third party dependencies](https://docs.endorlabs.com/scan/sca/) — SCA with [function-level reachability](https://docs.endorlabs.com/scan/sca/reachability-analysis/) prioritizes and fixes without breaking code
-- [Malware detection](https://docs.endorlabs.com/scan/malware/) — Detect and block malicious code in open source packages
-- [AI models](https://docs.endorlabs.com/scan/ai-models/) — Report and assess AI models and services for risk
-- [Container images](https://docs.endorlabs.com/scan/containers/) — Full-stack reachability surfaces vulnerabilities in the OS packages your image uses at runtime
-- [GitHub Actions and CI/CD tooling](https://docs.endorlabs.com/scan/github-actions/) — Detect vulnerabilities, malware, and risky config
-- [Repo configuration (RSPM)](https://docs.endorlabs.com/scan/rspm/) — GitHub misconfigurations that expose your supply chain
+- Your code ([AI SAST](https://docs.endorlabs.com/scan/ai-sast)) — Security agents reason over your code graph to find exploitable vulnerabilities and suggest fixes
+- [Secrets](https://docs.endorlabs.com/scan/secrets) — Catch leaked API keys, creds, and tokens at the source
+- [Third party dependencies](https://docs.endorlabs.com/scan/sca) — SCA with [function-level reachability](https://docs.endorlabs.com/scan/sca/reachability-analysis) prioritizes and fixes without breaking code
+- [Malware detection](https://docs.endorlabs.com/scan/malware) — Detect and block malicious code in open source packages
+- [AI models](https://docs.endorlabs.com/scan/ai-models) — Report and assess AI models and services for risk
+- [Container images](https://docs.endorlabs.com/scan/containers) — Full-stack reachability surfaces vulnerabilities in the OS packages your image uses at runtime
+- [GitHub Actions and CI/CD tooling](https://docs.endorlabs.com/scan/github-actions) — Detect vulnerabilities, malware, and risky config
+- [Repo configuration (RSPM)](https://docs.endorlabs.com/scan/rspm) — GitHub misconfigurations that expose your supply chain
 
-Run it on [pull requests](https://docs.endorlabs.com/scan/pr-scans/) for point-in-time policy checks, or on your default branch to monitor findings over time. Surface findings in [PR comments](https://docs.endorlabs.com/scan/pr-scans/pr-comments/), the [GitHub Security tab (SARIF)](https://docs.endorlabs.com/integrations/data-exporters/export-to-ghas/), or the Endor Labs UI.
+Run it on [pull requests](https://docs.endorlabs.com/scan/pr-scans) for point-in-time policy checks, or on your default branch to monitor findings over time. Surface findings in [PR comments](https://docs.endorlabs.com/scan/pr-scans/pr-comments), the [GitHub Security tab (SARIF)](https://docs.endorlabs.com/integrations/data-exporters/export-to-ghas), or the Endor Labs UI.
 
 ## Documentation
 
-- [Scan with GitHub Actions](https://docs.endorlabs.com/setup-deployment/ci-cd/scan-with-github-actions/) covers the setup this README summarizes, with worked examples per language.
-- [GitHub Actions keyless authentication](https://docs.endorlabs.com/setup-deployment/ci-cd/keyless-authentication/github-keyless-auth/) covers the recommended authentication path.
-- [endorctl CLI reference](https://docs.endorlabs.com/developers-api/cli/) documents the scan options behind the action inputs.
+- [Scan with GitHub Actions](https://docs.endorlabs.com/setup-deployment/ci-cd/scan-with-github-actions) covers the setup this README summarizes, with worked examples per language.
+- [GitHub Actions keyless authentication](https://docs.endorlabs.com/setup-deployment/ci-cd/keyless-authentication/github-keyless-auth) covers the recommended authentication path.
+- [endorctl CLI reference](https://docs.endorlabs.com/developers-api/cli) documents the scan options behind the action inputs.
 
 ## Required Parameters and Pre-requisites
 
 The following pre-requisites are required for the Endor Labs GitHub action to successfully run:
 
 - The GitHub action must be able to authenticate to the Endor Labs API. It may authenticate through either:
-  - A GitHub organization or repository name used for [keyless authentication](https://docs.endorlabs.com/setup-deployment/ci-cd/keyless-authentication/github-keyless-auth/) (Default)
-  - An [Endor Labs API key and secret](https://docs.endorlabs.com/platform-administration/api-keys/)
+  - A GitHub organization or repository name used for [keyless authentication](https://docs.endorlabs.com/setup-deployment/ci-cd/keyless-authentication/github-keyless-auth) (Default)
+  - An [Endor Labs API key and secret](https://docs.endorlabs.com/platform-administration/api-keys)
   - A GCP service account with workload identity federation enabled associated with the runner
 - The Endor Labs namespace to authenticate against
 - Access to the Endor Labs API
-- If you are using keyless authentication you will also need an [authorization policy](https://docs.endorlabs.com/platform-administration/rbac/authorization-policies/) set in Endor Labs
+- If you are using keyless authentication you will also need an [authorization policy](https://docs.endorlabs.com/platform-administration/rbac/authorization-policies) set in Endor Labs
 
 ## High Level Usage Steps
 
 1. Setup authentication to Endor Labs
-   1. **Recommended:** If you are using GitHub action keyless authentication you will need to set an [authorization policy](https://docs.endorlabs.com/platform-administration/rbac/authorization-policies/) in Endor Labs to allow your organization or repository to authenticate.
+   1. **Recommended:** If you are using GitHub action keyless authentication you will need to set an [authorization policy](https://docs.endorlabs.com/platform-administration/rbac/authorization-policies) in Endor Labs to allow your organization or repository to authenticate.
    2. Users may also authenticate with a GCP service account setup for [keyless authentication from GitHub actions](https://cloud.google.com/blog/products/identity-security/enabling-keyless-authentication-from-github-actions) or an Endor Labs API key added as a repository secret.
 2. Checkout your code
 3. Install your build toolchain
@@ -139,7 +139,7 @@ jobs:
 
 ### Common parameters
 
-The following input global parameters are supported for the Endor Labs GitHub action. These map to [endorctl](https://docs.endorlabs.com/developers-api/cli/) flags, documented in the [endorctl scan reference](https://docs.endorlabs.com/developers-api/cli/commands/scan/).
+The following input global parameters are supported for the Endor Labs GitHub action. These map to [endorctl](https://docs.endorlabs.com/developers-api/cli) flags, documented in the [endorctl scan reference](https://docs.endorlabs.com/developers-api/cli/commands/scan).
 
 | Flags | Description |
 | :-- | :-- |
@@ -155,7 +155,7 @@ The following input global parameters are supported for the Endor Labs GitHub ac
 
 ### Scanning parameters
 
-The following input parameters are also supported for the Endor Labs GitHub action when used for scanning. For what each scan type produces, see [SAST](https://docs.endorlabs.com/scan/sast/), [secret scanning](https://docs.endorlabs.com/scan/secrets/), [container scanning](https://docs.endorlabs.com/scan/containers/), [GitHub Actions and CI/CD tooling scanning](https://docs.endorlabs.com/scan/github-actions/), and [Bazel](https://docs.endorlabs.com/scan/bazel/).
+The following input parameters are also supported for the Endor Labs GitHub action when used for scanning. For what each scan type produces, see [SAST](https://docs.endorlabs.com/scan/sast), [secret scanning](https://docs.endorlabs.com/scan/secrets), [container scanning](https://docs.endorlabs.com/scan/containers), [GitHub Actions and CI/CD tooling scanning](https://docs.endorlabs.com/scan/github-actions), and [Bazel](https://docs.endorlabs.com/scan/bazel).
 
 | Flags | Description |
 | :-- | :-- |
@@ -190,7 +190,7 @@ The following input parameters are also supported for the Endor Labs GitHub acti
 
 ### Environmental Variables
 
-The following environmental variables are potentially relevant for the Endor Labs GitHub action. See the [endorctl environment variables reference](https://docs.endorlabs.com/developers-api/cli/environment-variables/) for the complete list.
+The following environmental variables are potentially relevant for the Endor Labs GitHub action. See the [endorctl environment variables reference](https://docs.endorlabs.com/developers-api/cli/environment-variables) for the complete list.
 
 | Environmental Variable | Description |
 | :-- | :-- |
@@ -198,7 +198,7 @@ The following environmental variables are potentially relevant for the Endor Lab
 
 ### Artifact Signing parameters
 
-The following input parameters are also supported for the Endor Labs GitHub action when used for build artifact signing. The new "sign" action should be used: endorlabs/github-action/sign@version. See [artifact signing](https://docs.endorlabs.com/scan/containers/artifact-signing/) for how signing and verification work.
+The following input parameters are also supported for the Endor Labs GitHub action when used for build artifact signing. The new "sign" action should be used: endorlabs/github-action/sign@version. See [artifact signing](https://docs.endorlabs.com/scan/containers/artifact-signing) for how signing and verification work.
 
 | Flags | Required | Description |
 | :-- | :-- | :-- |
